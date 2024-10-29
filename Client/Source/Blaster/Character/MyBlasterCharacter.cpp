@@ -1124,7 +1124,6 @@ void AMyBlasterCharacter::PollInit()
 		BlasterPlayerController = BlasterPlayerController == nullptr ? Cast<ABlasterPlayerController>(Controller) : BlasterPlayerController;
 		if (BlasterPlayerController)
 		{
-			SpawnDefaultWeapon();
 			UpdateHUDAmmo();
 			UpdateHUDHealth();
 			UpdateHUDShield();
