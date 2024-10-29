@@ -70,7 +70,7 @@ AMyBlasterCharacter::AMyBlasterCharacter()
 	GetCharacterMovement()->RotationRate = FRotator(0.f, 0.f, 850.f); // 회전속도 설정
 
 	// 커뮤
-// 캐릭터의 메쉬가 항상 애니메이션을 계산하도록 하여, 서버에서 캐릭터가 렌더링되지 않더라도 본 위치를 올바르게 업데이트 (로켓런처 버그해결을 위해)
+	// 캐릭터의 메쉬가 항상 애니메이션을 계산하도록 하여, 서버에서 캐릭터가 렌더링되지 않더라도 본 위치를 올바르게 업데이트 (로켓런처 버그해결을 위해)
 	GetMesh()->VisibilityBasedAnimTickOption = EVisibilityBasedAnimTickOption::AlwaysTickPoseAndRefreshBones;
 
 	TurningInPlace = ETurningInPlace::ETIP_NotTurning;
