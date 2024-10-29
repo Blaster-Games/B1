@@ -153,12 +153,6 @@ private:
 	bool bInitializeCarriedAmmo = false;
 	float HUDWeaponAmmo;
 	bool bInitializeWeaponAmmo = false;
-	// me
-	int32 HUDRedScore;
-	bool bInitializeRedScore = false;
-	int32 HUDBlueScore;
-	bool bInitializeBlueScore = false;
-
 
 	float HighPingRunningTime = 0.f;
 

@@ -122,11 +122,6 @@ void ABlasterPlayerController::SetHUDRedTeamScores(int32 RedScore)
 		FString ScoreText = FString::Printf(TEXT("%d"), RedScore);
 		BlasterHUD->CharacterOverlay->RedTeamScore->SetText(FText::FromString(ScoreText));
 	}
-	else
-	{
-		bInitializeRedScore = true;
-		HUDRedScore = RedScore;
-	}
 }
 
 void ABlasterPlayerController::SetHUDBlueTeamScores(int32 BlueScore)
@@ -140,11 +135,6 @@ void ABlasterPlayerController::SetHUDBlueTeamScores(int32 BlueScore)
 	{
 		FString ScoreText = FString::Printf(TEXT("%d"), BlueScore);
 		BlasterHUD->CharacterOverlay->BlueTeamScore->SetText(FText::FromString(ScoreText));
-	}
-	else
-	{
-		bInitializeBlueScore = true;
-		HUDBlueScore = BlueScore;
 	}
 }
 
@@ -295,6 +285,7 @@ void ABlasterPlayerController::ServerCheckMatchState_Implementation()
 	ABlasterGameMode* GameMode = Cast<ABlasterGameMode>(UGameplayStatics::GetGameMode(this));
 	if (GameMode)
 	{
+		bShowTeamScores = GameMode->bTeamsMatch;
 		WarmupTime = GameMode->WarmupTime;
 		MatchTime = GameMode->MatchTime;
 		CooldownTime = GameMode->CooldownTime;
@@ -595,8 +586,6 @@ void ABlasterPlayerController::PollInit()
 				if (bInitializeDefeats) SetHUDDefeats(HUDDefeats);
 				if (bInitializeCarriedAmmo) SetHUDCarriedAmmo(HUDCarriedAmmo);
 				if (bInitializeWeaponAmmo) SetHUDWeaponAmmo(HUDWeaponAmmo);
-				if (bInitializeRedScore) SetHUDRedTeamScores(HUDRedScore); // me
-				if (bInitializeBlueScore) SetHUDBlueTeamScores(HUDBlueScore);
 
 				AMyBlasterCharacter* BlasterCharacter = Cast<AMyBlasterCharacter>(GetPawn());
 				if (BlasterCharacter && BlasterCharacter->GetCombat())
