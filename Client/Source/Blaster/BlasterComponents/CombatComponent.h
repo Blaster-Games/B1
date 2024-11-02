@@ -34,6 +34,12 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void FinishSwapAttachWeapons();
 
+	// 무기 슬롯을 통한 장착
+	void SelectWeaponSlot(int32 SlotIndex);
+
+	UFUNCTION(Server, Reliable)
+	void ServerSelectWeaponSlot(int32 SlotIndex);
+
 	void FireButtonPressed(bool bPressed);
 
 	UFUNCTION(BlueprintCallable)
@@ -133,6 +139,18 @@ private:
 
 	UPROPERTY(ReplicatedUsing = OnRep_SecondaryWeapon)
 	AWeapon* SecondaryWeapon;
+
+	// 무기 슬롯
+	UPROPERTY(Replicated)
+	TArray<AWeapon*> WeaponSlots;
+
+
+	// 최대 무기 슬롯 수
+	UPROPERTY(EditAnywhere)
+	int32 MaxWeaponSlots = 2;
+
+	int32 GetWeaponSlotIndex(AWeapon* Weapon) const;
+	void AddWeaponToSlot(AWeapon* NewWeapon);
 
 	// 줌을 잠깐만 누르면 이상해지는 현상 발생
 	// 로컬에서 Aiming을 누르고 있는지를 알려줘야 됨.

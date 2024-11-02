@@ -39,6 +39,7 @@ void UCombatComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& Out
 	DOREPLIFETIME(UCombatComponent, CombatState);
 	DOREPLIFETIME(UCombatComponent, Grenades);
 	DOREPLIFETIME(UCombatComponent, bHoldingTheFlag);
+	DOREPLIFETIME(UCombatComponent, WeaponSlots);
 
 }
 
@@ -93,6 +94,7 @@ void UCombatComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActo
 		InterpFOV(DeltaTime);
 	}
 }
+
 
 void UCombatComponent::FireButtonPressed(bool bPressed)
 {
@@ -278,14 +280,15 @@ void UCombatComponent::EquipWeapon(AWeapon* WeaponToEquip)
 	if (Character == nullptr || WeaponToEquip == nullptr) return;
 	if (CombatState != ECombatState::ECS_Unoccupied) return;
 
+	// 무기를 슬롯에 추가
+	AddWeaponToSlot(WeaponToEquip);
+
 	if (WeaponToEquip->GetWeaponType() == EWeaponType::EWT_Flag)
 	{
 		Character->Crouch(); // 얘가 복제를 담당할 것임.
 		bHoldingTheFlag = true; // 얘가 바뀌면 복제가 되는데 타고 들어가 보면 아래 주석부분이 이미 들어가 있음.
 		WeaponToEquip->SetWeaponState(EWeaponState::EWS_Equipped);
 		AttachFlagToLeftHand(WeaponToEquip);
-		/*Character->GetCharacterMovement()->bOrientRotationToMovement = true;
-		Character->bUseControllerRotationYaw = false;*/
 		WeaponToEquip->SetOwner(Character);
 		TheFlag = WeaponToEquip;
 	}
@@ -335,6 +338,7 @@ void UCombatComponent::EquipPrimaryWeapon(AWeapon* WeaponToEquip)
 	UpdateCarriedAmmo();
 	PlayEquipWeaponSound(WeaponToEquip);
 	ReloadEmptyWeapon();
+
 }
 
 void UCombatComponent::EquipSecondaryWeapon(AWeapon* WeaponToEquip)
@@ -345,6 +349,80 @@ void UCombatComponent::EquipSecondaryWeapon(AWeapon* WeaponToEquip)
 	AttachActorToBackpack(WeaponToEquip); // 메고 있는 상태.
 	PlayEquipWeaponSound(WeaponToEquip);
 	SecondaryWeapon->SetOwner(Character);
+}
+
+// 무기 슬롯 선택을 통한 무기 장착
+void UCombatComponent::SelectWeaponSlot(int32 SlotIndex)
+{
+	if (!Character || !Character->IsLocallyControlled()) return;
+
+	// 슬롯 인덱스가 유효한지 클라이언트에서 확인
+	if (SlotIndex < 0 || SlotIndex >= WeaponSlots.Num()) return;
+
+	// 선택된 무기가 현재 장착 중인 무기와 동일한지 확인
+	AWeapon* SelectedWeapon = WeaponSlots[SlotIndex];
+	if (EquippedWeapon == SelectedWeapon) return;
+
+	// 서버에 슬롯 선택 요청
+	ServerSelectWeaponSlot(SlotIndex);
+
+	// 애니메이션 재생 및 상태 업데이트
+	bool bSawp = ShouldSwapWeapons() &&
+		!Character->HasAuthority() &&
+		CombatState == ECombatState::ECS_Unoccupied;
+
+	if (bSawp)
+	{
+		Character->PlaySwapMontage(); // 무기 교체 애니메이션 재생
+		CombatState = ECombatState::ECS_SwappingWeapons; // 상태 변경
+		Character->bFinishedSwapping = false; // 스와핑이 완료되지 않았음을 표시
+	}
+	
+
+}
+
+// 이렇게 ServerSelectWeaponSlot_Implementation를 만들어줘야 했던 이유는 SwapWeapons를 보면 알 수 있음. (원인 찾기 진짜 힘들었다...)
+void UCombatComponent::ServerSelectWeaponSlot_Implementation(int32 SlotIndex)
+{
+	// 서버에서 슬롯 인덱스 유효성 확인
+	if (SlotIndex < 0 || SlotIndex >= WeaponSlots.Num()) return;
+
+	AWeapon* SelectedWeapon = WeaponSlots[SlotIndex];
+
+	// 서버에서 무기 교체 수행
+	if (EquippedWeapon != SelectedWeapon)
+	{
+		SwapWeapons(); // 무기 교체
+	}
+}
+
+
+
+int32 UCombatComponent::GetWeaponSlotIndex(AWeapon* Weapon) const
+{
+	return WeaponSlots.IndexOfByKey(Weapon); // 슬롯 배열에서 무기의 인덱스를 찾음
+}
+
+void UCombatComponent::AddWeaponToSlot(AWeapon* NewWeapon)
+{
+	if (NewWeapon == nullptr) return; // 새로운 무기가 nullptr인 경우 조기 반환
+
+	if (WeaponSlots.Num() < MaxWeaponSlots) // 슬롯이 덜 찼으면
+	{
+		// 빈 슬롯에 새 무기를 추가
+		WeaponSlots.Add(NewWeapon);
+	}
+	else // 슬롯이 가득 찼으면
+	{
+		// 현재 장착된 무기의 슬롯 인덱스 확인
+		int32 EquippedSlotIndex = GetWeaponSlotIndex(EquippedWeapon);
+
+		if (EquippedSlotIndex != INDEX_NONE) // 장착 중인 무기가 있을 경우
+		{
+			// 현재 장착 중인 무기 인덱스에 새 무기를 추가
+			WeaponSlots[EquippedSlotIndex] = NewWeapon;
+		}
+	}
 }
 
 void UCombatComponent::OnRep_Aiming()

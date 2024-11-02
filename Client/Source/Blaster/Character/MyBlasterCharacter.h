@@ -94,6 +94,8 @@ protected:
 	void FireButtonReleased();
 	void PlayHitReactMontage();
 	void GrenadeButtonPressed();
+	void WeaponSlot1ButtonPressed();
+	void WeaponSlot2ButtonPressed();
 	void DropOrDestroyWeapon(AWeapon* Weapon);
 	void DropOrDestroyWeapons();
 	void SetSpawnPoint();

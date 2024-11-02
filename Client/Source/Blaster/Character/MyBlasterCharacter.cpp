@@ -534,6 +534,8 @@ void AMyBlasterCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInput
 	PlayerInputComponent->BindAction("Fire", IE_Released, this, &AMyBlasterCharacter::FireButtonReleased);
 	PlayerInputComponent->BindAction("Reload", IE_Pressed, this, &AMyBlasterCharacter::ReloadButtonPressed);
 	PlayerInputComponent->BindAction("ThrowGrenade", IE_Pressed, this, &AMyBlasterCharacter::GrenadeButtonPressed);
+	PlayerInputComponent->BindAction("WeaponSlot1", IE_Pressed, this, &AMyBlasterCharacter::WeaponSlot1ButtonPressed);
+	PlayerInputComponent->BindAction("WeaponSlot2", IE_Pressed, this, &AMyBlasterCharacter::WeaponSlot2ButtonPressed);
 
 }
 
@@ -669,6 +671,23 @@ void AMyBlasterCharacter::GrenadeButtonPressed()
 	{
 		if (Combat->bHoldingTheFlag) return;
 		Combat->ThrowGrenade();
+	}
+}
+
+void AMyBlasterCharacter::WeaponSlot1ButtonPressed()
+{
+	if (Combat)
+	{
+		Combat->SelectWeaponSlot(0);
+	}
+}
+
+void AMyBlasterCharacter::WeaponSlot2ButtonPressed()
+{
+
+	if (Combat)
+	{
+		Combat->SelectWeaponSlot(1);
 	}
 }
 
@@ -1098,6 +1117,7 @@ void AMyBlasterCharacter::SpawnDefaultWeapon()
 		if (Combat)
 		{
 			Combat->EquipWeapon(StartingWeapon);
+			Combat->AddWeaponToSlot(StartingWeapon);
 		}
 	}
 }
