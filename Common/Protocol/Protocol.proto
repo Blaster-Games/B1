@@ -10,3 +10,23 @@ message S_Connected
 {
 
 }
+
+message C_AuthReq
+{
+	string jwt = 1;
+}
+
+message S_AuthRes
+{
+	bool success = 1;
+}
+
+message C_EnterGame
+{
+	int32 playerIndex = 1;
+}
+
+message S_EnterGame
+{
+	repeated rooms = 1;
+}

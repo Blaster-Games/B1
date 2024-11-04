@@ -4,3 +4,8 @@ package Protocol;
 option csharp_namespace = "Google.Protobuf.Protocol";
 
 import "Enum.proto";
+
+message RoomInfo
+{
+
+}
