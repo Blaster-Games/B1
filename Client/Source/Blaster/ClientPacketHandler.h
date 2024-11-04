@@ -9,9 +9,7 @@ extern PacketHandlerFunc GPacketHandler[UINT16_MAX];
 
 enum : uint16
 {
-	PKT_S_Connected = 1001,
-	PKT_C_MatchReq = 1002,
-	PKT_S_MatchRes = 1003
+	PKT_S_Connected = 1001
 };
 
 // Custom Handlers

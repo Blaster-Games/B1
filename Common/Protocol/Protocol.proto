@@ -1,0 +1,12 @@
+syntax = "proto3";
+
+package Protocol;
+option csharp_namespace = "Google.Protobuf.Protocol";
+
+import public "Enum.proto";
+import public "Struct.proto";
+
+message S_Connected 
+{
+
+}
