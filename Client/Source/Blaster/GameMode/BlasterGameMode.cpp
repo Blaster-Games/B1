@@ -23,9 +23,18 @@ void ABlasterGameMode::BeginPlay()
 {
 	Super::BeginPlay();
 
+	if (bIsRoundBased)
+	{
+		if (ABlasterGameState* BlasterGS = GetGameState<ABlasterGameState>())
+		{
+			BlasterGS->SetMaxRounds(MaxRounds);
+		}
+	}
 	// Blaster 게임모드는 게임 시작 맵이 아닌 Blaster 맵에서만 사용됨.
 	// -> 따라서 게임을 시작할 때부터 Blaster 맵에 실제로 들어가기까지 얼마나 많은 시간이 걸렸는지 알 수 있음.
 	LevelStartingTime = GetWorld()->GetTimeSeconds();
+
+
 }
 
 
@@ -47,7 +56,14 @@ void ABlasterGameMode::Tick(float DeltaTime)
 		CountdownTime = WarmupTime + MatchTime - GetWorld()->GetTimeSeconds() + LevelStartingTime;
 		if (CountdownTime <= 0.f)
 		{
-			SetMatchState(MatchState::Cooldown);
+			if (bIsRoundBased)
+			{
+				EndRound();
+			}
+			else
+			{
+				SetMatchState(MatchState::Cooldown);
+			}
 		}
 	}
 	else if (MatchState == MatchState::Cooldown)
@@ -55,7 +71,22 @@ void ABlasterGameMode::Tick(float DeltaTime)
 		CountdownTime = CooldownTime + WarmupTime + MatchTime - GetWorld()->GetTimeSeconds() + LevelStartingTime;
 		if (CountdownTime <= 0.f)
 		{
-			RestartGame();
+			if (bIsRoundBased)
+			{
+				ABlasterGameState* BlasterGS = GetGameState<ABlasterGameState>();
+				if (BlasterGS && BlasterGS->GetCurrentRound() < BlasterGS->GetMaxRounds())
+				{
+					StartNewRound();
+				}
+				else
+				{
+					RestartGame();
+				}
+			}
+			else
+			{
+				RestartGame();
+			}
 		}
 	}
 }
@@ -76,6 +107,87 @@ void ABlasterGameMode::OnMatchStateSet()
 			BlasterPlayer->OnMatchStateSet(MatchState, bTeamsMatch);
 		}
 	}
+}
+
+void ABlasterGameMode::ResetAllPlayers()
+{
+	//// 현재 레벨의 모든 플레이어 컨트롤러를 가져옴
+	//for (FConstPlayerControllerIterator It = GetWorld()->GetPlayerControllerIterator(); It; ++It)
+	//{
+	//	ABlasterPlayerController* BlasterPlayer = Cast<ABlasterPlayerController>(*It);
+	//	if (BlasterPlayer && BlasterPlayer->GetPawn())
+	//	{
+	//		// 플레이어의 캐릭터를 가져옴
+	//		AMyBlasterCharacter* PlayerCharacter = Cast<AMyBlasterCharacter>(BlasterPlayer->GetPawn());
+	//		if (PlayerCharacter)
+	//		{
+	//			// 캐릭터 상태 초기화
+	//			PlayerCharacter->Reset(); // 캐릭터의 상태를 초기화합니다.
+
+	//			// 모든 APlayerStart를 가져옵니다.
+	//			TArray<AActor*> PlayerStarts;
+	//			UGameplayStatics::GetAllActorsOfClass(this, APlayerStart::StaticClass(), PlayerStarts);
+
+	//			if (PlayerStarts.Num() > 0)
+	//			{
+	//				// 랜덤한 플레이어 시작 위치를 선택합니다.
+	//				int32 Selection = FMath::RandRange(0, PlayerStarts.Num() - 1);
+
+	//				// 플레이어를 리스폰합니다.
+	//				RestartPlayerAtPlayerStart(BlasterPlayer, PlayerStarts[Selection]);
+
+	//				// 이제 이전 캐릭터를 파괴합니다.
+	//				PlayerCharacter->Destroy();
+	//			}
+	//		}
+	//	}
+	//}
+
+	for (FConstPlayerControllerIterator It = GetWorld()->GetPlayerControllerIterator(); It; ++It)
+	{
+		ABlasterPlayerController* BlasterPlayer = Cast<ABlasterPlayerController>(*It);
+		if (!BlasterPlayer) continue;
+
+		if (AMyBlasterCharacter* PlayerCharacter = Cast<AMyBlasterCharacter>(BlasterPlayer->GetPawn()))
+		{
+			PlayerCharacter->Reset();
+			PlayerCharacter->Destroy();
+		}
+
+		// 리스폰
+		TArray<AActor*> PlayerStarts;
+		UGameplayStatics::GetAllActorsOfClass(this, APlayerStart::StaticClass(), PlayerStarts);
+		if (PlayerStarts.Num() > 0)
+		{
+			int32 Selection = FMath::RandRange(0, PlayerStarts.Num() - 1);
+			RestartPlayerAtPlayerStart(BlasterPlayer, PlayerStarts[Selection]);
+		}
+	}
+}
+
+void ABlasterGameMode::StartNewRound()
+{
+	ABlasterGameState* BlasterGS = GetGameState<ABlasterGameState>();
+	if (BlasterGS)
+	{
+		int32 NewRound = BlasterGS->GetCurrentRound() + 1;
+		BlasterGS->SetCurrentRound(NewRound);
+	}
+
+	LevelStartingTime = GetWorld()->GetTimeSeconds();
+	ResetAllPlayers();
+	SetMatchState(MatchState::InProgress);
+}
+
+void ABlasterGameMode::EndRound()
+{
+	// 라운드 종료 처리 (승자 결정 등)
+	if (ABlasterGameState* BlasterGS = GetGameState<ABlasterGameState>())
+	{
+		//
+	}
+
+	SetMatchState(MatchState::Cooldown);
 }
 
 

@@ -35,10 +35,11 @@ public:
 	void SetHUDRedTeamScores(int32 RedScore);
 	void SetHUDBlueTeamScores(int32 BlueScore);
 	
-
 	virtual float GetServerTime(); // Synced with server world clock
 	virtual void ReceivedPlayer() override; // Sync with server clock as soon as possible
 	void OnMatchStateSet(FName State, bool bTeamsMatch = false);
+
+
 	void HandleMatchHasStarted(bool bTeamsMatch = false);
 	void HandleCooldown();
 	float SingleTripTime = 0.f;
@@ -122,7 +123,9 @@ private:
 	UPROPERTY()
 	class ABlasterGameMode* BlasterGameMode;
 
+	UPROPERTY(Replicated)
 	float LevelStartingTime = 0.f;
+
 	float MatchTime = 0.f;
 	float WarmupTime = 0.f;
 	float CooldownTime = 0.f;

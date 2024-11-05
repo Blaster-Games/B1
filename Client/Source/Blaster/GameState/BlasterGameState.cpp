@@ -13,6 +13,8 @@ void ABlasterGameState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& Ou
 	DOREPLIFETIME(ABlasterGameState, TopScoringPlayers);
 	DOREPLIFETIME(ABlasterGameState, RedTeamScore);
 	DOREPLIFETIME(ABlasterGameState, BlueTeamScore);
+	DOREPLIFETIME(ABlasterGameState, CurrentRound);
+	DOREPLIFETIME(ABlasterGameState, MaxRounds);
 }
 
 void ABlasterGameState::UpdateTopScore(ABlasterPlayerState* ScoringPlayer)
@@ -76,4 +78,20 @@ void ABlasterGameState::OnRep_BlueTeamScore()
 	{
 		BPlayer->SetHUDBlueTeamScores(BlueTeamScore);
 	}
+}
+
+void ABlasterGameState::OnRep_CurrentRound()
+{
+	// 클라에서 라운드가 변경 될 시 필요한 로직 처리
+}
+
+
+void ABlasterGameState::SetCurrentRound(int32 NewRound)
+{
+	CurrentRound = NewRound;
+}
+
+void ABlasterGameState::SetMaxRounds(int32 NewMaxRounds)
+{
+	MaxRounds = NewMaxRounds;
 }

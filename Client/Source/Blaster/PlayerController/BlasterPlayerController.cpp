@@ -72,6 +72,7 @@ void ABlasterPlayerController::GetLifetimeReplicatedProps(TArray<FLifetimeProper
 
 	DOREPLIFETIME(ABlasterPlayerController, MatchState);
 	DOREPLIFETIME(ABlasterPlayerController, bShowTeamScores);
+	DOREPLIFETIME(ABlasterPlayerController, LevelStartingTime);
 }
 
 void ABlasterPlayerController::HideTeamScores()
@@ -545,6 +546,8 @@ void ABlasterPlayerController::SetHUDTime()
 	else if (MatchState == MatchState::Cooldown) TimeLeft = CooldownTime + WarmupTime + MatchTime - GetServerTime() + LevelStartingTime;
 	uint32 SecondsLeft = FMath::CeilToInt(TimeLeft);
 
+
+	// SecondsLeft는 어떻게 되든 상관없음. (타이밍만 맞추려고 쓰는 느낌.)
 	if (HasAuthority())
 	{
 		BlasterGameMode = BlasterGameMode == nullptr ? Cast<ABlasterGameMode>(UGameplayStatics::GetGameMode(this)) : BlasterGameMode;
@@ -634,6 +637,12 @@ void ABlasterPlayerController::OnMatchStateSet(FName State, bool bTeamsMatch)
 {
 	MatchState = State;
 
+	ABlasterGameMode* GameMode = Cast<ABlasterGameMode>(UGameplayStatics::GetGameMode(this));
+	if (GameMode)
+	{
+		LevelStartingTime = GameMode->LevelStartingTime;
+	}
+
 	if (MatchState == MatchState::InProgress)
 	{
 		HandleMatchHasStarted(bTeamsMatch);
@@ -647,9 +656,11 @@ void ABlasterPlayerController::OnMatchStateSet(FName State, bool bTeamsMatch)
 
 void ABlasterPlayerController::OnRep_MatchState()
 {
+	// 여기도 수정이 필요해보임.
+
 	if (MatchState == MatchState::InProgress)
 	{
-		HandleMatchHasStarted();
+		HandleMatchHasStarted(bShowTeamScores); // 이거 때문이었네...
 	}
 	else if (MatchState == MatchState::Cooldown)
 	{
@@ -666,13 +677,20 @@ void ABlasterPlayerController::HandleMatchHasStarted(bool bTeamsMatch)
 	if (BlasterHUD)
 	{
 		if (BlasterHUD->CharacterOverlay == nullptr) BlasterHUD->AddCharacterOverlay();
+		else
+		{
+			BlasterHUD->CharacterOverlay->SetVisibility(ESlateVisibility::Visible);
+		}
+
 		if (BlasterHUD->Announcement)
 		{
 			// 승리나 패배 관련으로 Announcement을 재활용 할 것이므로 제거는 안함.
 			BlasterHUD->Announcement->SetVisibility(ESlateVisibility::Hidden);
 		}
-		//if (!HasAuthority()) return; 이걸 죽임으로써 모드에 따른 갱신이 제대로 되도록 함
+		//if (!HasAuthority()) return; //이걸 죽임으로써 모드에 따른 갱신이 제대로 되도록 함, 이걸 죽이면 또 다른 모드에 문제가 생김.
+		if (!IsLocalController()) return;
 		// 안된 이유 : false -> false는 값이 바뀌지 않아 값복사가 되지 않음...
+		// 근데 true로 바꾸고 했으면 true에서 false로 되니깐 값복사가 되어야 되는데 왜 안되는거지?
 		if (bTeamsMatch)
 		{
 			InitTeamScores();
@@ -682,6 +700,12 @@ void ABlasterPlayerController::HandleMatchHasStarted(bool bTeamsMatch)
 			HideTeamScores();
 		}
 	}
+
+	// 게임플레이 활성화
+	if (AMyBlasterCharacter* BlasterCharacter = Cast<AMyBlasterCharacter>(GetPawn()))
+	{
+		BlasterCharacter->bDisableGameplay = false;
+	}
 }
 
 void ABlasterPlayerController::HandleCooldown()
@@ -689,31 +713,66 @@ void ABlasterPlayerController::HandleCooldown()
 	BlasterHUD = BlasterHUD == nullptr ? Cast<ABlasterHUD>(GetHUD()) : BlasterHUD;
 	if (BlasterHUD)
 	{
-		BlasterHUD->CharacterOverlay->RemoveFromParent();
+		// CharacterOverlay를 제거하지 않고 숨기기
+		if (BlasterHUD->CharacterOverlay)
+		{
+			BlasterHUD->CharacterOverlay->SetVisibility(ESlateVisibility::Hidden);
+		}
+
+		//BlasterHUD->CharacterOverlay->RemoveFromParent();
 		bool bHUDValid = BlasterHUD->Announcement &&
 			BlasterHUD->Announcement->AnnouncementText &&
 			BlasterHUD->Announcement->InfoText;
-		
+
 		if (bHUDValid)
 		{
 			BlasterHUD->Announcement->SetVisibility(ESlateVisibility::Visible);
-			FString AnnouncementText = Announcement::NewMatchStartsIn;
-			BlasterHUD->Announcement->AnnouncementText->SetText(FText::FromString(AnnouncementText));
-			
-			// playercontroller에서 가져오는거 지원 x
-			ABlasterGameState* BlasterGameState = Cast<ABlasterGameState>(UGameplayStatics::GetGameState(this));
-			ABlasterPlayerState* BlasterPlayerState = GetPlayerState<ABlasterPlayerState>();
-			if (BlasterGameState && BlasterPlayerState)
+
+			// GameState를 통해 라운드 정보 확인
+			ABlasterGameState* BlasterGS = Cast<ABlasterGameState>(UGameplayStatics::GetGameState(this));
+			if (BlasterGS)
 			{
-				TArray<ABlasterPlayerState*> TopPlayers = BlasterGameState->TopScoringPlayers;
-				FString InfoTextString = bShowTeamScores ? GetTeamsInfoText(BlasterGameState) : GetInfoText(TopPlayers);
+				// 마지막 라운드인지 체크
+				if (BlasterGS->GetCurrentRound() >= BlasterGS->GetMaxRounds())
+				{
+					FString AnnouncementText = FString::Printf(TEXT("Game End!"));
+					BlasterHUD->Announcement->AnnouncementText->SetText(FText::FromString(AnnouncementText));
+				}
+				else
+				{
+					FString AnnouncementText = FString::Printf(TEXT("Round %d Ended\nNext Round Starts In"), BlasterGS->GetCurrentRound());
+					BlasterHUD->Announcement->AnnouncementText->SetText(FText::FromString(AnnouncementText));
+				}
 
-				BlasterHUD->Announcement->InfoText->SetText(FText::FromString(InfoTextString));
+				// 스코어 정보 표시
+				ABlasterPlayerState* BlasterPlayerState = GetPlayerState<ABlasterPlayerState>();
+				if (BlasterPlayerState)
+				{
+					TArray<ABlasterPlayerState*> TopPlayers = BlasterGS->TopScoringPlayers;
+					FString InfoTextString = bShowTeamScores ? GetTeamsInfoText(BlasterGS) : GetInfoText(TopPlayers);
+					BlasterHUD->Announcement->InfoText->SetText(FText::FromString(InfoTextString));
+				}
 			}
+			else
+			{
+				// 기존 로직 (비라운드 게임모드용)
+				FString AnnouncementText = Announcement::NewMatchStartsIn;
+				BlasterHUD->Announcement->AnnouncementText->SetText(FText::FromString(AnnouncementText));
 
-			
+				ABlasterGameState* BlasterGameState = Cast<ABlasterGameState>(UGameplayStatics::GetGameState(this));
+				ABlasterPlayerState* BlasterPlayerState = GetPlayerState<ABlasterPlayerState>();
+				if (BlasterGameState && BlasterPlayerState)
+				{
+					TArray<ABlasterPlayerState*> TopPlayers = BlasterGameState->TopScoringPlayers;
+					FString InfoTextString = bShowTeamScores ? GetTeamsInfoText(BlasterGameState) : GetInfoText(TopPlayers);
+					BlasterHUD->Announcement->InfoText->SetText(FText::FromString(InfoTextString));
+				}
+			}
 		}
 	}
+
+
+	// 캐릭터 게임플레이 비활성화
 	AMyBlasterCharacter* BlasterCharacter = Cast<AMyBlasterCharacter>(GetPawn());
 	if (BlasterCharacter && BlasterCharacter->GetCombat())
 	{
