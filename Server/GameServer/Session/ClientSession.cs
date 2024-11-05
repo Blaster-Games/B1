@@ -10,8 +10,9 @@ using ServerCore;
 
 namespace GameServer
 {
-    public class ClientSession : PacketSession
+    public partial class ClientSession : PacketSession
     {
+        public long AccoundDbId { get; set; }
         public int SessionId { get; set; }
 
         #region Network

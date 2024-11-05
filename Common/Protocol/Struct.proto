@@ -5,7 +5,19 @@ option csharp_namespace = "Google.Protobuf.Protocol";
 
 import "Enum.proto";
 
-message RoomInfo
-{
+message PlayerInfo {
+    int32 playerId = 1;       // 게임 세션용 임시 ID
+    string playerName = 2;     // 플레이어 이름
+    bool isHost = 3;           // 방장 여부
+    TeamType team = 4;         // 팀전에서 사용
+}
 
+message RoomInfo {
+    int32 roomId = 1;                   // 방 ID
+    string title = 2;                   // 방 제목
+    GameMode mode = 3;                  // 게임 모드
+    int32 maxPlayers = 4;               // 최대 인원
+    repeated PlayerInfo players = 5;    // 참가 플레이어들
+    RoomState state = 6;                // 방 상태
+    string mapName = 7;                 // 맵 이름
 }
