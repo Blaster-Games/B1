@@ -15,6 +15,33 @@ namespace GameServer
         public long AccoundDbId { get; set; }
         public int SessionId { get; set; }
 
+        long _pingpongTick = 0;
+
+        public void Ping()
+        {
+            if (_pingpongTick > 0)
+            {
+                long delta = (System.Environment.TickCount64 - _pingpongTick);
+                if (delta > 60 * 1000)
+                {
+                    Console.WriteLine("Disconnected by PingCheck");
+                    Disconnect();
+                    return;
+                }
+            }
+
+            S_Ping pingPacket = new S_Ping();
+            Send(pingPacket);
+
+            GameLogic.Instance.PushAfter(5000, Ping);
+        }
+
+        public void HandlePong()
+        {
+            Console.WriteLine("Pong response!");
+            _pingpongTick = System.Environment.TickCount64;
+        }
+
         #region Network
 
         public void Send(IMessage packet)
@@ -41,6 +68,8 @@ namespace GameServer
             S_Connected resPacket = new S_Connected();
 
             Send(resPacket);
+
+            GameLogic.Instance.PushAfter(5000, Ping);
         }
 
         public override void OnDisconnected(EndPoint endPoint)

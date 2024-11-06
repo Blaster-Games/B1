@@ -11,6 +11,72 @@ namespace GameServer
 {
     public class PacketHandler
     {
-        
+        public static void C_AuthReqHandler(PacketSession session, IMessage packet)
+        {
+            C_AuthReq reqPacket = (C_AuthReq)packet;
+            ClientSession clientSession = (ClientSession)session;
+            clientSession.HandleAuthReq(reqPacket);
+        }
+
+        public static void C_CreateRoomReqHandler(PacketSession session, IMessage packet)
+        {
+            throw new NotImplementedException();
+        }
+
+        public static void C_EndGameReqHandler(PacketSession session, IMessage packet)
+        {
+            throw new NotImplementedException();
+        }
+
+        public static void C_EnterLobbyReqHandler(PacketSession session, IMessage packet)
+        {
+            throw new NotImplementedException();
+        }
+
+        public static void C_JoinRoomReqHandler(PacketSession session, IMessage packet)
+        {
+            throw new NotImplementedException();
+        }
+
+        public static void C_LeaveRoomReqHandler(PacketSession session, IMessage packet)
+        {
+            throw new NotImplementedException();
+        }
+
+        public static void C_LobbyChatHandler(PacketSession session, IMessage packet)
+        {
+            throw new NotImplementedException();
+        }
+
+        public static void C_ReadyGameReqHandler(PacketSession session, IMessage packet)
+        {
+            throw new NotImplementedException();
+        }
+
+        public static void C_RoomChatHandler(PacketSession session, IMessage packet)
+        {
+            throw new NotImplementedException();
+        }
+
+        public static void C_RoomListReqHandler(PacketSession session, IMessage packet)
+        {
+            throw new NotImplementedException();
+        }
+
+        public static void C_SelectRoomReqHandler(PacketSession session, IMessage packet)
+        {
+            throw new NotImplementedException();
+        }
+
+        public static void C_StartGameReqHandler(PacketSession session, IMessage packet)
+        {
+            throw new NotImplementedException();
+        }
+
+        public static void C_PongHandler(PacketSession session, IMessage packet)
+        {
+            ClientSession clientSession = (ClientSession)session;
+            clientSession.HandlePong();
+        }
     }
 }

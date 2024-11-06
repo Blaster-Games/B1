@@ -59,7 +59,7 @@ message S_SelectRoomRes {
 // 룸 생성
 message C_CreateRoomReq {
     string title = 1;
-    GameMode mode = 2;
+    EGameMode mode = 2;
     int32 maxPlayers = 3;
     string mapName = 4;
 }
@@ -160,7 +160,7 @@ message S_BroadcastChangeHost {
 // 룸 상태 변경
 message S_BroadcastRoomState {
     int32 roomId = 1;
-    RoomState state = 2;
+    ERoomState state = 2;
 }
 
 // 에러/킥
@@ -170,4 +170,13 @@ message S_ErrorMessage {
 
 message S_KickPlayer {
     string reason = 1;
+}
+
+// 하트비트
+message S_Ping 
+{
+}
+
+message C_Pong 
+{
 }

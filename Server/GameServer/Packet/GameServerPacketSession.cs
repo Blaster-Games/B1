@@ -72,6 +72,10 @@ public enum MsgId
     // 에러/킥
     S_ErrorMessage = 1032,     // 서버 -> 클라: 에러 메시지
     S_KickPlayer = 1033,       // 서버 -> 클라: 강제 퇴장
+
+    // 하트비트
+    S_Ping = 1034,
+    C_Pong = 1035
 }
 
 class PacketManager
@@ -93,6 +97,56 @@ class PacketManager
 
     public void Register()
     {
+        // 인증
+        _onRecv.Add((ushort)MsgId.C_AuthReq, MakePacket<C_AuthReq>);
+        _handler.Add((ushort)MsgId.C_AuthReq, PacketHandler.C_AuthReqHandler);
+
+        // 로비 관련
+        _onRecv.Add((ushort)MsgId.C_EnterLobbyReq, MakePacket<C_EnterLobbyReq>);
+        _handler.Add((ushort)MsgId.C_EnterLobbyReq, PacketHandler.C_EnterLobbyReqHandler);
+
+        _onRecv.Add((ushort)MsgId.C_LobbyChat, MakePacket<C_LobbyChat>);
+        _handler.Add((ushort)MsgId.C_LobbyChat, PacketHandler.C_LobbyChatHandler);
+
+        // 룸 목록
+        _onRecv.Add((ushort)MsgId.C_RoomListReq, MakePacket<C_RoomListReq>);
+        _handler.Add((ushort)MsgId.C_RoomListReq, PacketHandler.C_RoomListReqHandler);
+
+        // 룸 선택/상세정보
+        _onRecv.Add((ushort)MsgId.C_SelectRoomReq, MakePacket<C_SelectRoomReq>);
+        _handler.Add((ushort)MsgId.C_SelectRoomReq, PacketHandler.C_SelectRoomReqHandler);
+
+        // 룸 생성
+        _onRecv.Add((ushort)MsgId.C_CreateRoomReq, MakePacket<C_CreateRoomReq>);
+        _handler.Add((ushort)MsgId.C_CreateRoomReq, PacketHandler.C_CreateRoomReqHandler);
+
+        // 룸 입장
+        _onRecv.Add((ushort)MsgId.C_JoinRoomReq, MakePacket<C_JoinRoomReq>);
+        _handler.Add((ushort)MsgId.C_JoinRoomReq, PacketHandler.C_JoinRoomReqHandler);
+
+        // 룸 퇴장
+        _onRecv.Add((ushort)MsgId.C_LeaveRoomReq, MakePacket<C_LeaveRoomReq>);
+        _handler.Add((ushort)MsgId.C_LeaveRoomReq, PacketHandler.C_LeaveRoomReqHandler);
+
+        // 룸 채팅
+        _onRecv.Add((ushort)MsgId.C_RoomChat, MakePacket<C_RoomChat>);
+        _handler.Add((ushort)MsgId.C_RoomChat, PacketHandler.C_RoomChatHandler);
+
+        // 게임 시작
+        _onRecv.Add((ushort)MsgId.C_StartGameReq, MakePacket<C_StartGameReq>);
+        _handler.Add((ushort)MsgId.C_StartGameReq, PacketHandler.C_StartGameReqHandler);
+
+        // 게임 준비
+        _onRecv.Add((ushort)MsgId.C_ReadyGameReq, MakePacket<C_ReadyGameReq>);
+        _handler.Add((ushort)MsgId.C_ReadyGameReq, PacketHandler.C_ReadyGameReqHandler);
+
+        // 게임 종료
+        _onRecv.Add((ushort)MsgId.C_EndGameReq, MakePacket<C_EndGameReq>);
+        _handler.Add((ushort)MsgId.C_EndGameReq, PacketHandler.C_EndGameReqHandler);
+
+        // 하트비트
+        _onRecv.Add((ushort)MsgId.C_Pong, MakePacket<C_Pong>);
+        _handler.Add((ushort)MsgId.C_Pong, PacketHandler.C_PongHandler);
     }
 
     public void OnRecvPacket(PacketSession session, ArraySegment<byte> buffer)

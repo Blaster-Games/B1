@@ -1,4 +1,5 @@
-﻿using ServerCore;
+﻿using Google.Protobuf.Protocol;
+using ServerCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,5 +10,9 @@ namespace GameServer
 {
     public partial class ClientSession : PacketSession
     {
+        public void HandleAuthReq(C_AuthReq reqPacket)
+        {
+            
+        }
     }
 }

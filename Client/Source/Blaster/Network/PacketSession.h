@@ -10,6 +10,18 @@ public:
 	PacketSession(class FSocket* Socket);
 	~PacketSession();
 
+	UGameInstance* GetGameInstance() const
+	{
+		if (GEngine)
+		{
+			if (UWorld* World = GEngine->GetWorld())
+			{
+				return World->GetGameInstance();
+			}
+		}
+		return nullptr;
+	}
+
 	void Run();
 
 	UFUNCTION(BlueprintCallable)

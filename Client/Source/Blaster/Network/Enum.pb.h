@@ -28,6 +28,7 @@
 #include <google/protobuf/generated_message_reflection.h>
 #include <google/protobuf/repeated_field.h>  // IWYU pragma: export
 #include <google/protobuf/extension_set.h>  // IWYU pragma: export
+#include <google/protobuf/generated_enum_reflection.h>
 // @@protoc_insertion_point(includes)
 #include <google/protobuf/port_def.inc>
 #define PROTOBUF_INTERNAL_EXPORT_Enum_2eproto
@@ -46,6 +47,84 @@ PROTOBUF_NAMESPACE_OPEN
 PROTOBUF_NAMESPACE_CLOSE
 namespace Protocol {
 
+enum EGameMode : int {
+  MODE_NONE = 0,
+  MODE_DEATHMATCH = 1,
+  MODE_TEAM = 2,
+  EGameMode_INT_MIN_SENTINEL_DO_NOT_USE_ = std::numeric_limits<int32_t>::min(),
+  EGameMode_INT_MAX_SENTINEL_DO_NOT_USE_ = std::numeric_limits<int32_t>::max()
+};
+bool EGameMode_IsValid(int value);
+constexpr EGameMode EGameMode_MIN = MODE_NONE;
+constexpr EGameMode EGameMode_MAX = MODE_TEAM;
+constexpr int EGameMode_ARRAYSIZE = EGameMode_MAX + 1;
+
+const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* EGameMode_descriptor();
+template<typename T>
+inline const std::string& EGameMode_Name(T enum_t_value) {
+  static_assert(::std::is_same<T, EGameMode>::value ||
+    ::std::is_integral<T>::value,
+    "Incorrect type passed to function EGameMode_Name.");
+  return ::PROTOBUF_NAMESPACE_ID::internal::NameOfEnum(
+    EGameMode_descriptor(), enum_t_value);
+}
+inline bool EGameMode_Parse(
+    ::PROTOBUF_NAMESPACE_ID::ConstStringParam name, EGameMode* value) {
+  return ::PROTOBUF_NAMESPACE_ID::internal::ParseNamedEnum<EGameMode>(
+    EGameMode_descriptor(), name, value);
+}
+enum ETeamType : int {
+  TEAM_NONE = 0,
+  TEAM_RED = 1,
+  TEAM_BLUE = 2,
+  ETeamType_INT_MIN_SENTINEL_DO_NOT_USE_ = std::numeric_limits<int32_t>::min(),
+  ETeamType_INT_MAX_SENTINEL_DO_NOT_USE_ = std::numeric_limits<int32_t>::max()
+};
+bool ETeamType_IsValid(int value);
+constexpr ETeamType ETeamType_MIN = TEAM_NONE;
+constexpr ETeamType ETeamType_MAX = TEAM_BLUE;
+constexpr int ETeamType_ARRAYSIZE = ETeamType_MAX + 1;
+
+const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* ETeamType_descriptor();
+template<typename T>
+inline const std::string& ETeamType_Name(T enum_t_value) {
+  static_assert(::std::is_same<T, ETeamType>::value ||
+    ::std::is_integral<T>::value,
+    "Incorrect type passed to function ETeamType_Name.");
+  return ::PROTOBUF_NAMESPACE_ID::internal::NameOfEnum(
+    ETeamType_descriptor(), enum_t_value);
+}
+inline bool ETeamType_Parse(
+    ::PROTOBUF_NAMESPACE_ID::ConstStringParam name, ETeamType* value) {
+  return ::PROTOBUF_NAMESPACE_ID::internal::ParseNamedEnum<ETeamType>(
+    ETeamType_descriptor(), name, value);
+}
+enum ERoomState : int {
+  STATE_NONE = 0,
+  STATE_WAITING = 1,
+  STATE_PLAYING = 2,
+  ERoomState_INT_MIN_SENTINEL_DO_NOT_USE_ = std::numeric_limits<int32_t>::min(),
+  ERoomState_INT_MAX_SENTINEL_DO_NOT_USE_ = std::numeric_limits<int32_t>::max()
+};
+bool ERoomState_IsValid(int value);
+constexpr ERoomState ERoomState_MIN = STATE_NONE;
+constexpr ERoomState ERoomState_MAX = STATE_PLAYING;
+constexpr int ERoomState_ARRAYSIZE = ERoomState_MAX + 1;
+
+const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* ERoomState_descriptor();
+template<typename T>
+inline const std::string& ERoomState_Name(T enum_t_value) {
+  static_assert(::std::is_same<T, ERoomState>::value ||
+    ::std::is_integral<T>::value,
+    "Incorrect type passed to function ERoomState_Name.");
+  return ::PROTOBUF_NAMESPACE_ID::internal::NameOfEnum(
+    ERoomState_descriptor(), enum_t_value);
+}
+inline bool ERoomState_Parse(
+    ::PROTOBUF_NAMESPACE_ID::ConstStringParam name, ERoomState* value) {
+  return ::PROTOBUF_NAMESPACE_ID::internal::ParseNamedEnum<ERoomState>(
+    ERoomState_descriptor(), name, value);
+}
 // ===================================================================
 
 
@@ -65,6 +144,26 @@ namespace Protocol {
 // @@protoc_insertion_point(namespace_scope)
 
 }  // namespace Protocol
+
+PROTOBUF_NAMESPACE_OPEN
+
+template <> struct is_proto_enum< ::Protocol::EGameMode> : ::std::true_type {};
+template <>
+inline const EnumDescriptor* GetEnumDescriptor< ::Protocol::EGameMode>() {
+  return ::Protocol::EGameMode_descriptor();
+}
+template <> struct is_proto_enum< ::Protocol::ETeamType> : ::std::true_type {};
+template <>
+inline const EnumDescriptor* GetEnumDescriptor< ::Protocol::ETeamType>() {
+  return ::Protocol::ETeamType_descriptor();
+}
+template <> struct is_proto_enum< ::Protocol::ERoomState> : ::std::true_type {};
+template <>
+inline const EnumDescriptor* GetEnumDescriptor< ::Protocol::ERoomState>() {
+  return ::Protocol::ERoomState_descriptor();
+}
+
+PROTOBUF_NAMESPACE_CLOSE
 
 // @@protoc_insertion_point(global_scope)
 
