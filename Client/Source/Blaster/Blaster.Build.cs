@@ -13,6 +13,19 @@ public class Blaster : ModuleRules
             "Blaster"
         });
 
-        PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput", "Niagara", "MultiplayerSessions", "OnlineSubsystem", "OnlineSubsystemSteam" });
+        PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput", "Niagara", "MultiplayerSessions", "OnlineSubsystem", "OnlineSubsystemSteam", 
+            "Sockets",
+            "Networking",
+            "HTTP",
+            "Json",
+            "JsonUtilities"
+        });
+        
+        PrivateDependencyModuleNames.AddRange(new string[] { "ProtobufCore" });
+
+        PrivateIncludePaths.AddRange(new string[]
+        {
+	        "Blaster/Network/",
+        });
 	}
 }

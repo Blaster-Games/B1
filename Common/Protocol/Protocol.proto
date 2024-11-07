@@ -1,0 +1,182 @@
+syntax = "proto3";
+
+package Protocol;
+option csharp_namespace = "Google.Protobuf.Protocol";
+
+import public "Enum.proto";
+import public "Struct.proto";
+
+// 서버 연결 성공
+message S_Connected {
+}
+
+// 인증
+message C_AuthReq {
+    string jwt = 1;
+}
+
+message S_AuthRes {
+    bool success = 1;
+}
+
+// 로비
+message C_EnterLobbyReq {
+}
+
+message S_EnterLobbyRes {
+    repeated RoomInfo rooms = 1;
+}
+
+message C_LobbyChat {
+    string message = 1;
+}
+
+message S_BroadcastLobbyChat {
+    int32 playerId = 1;
+    string playerName = 2;
+    string message = 3;
+}
+
+// 룸 목록
+message C_RoomListReq {
+}
+
+message S_RoomListRes {
+    repeated RoomInfo rooms = 1;
+}
+
+// 룸 선택
+message C_SelectRoomReq {
+    int32 roomId = 1;
+}
+
+message S_SelectRoomRes {
+    bool success = 1;
+    RoomInfo room = 2;
+    string errorMessage = 3;
+}
+
+// 룸 생성
+message C_CreateRoomReq {
+    string title = 1;
+    EGameMode mode = 2;
+    int32 maxPlayers = 3;
+    string mapName = 4;
+}
+
+message S_CreateRoomRes {
+    bool success = 1;
+    RoomInfo room = 2;
+    string errorMessage = 3;
+}
+
+// 룸 입장
+message C_JoinRoomReq {
+    int32 roomId = 1;
+}
+
+message S_JoinRoomRes {
+    bool success = 1;
+    RoomInfo room = 2;
+    string errorMessage = 3;
+}
+
+message S_BroadcastJoinRoom {
+    PlayerInfo newPlayer = 1;
+}
+
+// 룸 퇴장
+message C_LeaveRoomReq {
+}
+
+message S_LeaveRoomRes {
+    bool success = 1;
+}
+
+message S_BroadcastLeaveRoom {
+    int32 playerId = 1;
+    bool isHost = 2;   // 방장이 나갔는지 여부
+}
+
+// 룸 채팅
+message C_RoomChat {
+    string message = 1;
+}
+
+message S_BroadcastRoomChat {
+    int32 playerId = 1;
+    string playerName = 2;
+    string message = 3;
+}
+
+// 게임 준비
+message C_ReadyGameReq {
+    bool ready = 1;
+}
+
+message S_BroadcastReadyGame {
+    int32 playerId = 1;
+    bool ready = 2;
+}
+
+// 게임 시작
+message C_StartGameReq {
+    string hostAddress = 1;     // 리슨서버 주소
+    int32 port = 2;            // 리슨서버 포트
+}
+
+message S_StartGameRes {
+    bool success = 1;
+    repeated PlayerInfo players = 2;    // 호스트에게 보내는 다른 플레이어들 정보
+    string errorMessage = 3;
+}
+
+message S_BroadcastStartGame {
+    string hostAddress = 1;     // 호스트 주소
+    int32 port = 2;            // 리슨서버 포트
+    int32 sessionId = 3;       // 각 플레이어의 세션 ID
+}
+
+// 게임 종료
+message C_EndGameReq {
+    string reason = 1;         // 종료 사유 (정상종료, 호스트종료, 에러 등)
+}
+
+message S_EndGameRes {
+    bool success = 1;
+}
+
+message S_BroadcastEndGame {
+    string reason = 1;
+    int64 newHostId = 2;       // 호스트 종료 시 새로운 호스트 지정
+}
+
+// 호스트 변경
+message S_BroadcastChangeHost {
+    int32 newHostPlayerId = 1;
+    string playerName = 2;
+}
+
+// 룸 상태 변경
+message S_BroadcastRoomState {
+    int32 roomId = 1;
+    ERoomState state = 2;
+}
+
+// 에러/킥
+message S_ErrorMessage {
+    string message = 1;
+}
+
+message S_KickPlayer {
+    string reason = 1;
+}
+
+// 하트비트
+message S_Ping 
+{
+}
+
+message C_Pong 
+{
+}
