@@ -74,6 +74,10 @@ void ABlasterPlayerState::OnRep_Defeats()
 	}
 }
 
+void ABlasterPlayerState::OnRep_Money()
+{
+}
+
 void ABlasterPlayerState::SetTeam(ETeam TeamToSet)
 {
 	Team = TeamToSet;
