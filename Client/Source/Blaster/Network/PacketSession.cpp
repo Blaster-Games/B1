@@ -27,15 +27,39 @@ void PacketSession::Run()
 
 void PacketSession::HandleRecvPackets()
 {
-	while (true)
-	{
-		TArray<uint8> Packet;
-		if (RecvPacketQueue.Dequeue(OUT Packet) == false)
-			break;
+    while (true)
+    {
+        TArray<uint8> Packet;
+        if (RecvPacketQueue.Dequeue(OUT Packet) == false)
+        {
+            break;
+        }
 
-		PacketSessionRef ThisPtr = AsShared();
-		ClientPacketHandler::HandlePacket(ThisPtr, Packet.GetData(), Packet.Num());
-	}
+        if (Packet.Num() >= sizeof(FPacketHeader))
+        {
+            const FPacketHeader* Header = reinterpret_cast<const FPacketHeader*>(Packet.GetData());
+            UE_LOG(LogTemp, Log, TEXT("[PacketSession] Dequeued Packet - ID: %d, Size: %d, Array Size: %d"),
+                Header->PacketID, Header->PacketSize, Packet.Num());
+        }
+        else
+        {
+            UE_LOG(LogTemp, Warning, TEXT("[PacketSession] Dequeued invalid packet size: %d"), Packet.Num());
+            continue;
+        }
+
+        PacketSessionRef ThisPtr = AsShared();
+        UE_LOG(LogTemp, Log, TEXT("[PacketSession] Attempting to handle packet"));
+        bool HandleResult = ClientPacketHandler::HandlePacket(ThisPtr, Packet.GetData(), Packet.Num());
+
+        if (HandleResult)
+        {
+            UE_LOG(LogTemp, Log, TEXT("[PacketSession] Packet handled successfully"));
+        }
+        else
+        {
+            UE_LOG(LogTemp, Warning, TEXT("[PacketSession] Failed to handle packet"));
+        }
+    }
 }
 
 

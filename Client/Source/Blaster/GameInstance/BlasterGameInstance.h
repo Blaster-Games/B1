@@ -5,11 +5,18 @@
 #include "BlasterGameInstance.generated.h"
 
 UCLASS()
-class BLASTER_API UBlasterGameInstance : public UGameInstance
+class BLASTER_API UBlasterGameInstance : public UGameInstance, public FTickableGameObject
 {
     GENERATED_BODY()
 public:
     virtual void Init() override;
+
+    virtual void Tick(float DeltaTime) override
+    {
+        HandleNetworkPackets();
+    }
+    virtual bool IsTickable() const override { return true; }
+    virtual TStatId GetStatId() const override { return TStatId(); }
 
     UFUNCTION(BlueprintCallable)
     void ConnectToServer();

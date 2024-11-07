@@ -96,3 +96,17 @@ void UBlasterNetworkSubsystem::SendPacket(SendBufferRef SendBuffer)
 
     GameServerSession->SendPacket(SendBuffer);
 }
+
+void UBlasterNetworkSubsystem::HandlePing()
+{
+    UE_LOG(LogTemp, Log, TEXT("[NetworkSubsystem] Handling Ping"));
+    SendPong();
+}
+
+void UBlasterNetworkSubsystem::SendPong()
+{
+    UE_LOG(LogTemp, Log, TEXT("[NetworkSubsystem] Sending Pong"));
+    Protocol::C_Pong pongPacket;
+    SendBufferRef sendBuffer = ClientPacketHandler::MakeSendBuffer(pongPacket);
+    SendPacket(sendBuffer);
+}

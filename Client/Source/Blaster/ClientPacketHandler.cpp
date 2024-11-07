@@ -1,9 +1,29 @@
 #include "ClientPacketHandler.h"
 #include "BufferReader.h"
 #include "GameInstance/BlasterGameInstance.h"
+#include "GameInstance/BlasterNetworkSubsystem.h"
 #include "Network/PacketSession.h"
 
 PacketHandlerFunc GPacketHandler[UINT16_MAX];
+
+UBlasterNetworkSubsystem* GetNetworkSystem(const PacketSessionRef& Session)
+{
+    // 엔진의 모든 월드를 순회
+    for (const FWorldContext& Context : GEngine->GetWorldContexts())
+    {
+        if (UGameInstance* GameInstance = Context.World()->GetGameInstance())
+        {
+            if (UBlasterNetworkSubsystem* NetworkSystem = GameInstance->GetSubsystem<UBlasterNetworkSubsystem>())
+            {
+                if (NetworkSystem->GameServerSession == Session)
+                {
+                    return NetworkSystem;
+                }
+            }
+        }
+    }
+    return nullptr;
+}
 
 bool Handle_Invalid(PacketSessionRef& session, BYTE* buffer, int32 len)
 {
@@ -117,12 +137,15 @@ bool Handle_S_KickPlayer(PacketSessionRef& session, Protocol::S_KickPlayer& pkt)
 
 bool Handle_S_Ping(PacketSessionRef& session, Protocol::S_Ping& pkt)
 {
-    if (auto GameInst = Cast<UBlasterGameInstance>(session->GetGameInstance()))
+    UE_LOG(LogTemp, Log, TEXT("[S_Ping] Ping packet received"));
+
+    if (auto NetworkSystem = GetNetworkSystem(session))
     {
-        Protocol::C_Pong pongPacket;
-        SendBufferRef sendBuffer = ClientPacketHandler::MakeSendBuffer(pongPacket);
-        GameInst->SendNetworkPacket(sendBuffer);
+        UE_LOG(LogTemp, Log, TEXT("[S_Ping] NetworkSystem found, handling ping"));
+        NetworkSystem->HandlePing();
+        return true;
     }
 
-    return true;
+    UE_LOG(LogTemp, Warning, TEXT("[S_Ping] Failed to get NetworkSystem"));
+    return false;
 }

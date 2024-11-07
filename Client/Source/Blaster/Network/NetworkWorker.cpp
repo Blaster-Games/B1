@@ -27,16 +27,28 @@ uint32 RecvWorker::Run()
 	while (Running)
 	{
 		TArray<uint8> Packet;
-
 		if (ReceivePacket(OUT Packet))
 		{
 			if (TSharedPtr<PacketSession> Session = SessionRef.Pin())
 			{
+				// Enqueue 전 패킷 정보 출력
+				if (Packet.Num() >= sizeof(FPacketHeader))
+				{
+					const FPacketHeader* Header = reinterpret_cast<const FPacketHeader*>(Packet.GetData());
+					UE_LOG(LogTemp, Log, TEXT("[RecvWorker] Enqueueing Packet - ID: %d, Size: %d, Array Size: %d"),
+						Header->PacketID, Header->PacketSize, Packet.Num());
+				}
+
 				Session->RecvPacketQueue.Enqueue(Packet);
+
+				UE_LOG(LogTemp, Log, TEXT("[RecvWorker] Packet Enqueued Successfully"));
+			}
+			else
+			{
+				UE_LOG(LogTemp, Warning, TEXT("[RecvWorker] Session is invalid"));
 			}
 		}
 	}
-
 	return 0;
 }
 
@@ -56,7 +68,6 @@ bool RecvWorker::ReceivePacket(TArray<uint8>& OutPacket)
 	const int32 HeaderSize = sizeof(FPacketHeader);
 	TArray<uint8> HeaderBuffer;
 	HeaderBuffer.AddZeroed(HeaderSize);
-
 	if (ReceiveDesiredBytes(HeaderBuffer.GetData(), HeaderSize) == false)
 		return false;
 
@@ -66,27 +77,42 @@ bool RecvWorker::ReceivePacket(TArray<uint8>& OutPacket)
 		FMemoryReader Reader(HeaderBuffer);
 		Reader << Header;
 		UE_LOG(LogTemp, Log, TEXT("Recv PacketID : %d, PacketSize : %d"), Header.PacketID, Header.PacketSize);
+
+		// 디버깅을 위한 추가 로그
+		const int32 PayloadSize = Header.PacketSize - HeaderSize;
+		UE_LOG(LogTemp, Log, TEXT("HeaderSize : %d, PayloadSize : %d"), HeaderSize, PayloadSize);
 	}
 
 	// 패킷 헤더 복사
 	OutPacket = HeaderBuffer;
 
 	// 패킷 내용 파싱
-	TArray<uint8> PayloadBuffer;
 	const int32 PayloadSize = Header.PacketSize - HeaderSize;
-	OutPacket.AddZeroed(PayloadSize);
 
+	UE_LOG(LogTemp, Log, TEXT("Checking PayloadSize : %d"), PayloadSize);
+
+	OutPacket.AddZeroed(PayloadSize);
 	if (PayloadSize == 0)
+	{
+		UE_LOG(LogTemp, Log, TEXT("PayloadSize is 0, returning true"));
 		return true;
+	}
 
 	if (ReceiveDesiredBytes(&OutPacket[HeaderSize], PayloadSize))
 		return true;
 
+	UE_LOG(LogTemp, Log, TEXT("Reached end of function, returning false"));
 	return false;
 }
 
 bool RecvWorker::ReceiveDesiredBytes(uint8* Results, int32 Size)
 {
+	if (!Socket || !Results || Size <= 0 ||
+		Socket->GetConnectionState() != ESocketConnectionState::SCS_Connected)
+	{
+		return false;
+	}
+
 	uint32 PendingDataSize;
 	if (Socket->HasPendingData(PendingDataSize) == false || PendingDataSize <= 0)
 		return false;
