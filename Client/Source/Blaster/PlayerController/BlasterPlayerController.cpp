@@ -677,6 +677,12 @@ void ABlasterPlayerController::HandleMatchHasStarted(bool bTeamsMatch)
 	if (BlasterHUD)
 	{
 		if (BlasterHUD->CharacterOverlay == nullptr) BlasterHUD->AddCharacterOverlay();
+
+		// 테스트
+		if (BlasterHUD->Shop == nullptr) BlasterHUD->AddShop();
+
+
+		// 매치기능 추가로 인해 추가됨.
 		else
 		{
 			BlasterHUD->CharacterOverlay->SetVisibility(ESlateVisibility::Visible);
@@ -713,7 +719,8 @@ void ABlasterPlayerController::HandleCooldown()
 	BlasterHUD = BlasterHUD == nullptr ? Cast<ABlasterHUD>(GetHUD()) : BlasterHUD;
 	if (BlasterHUD)
 	{
-		// CharacterOverlay를 제거하지 않고 숨기기
+		// 라운드 기능 추가 때문에 CharacterOverlay를 제거하지 않고 숨기기
+		// 좀 더 효율적으로 짠다면, 라운드 여부에 따라 삭제를 시키던가하면 됨.
 		if (BlasterHUD->CharacterOverlay)
 		{
 			BlasterHUD->CharacterOverlay->SetVisibility(ESlateVisibility::Hidden);

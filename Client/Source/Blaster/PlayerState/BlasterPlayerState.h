@@ -47,6 +47,18 @@ private:
 	UFUNCTION()
 	void OnRep_Team();
 
+	/**
+	*  Money (Shop)
+	*/
+
+	UPROPERTY(ReplicatedUsing = OnRep_Money)
+	int32 Money = 0;
+
+	UFUNCTION()
+	void OnRep_Money();
+
+	// 어떤 유저가 눌렀는지 아는 방법은 ReturnToMainMenu 참고하자
+
 public:
 	FORCEINLINE ETeam GetTeam() const { return Team; }
 	void SetTeam(ETeam TeamToSet);

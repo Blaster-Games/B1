@@ -6,6 +6,7 @@
 #include "CharacterOverlay.h"
 #include "Announcement.h"
 #include "ElimAnnouncement.h"
+#include "Shop.h"
 #include "Components/HorizontalBox.h"
 #include "Blueprint/WidgetLayoutLibrary.h"
 #include "Components/CanvasPanelSlot.h"
@@ -84,6 +85,16 @@ void ABlasterHUD::AddElimAnnouncement(FString Attacker, FString Victim)
 	}
 }
 
+void ABlasterHUD::AddShop()
+{
+	APlayerController* PlayerController = GetOwningPlayerController();
+	if (PlayerController && ShopClass)
+	{
+		Shop = CreateWidget<UShop>(PlayerController, ShopClass);
+		Shop->AddToViewport();
+	}
+}
+
 void ABlasterHUD::ElimAnnouncementTimerFinished(UElimAnnouncement* MsgToRemove)
 {
 	if (MsgToRemove)
@@ -92,6 +103,25 @@ void ABlasterHUD::ElimAnnouncementTimerFinished(UElimAnnouncement* MsgToRemove)
 	}
 }
 
+// 참고용.
+//void ABlasterHUD::HideShop()
+//{
+//	if (Shop)
+//	{
+//		Shop->SetVisibility(ESlateVisibility::Hidden);  // 완전히 숨김
+//		// 또는
+//		Shop->SetVisibility(ESlateVisibility::Collapsed);  // 공간도 차지하지 않고 숨김
+//	}
+//}
+//
+//// 다시 보여주기
+//void ABlasterHUD::ShowShop()
+//{
+//	if (Shop)
+//	{
+//		Shop->SetVisibility(ESlateVisibility::Visible);
+//	}
+//}
 
 
 void ABlasterHUD::DrawHUD()
