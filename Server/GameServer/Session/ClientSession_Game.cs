@@ -12,7 +12,17 @@ namespace GameServer
     {
         public void HandleAuthReq(C_AuthReq reqPacket)
         {
-            
+            // TODO: jwt 검증
+
+            S_AuthRes resPacket = new S_AuthRes();
+            resPacket.Success = true;
+
+            Send(resPacket);
+        }
+
+        public void HandleEnterLobbyReq(C_EnterLobbyReq reqPacket)
+        {
+            throw new NotImplementedException();
         }
     }
 }

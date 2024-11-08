@@ -30,7 +30,9 @@ namespace GameServer
 
         public static void C_EnterLobbyReqHandler(PacketSession session, IMessage packet)
         {
-            throw new NotImplementedException();
+            C_EnterLobbyReq reqPacket = (C_EnterLobbyReq)packet;
+            ClientSession clientSession = (ClientSession)session;
+            clientSession.HandleEnterLobbyReq(reqPacket);
         }
 
         public static void C_JoinRoomReqHandler(PacketSession session, IMessage packet)

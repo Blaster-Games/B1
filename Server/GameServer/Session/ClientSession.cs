@@ -14,6 +14,7 @@ namespace GameServer
     {
         public long AccoundDbId { get; set; }
         public int SessionId { get; set; }
+        public string Nickname { get; set; }
 
         long _pingpongTick = 0;
 
@@ -38,7 +39,6 @@ namespace GameServer
 
         public void HandlePong()
         {
-            Console.WriteLine("Pong response!");
             _pingpongTick = System.Environment.TickCount64;
         }
 

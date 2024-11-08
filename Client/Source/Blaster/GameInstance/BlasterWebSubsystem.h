@@ -49,7 +49,7 @@ private:
 
 private:
 	FHttpModule* HttpModule;
-	FString BaseUrl = TEXT("https://aa72-112-217-167-202.ngrok-free.app");
+	FString BaseUrl = TEXT("https://5274-112-217-167-202.ngrok-free.app");
 
 	// 인증 및 사용자 데이터
 	FString AccessToken;

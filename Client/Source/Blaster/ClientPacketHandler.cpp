@@ -137,15 +137,10 @@ bool Handle_S_KickPlayer(PacketSessionRef& session, Protocol::S_KickPlayer& pkt)
 
 bool Handle_S_Ping(PacketSessionRef& session, Protocol::S_Ping& pkt)
 {
-    UE_LOG(LogTemp, Log, TEXT("[S_Ping] Ping packet received"));
-
     if (auto NetworkSystem = GetNetworkSystem(session))
     {
-        UE_LOG(LogTemp, Log, TEXT("[S_Ping] NetworkSystem found, handling ping"));
         NetworkSystem->HandlePing();
         return true;
     }
-
-    UE_LOG(LogTemp, Warning, TEXT("[S_Ping] Failed to get NetworkSystem"));
     return false;
 }
