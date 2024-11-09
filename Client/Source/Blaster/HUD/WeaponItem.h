@@ -11,6 +11,8 @@
 
 class UImage;
 class UTextBlock;
+class UButton;
+class UHorizontalBox;
 
 /**
  * 
@@ -21,7 +23,9 @@ class BLASTER_API UWeaponItem : public UUserWidget
 	GENERATED_BODY()
 
 public:
+    virtual void NativeConstruct() override;
 	void SetWeaponData(const FWeaponData& InWeaponData);
+    void UpdatePurchaseState(bool bIsPurchased);
 
 private:
     
@@ -36,5 +40,34 @@ private:
 
     FWeaponData WeaponData;
 
+    /**
+    * 구매 관련
+    */
+
+    UPROPERTY(meta = (BindWidget))
+    UButton* BuyButton;
+
+    UPROPERTY(meta = (BindWidget))
+    UHorizontalBox* PriceInfo;
+
+    UPROPERTY(meta = (BindWidget))
+    UButton* Slot1Button;
+
+    UPROPERTY(meta = (BindWidget))
+    UButton* Slot2Button;
+
+    UPROPERTY()
+    class UShopComponent* ShopComponent;
+
+    UFUNCTION()
+    void OnBuyClicked();
+
+    UFUNCTION()
+    void OnSlot1Clicked();
+
+    UFUNCTION()
+    void OnSlot2Clicked();
 	
+    UFUNCTION()
+    void OnWeaponPurchaseStateChanged(EWeaponType PurchasedWeaponType);
 };

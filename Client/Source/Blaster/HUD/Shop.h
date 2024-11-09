@@ -4,12 +4,14 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+#include "Blaster/Weapon/WeaponTypes.h"
 #include "Shop.generated.h"
 
 
-
+class UTextBlock;
 class UUniformGridPanel;
 class UDataTable;
+class UImage;
 
 /**
  * 
@@ -21,8 +23,20 @@ class BLASTER_API UShop : public UUserWidget
 
 public:
 	virtual void NativeConstruct() override;
+
+	UPROPERTY(meta = (BindWidget))
+	UTextBlock* WarmupTime;
+
+	UPROPERTY(meta = (BindWidget))
+	UTextBlock* MoneyText;
 	
 private:
+
+	UPROPERTY(meta = (BindWidget))
+	UImage* Slot1Image;
+
+	UPROPERTY(meta = (BindWidget))
+	UImage* Slot2Image;
 
 	UPROPERTY(meta = (BindWidget))
 	UUniformGridPanel* WeaponGrid;
@@ -51,4 +65,16 @@ private:
 	void CreateWeaponItems();
 	void CreateThrowItems();
 	void CreateBuffItems();
+
+	UPROPERTY()
+	class ABlasterPlayerState* PlayerState;
+
+	UFUNCTION()
+	void UpdateMoneyText(int32 NewMoney);
+
+	UFUNCTION()
+	void UpdateSlotImages();
+
+	UTexture2D* GetWeaponTexture(EWeaponType WeaponType) const;
+
 };

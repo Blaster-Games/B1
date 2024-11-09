@@ -17,6 +17,7 @@
 #include "Components/Image.h"
 #include "Blaster/HUD/ReturnToMainMenu.h"
 #include "Blaster/BlasterTypes/Announcement.h"
+#include "Blaster/HUD/Shop.h"
 
 void ABlasterPlayerController::BroadcastElim(APlayerState* Attacker, APlayerState* Victim)
 {
@@ -136,6 +137,20 @@ void ABlasterPlayerController::SetHUDBlueTeamScores(int32 BlueScore)
 	{
 		FString ScoreText = FString::Printf(TEXT("%d"), BlueScore);
 		BlasterHUD->CharacterOverlay->BlueTeamScore->SetText(FText::FromString(ScoreText));
+	}
+}
+
+void ABlasterPlayerController::SetHUDMoney(int32 NewMoney)
+{
+	BlasterHUD = BlasterHUD == nullptr ? Cast<ABlasterHUD>(GetHUD()) : BlasterHUD;
+
+	bool bHUDValid = BlasterHUD &&
+		BlasterHUD->Shop &&
+		BlasterHUD->Shop->MoneyText;
+	if (bHUDValid)
+	{
+		FString Money = FString::Printf(TEXT("%d"), NewMoney);
+		BlasterHUD->Shop->MoneyText->SetText(FText::FromString(Money));
 	}
 }
 
@@ -677,16 +692,14 @@ void ABlasterPlayerController::HandleMatchHasStarted(bool bTeamsMatch)
 	if (BlasterHUD)
 	{
 		if (BlasterHUD->CharacterOverlay == nullptr) BlasterHUD->AddCharacterOverlay();
-
-		// 테스트
-		if (BlasterHUD->Shop == nullptr) BlasterHUD->AddShop();
-
-
 		// 매치기능 추가로 인해 추가됨.
 		else
 		{
 			BlasterHUD->CharacterOverlay->SetVisibility(ESlateVisibility::Visible);
 		}
+
+		// 테스트
+		if (BlasterHUD->Shop == nullptr) BlasterHUD->AddShop();
 
 		if (BlasterHUD->Announcement)
 		{
