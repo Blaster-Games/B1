@@ -13,6 +13,7 @@ message S_Connected {
 // ¿Œ¡ı
 message C_AuthReq {
     string jwt = 1;
+    int64 accountDbId = 2;
 }
 
 message S_AuthRes {
