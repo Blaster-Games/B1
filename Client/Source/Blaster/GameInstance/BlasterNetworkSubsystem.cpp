@@ -97,6 +97,51 @@ void UBlasterNetworkSubsystem::SendPacket(SendBufferRef SendBuffer)
     GameServerSession->SendPacket(SendBuffer);
 }
 
+void UBlasterNetworkSubsystem::SendAuthReq()
+{
+    Protocol::C_AuthReq AuthReq;
+
+    // 게임 인스턴스에서 값 가져오기
+    if (UBlasterGameInstance* GameInst = Cast<UBlasterGameInstance>(GetGameInstance()))
+    {
+        AuthReq.set_jwt(TCHAR_TO_UTF8(*GameInst->AccessToken));
+        AuthReq.set_accountdbid(GameInst->UserId);
+
+        // 로그 출력
+        UE_LOG(LogTemp, Log, TEXT("[NetworkSubsystem] SendAuthReq - JWT: %s, AccountDbId: %d"),
+            *GameInst->AccessToken, GameInst->UserId);
+
+        // 화면에도 디버그 메시지 표시 (선택사항)
+        GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green,
+            FString::Printf(TEXT("Sending Auth - ID: %d"), GameInst->UserId));
+    }
+    else
+    {
+        // 게임 인스턴스를 가져오지 못했을 경우 에러 로그
+        UE_LOG(LogTemp, Error, TEXT("[NetworkSubsystem] Failed to get BlasterGameInstance"));
+        return;
+    }
+
+    SendBufferRef SendBuffer = ClientPacketHandler::MakeSendBuffer(AuthReq);
+    SendPacket(SendBuffer);
+}
+
+void UBlasterNetworkSubsystem::HandleAuthRes(Protocol::S_AuthRes& packet)
+{
+    UE_LOG(LogTemp, Log, TEXT("[NetworkSubsystem] Auth response received"));
+
+    if (packet.success())
+    {
+        UE_LOG(LogTemp, Log, TEXT("[NetworkSubsystem] Auth successful"));
+        OnAuthSuccess.Broadcast();
+    }
+    else
+    {
+        UE_LOG(LogTemp, Error, TEXT("[NetworkSubsystem] Auth failed"));
+        OnAuthFailed.Broadcast(TEXT("인증에 실패했습니다."));
+    }
+}
+
 void UBlasterNetworkSubsystem::HandlePing()
 {
     UE_LOG(LogTemp, Log, TEXT("[NetworkSubsystem] Handling Ping"));
@@ -106,7 +151,7 @@ void UBlasterNetworkSubsystem::HandlePing()
 void UBlasterNetworkSubsystem::SendPong()
 {
     UE_LOG(LogTemp, Log, TEXT("[NetworkSubsystem] Sending Pong"));
-    Protocol::C_Pong pongPacket;
-    SendBufferRef sendBuffer = ClientPacketHandler::MakeSendBuffer(pongPacket);
-    SendPacket(sendBuffer);
+    Protocol::C_Pong PongPacket;
+    SendBufferRef SendBuffer = ClientPacketHandler::MakeSendBuffer(PongPacket);
+    SendPacket(SendBuffer);
 }

@@ -1,18 +1,27 @@
 #include "BlasterWebSubsystem.h"
+#include "BlasterGameInstance.h"
 #include "Json.h"
 #include "JsonUtilities.h"
+
+const TCHAR* const UBlasterWebSubsystem::LOGIN_ENDPOINT = TEXT("/api/member/login");
+const TCHAR* const UBlasterWebSubsystem::FIELD_NICKNAME = TEXT("nickname");
+const TCHAR* const UBlasterWebSubsystem::FIELD_ID = TEXT("id");
+const TCHAR* const UBlasterWebSubsystem::FIELD_ACCESS_TOKEN = TEXT("accessToken");
+const TCHAR* const UBlasterWebSubsystem::FIELD_REFRESH_TOKEN = TEXT("refreshToken");
+const TCHAR* const UBlasterWebSubsystem::AUTH_HEADER = TEXT("Authorization");
+const TCHAR* const UBlasterWebSubsystem::BEARER_PREFIX = TEXT("Bearer ");
+const TCHAR* const UBlasterWebSubsystem::CONTENT_TYPE_HEADER = TEXT("Content-Type");
+const TCHAR* const UBlasterWebSubsystem::FORM_URLENCODED = TEXT("application/x-www-form-urlencoded");
 
 void UBlasterWebSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 {
     Super::Initialize(Collection);
     HttpModule = &FHttpModule::Get();
-
-    UE_LOG(LogTemp, Log, TEXT("[WebSubsystem] Initialized"));
+    BaseUrl = TEXT("http://localhost:8080");
 }
 
 void UBlasterWebSubsystem::Deinitialize()
 {
-    ClearAuthData();
     Super::Deinitialize();
 }
 
@@ -47,43 +56,37 @@ void UBlasterWebSubsystem::OnLoginResponse(FHttpRequestPtr Request, FHttpRespons
         if (FJsonSerializer::Deserialize(Reader, JsonObject))
         {
             // 응답 데이터 저장
-            Nickname = JsonObject->GetStringField(FIELD_NICKNAME);
-            UserId = JsonObject->GetIntegerField(FIELD_ID);
-            AccessToken = JsonObject->GetStringField(FIELD_ACCESS_TOKEN);
-            RefreshToken = JsonObject->GetStringField(FIELD_REFRESH_TOKEN);
+            if (UGameInstance* GameInstance = GetGameInstance())
+            {
+                if (UBlasterGameInstance* BlasterGameInstance = Cast<UBlasterGameInstance>(GameInstance))
+                {
+                    BlasterGameInstance->Nickname = JsonObject->GetStringField(FIELD_NICKNAME);
+                    BlasterGameInstance->UserId = JsonObject->GetIntegerField(FIELD_ID);
+                    BlasterGameInstance->AccessToken = JsonObject->GetStringField(FIELD_ACCESS_TOKEN);
+                    BlasterGameInstance->RefreshToken = JsonObject->GetStringField(FIELD_REFRESH_TOKEN);
+                }
+            }
 
-            OnLoginSuccess();
+            HandleLoginSuccess();
         }
         else
         {
-            OnLoginFailed(TEXT("Failed to parse server response"));
+            HandleLoginFailed(TEXT("Failed to parse server response"));
         }
     }
     else
     {
-        OnLoginFailed(TEXT("Server connection failed"));
+        HandleLoginFailed(TEXT("Server connection failed"));
     }
 }
 
-void UBlasterWebSubsystem::OnLoginSuccess()
+void UBlasterWebSubsystem::HandleLoginSuccess()
 {
-    UE_LOG(LogTemp, Log, TEXT("[WebSubsystem] Login successful for user: %s"), *Nickname);
-    OnLoginSuccessDelegate.Broadcast();
+    OnLoginSuccess.Broadcast();
 }
 
-void UBlasterWebSubsystem::OnLoginFailed(const FString& ErrorMessage)
+void UBlasterWebSubsystem::HandleLoginFailed(const FString& ErrorMessage)
 {
     UE_LOG(LogTemp, Warning, TEXT("[WebSubsystem] Login failed: %s"), *ErrorMessage);
-    ClearAuthData();
-    OnLoginFailedDelegate.Broadcast(ErrorMessage);
-}
-
-void UBlasterWebSubsystem::ClearAuthData()
-{
-    AccessToken.Empty();
-    RefreshToken.Empty();
-    Nickname.Empty();
-    UserId = -1;
-
-    UE_LOG(LogTemp, Log, TEXT("[WebSubsystem] Auth data cleared"));
+    OnLoginFailed.Broadcast(ErrorMessage);
 }

@@ -2,6 +2,7 @@
 #include "EnterMainMenu.h"
 #include "GameInstance/BlasterGameInstance.h"
 #include "GameInstance/BlasterWebSubsystem.h"
+#include "GameInstance/BlasterNetworkSubsystem.h"
 #include "Kismet/GameplayStatics.h"
 
 void UEnterMainMenu::NativeConstruct()
@@ -15,22 +16,41 @@ void UEnterMainMenu::NativeConstruct()
 
     if (UGameInstance* GameInstance = GetGameInstance())
     {
-        if (UBlasterWebSubsystem* WebSubsystem = GameInstance->GetSubsystem<UBlasterWebSubsystem>())
+        if (UBlasterNetworkSubsystem* NetworkSubsystem = GameInstance->GetSubsystem<UBlasterNetworkSubsystem>())
         {
-            // 웹 서브시스템에 적절한 델리게이트 추가 필요
-            //WebSubsystem->OnEnterSuccessDelegate.AddDynamic(this, &UEnterMainMenu::HandleEnterSuccess);
-            //WebSubsystem->OnEnterFailedDelegate.AddDynamic(this, &UEnterMainMenu::HandleEnterFailed);
+            NetworkSubsystem->OnAuthSuccess.AddDynamic(this, &UEnterMainMenu::HandleEnterSuccess);
+            NetworkSubsystem->OnAuthFailed.AddDynamic(this, &UEnterMainMenu::HandleEnterFailed);
+        }
+        else
+        {
+            UE_LOG(LogTemp, Error, TEXT("[EnterMainMenu] Failed to get NetworkSubsystem"));
         }
     }
 }
 
 void UEnterMainMenu::OnEnterButtonClicked()
 {
+    UE_LOG(LogTemp, Log, TEXT("[EnterMainMenu] Enter button clicked"));
+
     if (UGameInstance* GameInstance = GetGameInstance())
     {
-        if (UBlasterWebSubsystem* WebSubsystem = GameInstance->GetSubsystem<UBlasterWebSubsystem>())
+        if (UBlasterNetworkSubsystem* NetworkSubsystem = GameInstance->GetSubsystem<UBlasterNetworkSubsystem>())
         {
-            //WebSubsystem->RequestEnter();  // 웹 서브시스템에 적절한 요청 메서드 추가 필요
+            // 연결 상태 확인 (Socket이나 Session이 유효한지)
+            if (NetworkSubsystem->Socket && NetworkSubsystem->GameServerSession)
+            {
+                NetworkSubsystem->SendAuthReq();
+                UE_LOG(LogTemp, Log, TEXT("[EnterMainMenu] Sending auth request"));
+            }
+            else
+            {
+                UE_LOG(LogTemp, Error, TEXT("[EnterMainMenu] Not connected to server"));
+                HandleEnterFailed(TEXT("서버에 연결되어 있지 않습니다."));
+            }
+        }
+        else
+        {
+            UE_LOG(LogTemp, Error, TEXT("[EnterMainMenu] Failed to get NetworkSubsystem"));
         }
     }
 }

@@ -17,8 +17,8 @@ void ULogin::NativeConstruct()
     {
         if (UBlasterWebSubsystem* WebSubsystem = GameInstance->GetSubsystem<UBlasterWebSubsystem>())
         {
-            WebSubsystem->OnLoginSuccessDelegate.AddDynamic(this, &ULogin::HandleLoginSuccess);
-            WebSubsystem->OnLoginFailedDelegate.AddDynamic(this, &ULogin::HandleLoginFailed);
+            WebSubsystem->OnLoginSuccess.AddDynamic(this, &ULogin::HandleLoginSuccess);
+            WebSubsystem->OnLoginFailed.AddDynamic(this, &ULogin::HandleLoginFailed);
         }
     }
 }

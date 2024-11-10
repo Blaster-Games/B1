@@ -435,6 +435,7 @@ class C_AuthReq final :
 
   enum : int {
     kJwtFieldNumber = 1,
+    kAccountDbIdFieldNumber = 2,
   };
   // string jwt = 1;
   void clear_jwt();
@@ -450,6 +451,15 @@ class C_AuthReq final :
   std::string* _internal_mutable_jwt();
   public:
 
+  // int64 accountDbId = 2;
+  void clear_accountdbid();
+  int64_t accountdbid() const;
+  void set_accountdbid(int64_t value);
+  private:
+  int64_t _internal_accountdbid() const;
+  void _internal_set_accountdbid(int64_t value);
+  public:
+
   // @@protoc_insertion_point(class_scope:Protocol.C_AuthReq)
  private:
   class _Internal;
@@ -459,6 +469,7 @@ class C_AuthReq final :
   typedef void DestructorSkippable_;
   struct Impl_ {
     ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr jwt_;
+    int64_t accountdbid_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
   union { Impl_ _impl_; };
@@ -5672,6 +5683,26 @@ inline void C_AuthReq::set_allocated_jwt(std::string* jwt) {
   }
 #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
   // @@protoc_insertion_point(field_set_allocated:Protocol.C_AuthReq.jwt)
+}
+
+// int64 accountDbId = 2;
+inline void C_AuthReq::clear_accountdbid() {
+  _impl_.accountdbid_ = int64_t{0};
+}
+inline int64_t C_AuthReq::_internal_accountdbid() const {
+  return _impl_.accountdbid_;
+}
+inline int64_t C_AuthReq::accountdbid() const {
+  // @@protoc_insertion_point(field_get:Protocol.C_AuthReq.accountDbId)
+  return _internal_accountdbid();
+}
+inline void C_AuthReq::_internal_set_accountdbid(int64_t value) {
+  
+  _impl_.accountdbid_ = value;
+}
+inline void C_AuthReq::set_accountdbid(int64_t value) {
+  _internal_set_accountdbid(value);
+  // @@protoc_insertion_point(field_set:Protocol.C_AuthReq.accountDbId)
 }
 
 // -------------------------------------------------------------------

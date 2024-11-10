@@ -35,6 +35,12 @@ public:
     UPROPERTY(Config)
     int16 DefaultServerPort = 7777;
 
+    // 인증 및 사용자 데이터
+    FString AccessToken;
+    FString RefreshToken;
+    FString Nickname;
+    int32 UserId;
+
 private:
     UPROPERTY()
     class UBlasterNetworkSubsystem* NetworkSystem;

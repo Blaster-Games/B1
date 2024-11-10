@@ -4,18 +4,26 @@
 #include "PacketSession.h"
 #include "BlasterNetworkSubsystem.generated.h"
 
-/**
- * 네트워크 통신을 담당하는 서브시스템
- */
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnAuthSuccessDelegate);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnAuthFailedDelegate, const FString&, ErrorMessage);
+
 UCLASS()
 class BLASTER_API UBlasterNetworkSubsystem : public UGameInstanceSubsystem
 {
     GENERATED_BODY()
 
-    // GameInstance만 접근 가능하도록 friend 선언
     friend class UBlasterGameInstance;
 
 public:
+    UPROPERTY(BlueprintAssignable, Category = "Network|Auth")
+    FOnAuthSuccessDelegate OnAuthSuccess;
+
+    UPROPERTY(BlueprintAssignable, Category = "Network|Auth")
+    FOnAuthFailedDelegate OnAuthFailed;
+
+public:
+    void HandleAuthRes(Protocol::S_AuthRes& packet);
+    void SendAuthReq();
     void HandlePing();
     void SendPong();
 
@@ -30,7 +38,6 @@ public:
 private:
     virtual void Initialize(FSubsystemCollectionBase& Collection) override;
     virtual void Deinitialize() override;
-
     void ConnectToGameServer();
     void DisconnectFromGameServer();
     void HandleRecvPackets();

@@ -22,6 +22,8 @@ namespace GameServer
             Authenticated = true;
             AccountDbId = reqPacket.AccountDbId;
 
+            Console.WriteLine("접속 유저 ID : " + reqPacket.AccountDbId);
+
             S_AuthRes resPacket = new S_AuthRes();
             resPacket.Success = true;
 

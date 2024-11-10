@@ -1,7 +1,7 @@
 
-
-#include "GameInstance/BlasterGameInstance.h"
 #include "MainMenu.h"
+#include "GameInstance/BlasterGameInstance.h"
+
 
 void UMainMenu::NativeConstruct()
 {
