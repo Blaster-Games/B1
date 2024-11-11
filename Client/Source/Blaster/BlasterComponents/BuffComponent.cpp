@@ -150,7 +150,6 @@ void UBuffComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	
 }
 
 

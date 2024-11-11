@@ -34,6 +34,7 @@ public:
 	void InitTeamScores();
 	void SetHUDRedTeamScores(int32 RedScore);
 	void SetHUDBlueTeamScores(int32 BlueScore);
+	void SetHUDMoney(int32 NewMoney);
 	
 	virtual float GetServerTime(); // Synced with server world clock
 	virtual void ReceivedPlayer() override; // Sync with server clock as soon as possible
@@ -172,4 +173,9 @@ private:
 
 	UPROPERTY(EditAnywhere)
 	float HighPingThreshold = 50.f;
+
+	int32 CachedBlueScore = 0;
+	int32 CachedRedScore = 0;
+
+	void ApplyCachedScores();
 };

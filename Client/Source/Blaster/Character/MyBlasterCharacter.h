@@ -9,6 +9,7 @@
 #include "Components/TimelineComponent.h"
 #include "Blaster/BlasterTypes/CombatState.h"
 #include "Blaster/BlasterTypes/Team.h"
+#include "Blaster/Weapon/WeaponTypes.h"
 #include "MyBlasterCharacter.generated.h"
 
 
@@ -76,7 +77,6 @@ public:
 
 protected:
 	virtual void BeginPlay() override;
-
 	void MoveForward(float Value);
 	void MoveRight(float Value);
 	void Turn(float Value);
@@ -202,6 +202,9 @@ private:
 
 	UPROPERTY(VisibleAnywhere)
 	class ULagCompensationComponent* LagCompensation;
+
+	UPROPERTY(VisibleAnywhere)
+	class UShopComponent* Shop;
 
 	// RPC -> Server : 클라가 서버를 호출하는 느낌.
 	// Client : 서버가 클라이언트에게 할 것 토스하는 느낌.
@@ -377,8 +380,35 @@ private:
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<AWeapon> DefaultWeaponClass;
 
+
+	// 무기 슬롯에 따라 생성될 무기들 클래스 목록.
+	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
+	TSubclassOf<AWeapon> AssaultRifleClass;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
+	TSubclassOf<AWeapon> RocketLauncherClass;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
+	TSubclassOf<AWeapon> PistolClass;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
+	TSubclassOf<AWeapon> SubmachineGunClass;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
+	TSubclassOf<AWeapon> ShotgunClass;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
+	TSubclassOf<AWeapon> SniperRifleClass;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Weapon")
+	TSubclassOf<AWeapon> GrenadeLauncherClass;
+
+	TSubclassOf<AWeapon> GetWeaponClass(EWeaponType WeaponType);
+
 	UPROPERTY()
 	class ABlasterGameMode* BlasterGameMode;
+
+	FTimerHandle SpawnWeaponTimer;
 
 public:	
 	void SetOverlappingWeapon(AWeapon* Weapon);
@@ -406,6 +436,8 @@ public:
 	FORCEINLINE UBuffComponent* GetBuff() const { return Buff; }
 	bool IsLocallyReloading();
 	FORCEINLINE ULagCompensationComponent* GetLagCompensation() const { return LagCompensation; }
+	FORCEINLINE UShopComponent* GetShop() const { return Shop; }
+
 	FORCEINLINE bool IsHoldingTheFlag() const;
 	ETeam GetTeam();
 	void SetHoldingTheFlag(bool bHolding);

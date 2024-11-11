@@ -23,6 +23,7 @@
 #include "Blaster/Weapon/WeaponTypes.h"
 #include "Components/BoxComponent.h"
 #include "Blaster/BlasterComponents/LagCompensationComponent.h"
+#include "Blaster/BlasterComponents/ShopComponent.h"
 #include "NiagaraComponent.h"
 #include "NiagaraFunctionLibrary.h"
 #include "Blaster/GameState/BlasterGameState.h"
@@ -60,6 +61,8 @@ AMyBlasterCharacter::AMyBlasterCharacter()
 	// 이건 서버에서만 사용할 것이므로 복제할 필요 x
 	LagCompensation = CreateDefaultSubobject<ULagCompensationComponent>(TEXT("LagCompensation"));
 
+	Shop = CreateDefaultSubobject<UShopComponent>(TEXT("ShopComponent"));
+	Shop->SetIsReplicated(true);
 
 	GetCharacterMovement()->NavAgentProps.bCanCrouch = true;
 	// 캡슐이 카메라를 가리지 않도록
@@ -561,9 +564,19 @@ void AMyBlasterCharacter::PostInitializeComponents()
 	if (LagCompensation)
 	{
 		LagCompensation->Character = this;
+		// 애초에 여길 안 들어오는데??
 		if (Controller)
 		{
 			LagCompensation->Controller = Cast<ABlasterPlayerController>(Controller);
+		}
+	}
+	if (Shop)
+	{
+		Shop->Character = this;
+		if (Controller)
+		{
+			Shop->Controller = Cast<ABlasterPlayerController>(Controller);
+			Shop->PlayerState = Controller->GetPlayerState<ABlasterPlayerState>();
 		}
 	}
 }
@@ -1107,17 +1120,73 @@ void AMyBlasterCharacter::UpdateHUDAmmo()
 
 void AMyBlasterCharacter::SpawnDefaultWeapon()
 {
+	// PlayerState 생명주기 꼬여서 이렇게 했음, 이거 싫으면 PossessedBy때 할까?
+	// 일단 두고 나중에 수정하자
+	// PlayerState가 없으면 타이머로 재시도
+	if (GetPlayerState() == nullptr)
+	{
+		GetWorldTimerManager().SetTimer(
+			SpawnWeaponTimer,
+			this,
+			&AMyBlasterCharacter::SpawnDefaultWeapon,
+			0.1f,  // 0.1초 후 재시도
+			false
+		);
+		return;
+	}
+
 	BlasterGameMode = BlasterGameMode == nullptr ? GetWorld()->GetAuthGameMode<ABlasterGameMode>() : BlasterGameMode;
 	UWorld* World = GetWorld();
-	if (BlasterGameMode && World && !bElimmed && DefaultWeaponClass)
+	if (!BlasterGameMode || !World || bElimmed) return;
+
+	
+	// PlayerState에서 무기 슬롯 정보 가져오기
+	BlasterPlayerState = BlasterPlayerState == nullptr ? GetPlayerState<ABlasterPlayerState>() : BlasterPlayerState;
+	if (BlasterPlayerState)
 	{
-		AWeapon* StartingWeapon = World->SpawnActor<AWeapon>(DefaultWeaponClass);
-		// 기본 무기는 파괴가 되도록 하자!
-		StartingWeapon->bDestroyWeapon = true;
-		if (Combat)
+		// 슬롯 1 체크
+		EWeaponType Slot1Type = BlasterPlayerState->GetWeaponInSlot(0);
+		if (Slot1Type != EWeaponType::EWT_MAX)
 		{
-			Combat->EquipWeapon(StartingWeapon);
-			Combat->AddWeaponToSlot(StartingWeapon);
+			if (TSubclassOf<AWeapon> WeaponClass = GetWeaponClass(Slot1Type))
+			{
+				AWeapon* Weapon = World->SpawnActor<AWeapon>(WeaponClass);
+				Weapon->bDestroyWeapon = true; // 기본무기는 파괴되도록.
+				if (Combat)
+				{
+					Combat->EquipWeapon(Weapon);
+					Combat->AddWeaponToSpecificSlot(Weapon, 0);
+				}
+			}
+		}
+
+		// 슬롯 2 체크
+		EWeaponType Slot2Type = BlasterPlayerState->GetWeaponInSlot(1);
+		if (Slot2Type != EWeaponType::EWT_MAX)
+		{
+			if (TSubclassOf<AWeapon> WeaponClass = GetWeaponClass(Slot2Type))
+			{
+				AWeapon* Weapon = World->SpawnActor<AWeapon>(WeaponClass);
+				Weapon->bDestroyWeapon = true;
+				if (Combat)
+				{
+					Combat->EquipWeapon(Weapon);
+					Combat->AddWeaponToSpecificSlot(Weapon, 1);
+				}
+			}
+		}
+	}
+	else  // PlayerState가 없으면 기본 무기
+	{
+		if (DefaultWeaponClass)
+		{
+			AWeapon* StartingWeapon = World->SpawnActor<AWeapon>(DefaultWeaponClass);
+			StartingWeapon->bDestroyWeapon = true;
+			if (Combat)
+			{
+				Combat->EquipWeapon(StartingWeapon);
+				Combat->AddWeaponToSlot(StartingWeapon);
+			}
 		}
 	}
 }
@@ -1169,6 +1238,38 @@ void AMyBlasterCharacter::StartDissolve()
 		DissolveTimeline->AddInterpFloat(DissolveCurve, DissolveTrack);
 		DissolveTimeline->Play();
 	}
+}
+
+TSubclassOf<AWeapon> AMyBlasterCharacter::GetWeaponClass(EWeaponType WeaponType)
+{
+	TSubclassOf<AWeapon> WeaponClass = nullptr;
+
+	switch (WeaponType)
+	{
+	case EWeaponType::EWT_AssaultRifle:
+		WeaponClass = AssaultRifleClass;
+		break;
+	case EWeaponType::EWT_RocketLauncher:
+		WeaponClass = RocketLauncherClass;
+		break;
+	case EWeaponType::EWT_Pistol:
+		WeaponClass = PistolClass;
+		break;
+	case EWeaponType::EWT_SubmachineGun:
+		WeaponClass = SubmachineGunClass;
+		break;
+	case EWeaponType::EWT_Shotgun:
+		WeaponClass = ShotgunClass;
+		break;
+	case EWeaponType::EWT_SniperRifle:
+		WeaponClass = SniperRifleClass;
+		break;
+	case EWeaponType::EWT_GrenadeLauncher:
+		WeaponClass = GrenadeLauncherClass;
+		break;
+	}
+
+	return WeaponClass;
 }
 
 // 서버는 적용이 안되는 것을 보완하기 위한.

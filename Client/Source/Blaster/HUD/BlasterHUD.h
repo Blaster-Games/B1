@@ -46,8 +46,12 @@ public:
 	UPROPERTY()
 	class UAnnouncement* Announcement;
 
+	UPROPERTY()
+	class UShop* Shop;
+
 	void AddAnnouncement();
 	void AddElimAnnouncement(FString Attacker, FString Victim);
+	void AddShop();
 
 protected:
 	virtual void BeginPlay() override;
@@ -66,6 +70,9 @@ private:
 
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<class UElimAnnouncement> ElimAnnouncementClass;
+
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<UShop> ShopClass;
 
 	UPROPERTY(EditAnywhere)
 	float ElimAnnouncementTime = 2.5f;

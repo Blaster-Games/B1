@@ -53,7 +53,7 @@ private:
 	int32 CurrentRound = 1;
 
 	UPROPERTY(Replicated)
-	int32 MaxRounds = 5;
+	int32 MaxRounds = 1;
 	
 protected:
 
