@@ -744,10 +744,9 @@ class C_EnterLobbyReq final :
 // -------------------------------------------------------------------
 
 class S_EnterLobbyRes final :
-    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:Protocol.S_EnterLobbyRes) */ {
+    public ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase /* @@protoc_insertion_point(class_definition:Protocol.S_EnterLobbyRes) */ {
  public:
   inline S_EnterLobbyRes() : S_EnterLobbyRes(nullptr) {}
-  ~S_EnterLobbyRes() override;
   explicit PROTOBUF_CONSTEXPR S_EnterLobbyRes(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
 
   S_EnterLobbyRes(const S_EnterLobbyRes& from);
@@ -820,29 +819,15 @@ class S_EnterLobbyRes final :
   S_EnterLobbyRes* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
     return CreateMaybeMessage<S_EnterLobbyRes>(arena);
   }
-  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
-  void CopyFrom(const S_EnterLobbyRes& from);
-  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
-  void MergeFrom( const S_EnterLobbyRes& from) {
-    S_EnterLobbyRes::MergeImpl(*this, from);
+  using ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase::CopyFrom;
+  inline void CopyFrom(const S_EnterLobbyRes& from) {
+    ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase::CopyImpl(*this, from);
   }
-  private:
-  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
+  using ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase::MergeFrom;
+  void MergeFrom(const S_EnterLobbyRes& from) {
+    ::PROTOBUF_NAMESPACE_ID::internal::ZeroFieldsBase::MergeImpl(*this, from);
+  }
   public:
-  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
-  bool IsInitialized() const final;
-
-  size_t ByteSizeLong() const final;
-  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
-  uint8_t* _InternalSerialize(
-      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
-  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
-
-  private:
-  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
-  void SharedDtor();
-  void SetCachedSize(int size) const final;
-  void InternalSwap(S_EnterLobbyRes* other);
 
   private:
   friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
@@ -863,27 +848,6 @@ class S_EnterLobbyRes final :
 
   // accessors -------------------------------------------------------
 
-  enum : int {
-    kRoomsFieldNumber = 1,
-  };
-  // repeated .Protocol.RoomInfo rooms = 1;
-  int rooms_size() const;
-  private:
-  int _internal_rooms_size() const;
-  public:
-  void clear_rooms();
-  ::Protocol::RoomInfo* mutable_rooms(int index);
-  ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Protocol::RoomInfo >*
-      mutable_rooms();
-  private:
-  const ::Protocol::RoomInfo& _internal_rooms(int index) const;
-  ::Protocol::RoomInfo* _internal_add_rooms();
-  public:
-  const ::Protocol::RoomInfo& rooms(int index) const;
-  ::Protocol::RoomInfo* add_rooms();
-  const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Protocol::RoomInfo >&
-      rooms() const;
-
   // @@protoc_insertion_point(class_scope:Protocol.S_EnterLobbyRes)
  private:
   class _Internal;
@@ -892,10 +856,7 @@ class S_EnterLobbyRes final :
   typedef void InternalArenaConstructable_;
   typedef void DestructorSkippable_;
   struct Impl_ {
-    ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Protocol::RoomInfo > rooms_;
-    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
-  union { Impl_ _impl_; };
   friend struct ::TableStruct_Protocol_2eproto;
 };
 // -------------------------------------------------------------------
@@ -1474,22 +1435,22 @@ class S_RoomListRes final :
   enum : int {
     kRoomsFieldNumber = 1,
   };
-  // repeated .Protocol.RoomInfo rooms = 1;
+  // repeated .Protocol.RoomListItemInfo rooms = 1;
   int rooms_size() const;
   private:
   int _internal_rooms_size() const;
   public:
   void clear_rooms();
-  ::Protocol::RoomInfo* mutable_rooms(int index);
-  ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Protocol::RoomInfo >*
+  ::Protocol::RoomListItemInfo* mutable_rooms(int index);
+  ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Protocol::RoomListItemInfo >*
       mutable_rooms();
   private:
-  const ::Protocol::RoomInfo& _internal_rooms(int index) const;
-  ::Protocol::RoomInfo* _internal_add_rooms();
+  const ::Protocol::RoomListItemInfo& _internal_rooms(int index) const;
+  ::Protocol::RoomListItemInfo* _internal_add_rooms();
   public:
-  const ::Protocol::RoomInfo& rooms(int index) const;
-  ::Protocol::RoomInfo* add_rooms();
-  const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Protocol::RoomInfo >&
+  const ::Protocol::RoomListItemInfo& rooms(int index) const;
+  ::Protocol::RoomListItemInfo* add_rooms();
+  const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Protocol::RoomListItemInfo >&
       rooms() const;
 
   // @@protoc_insertion_point(class_scope:Protocol.S_RoomListRes)
@@ -1500,7 +1461,7 @@ class S_RoomListRes final :
   typedef void InternalArenaConstructable_;
   typedef void DestructorSkippable_;
   struct Impl_ {
-    ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Protocol::RoomInfo > rooms_;
+    ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Protocol::RoomListItemInfo > rooms_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
   union { Impl_ _impl_; };
@@ -1795,23 +1756,23 @@ class S_SelectRoomRes final :
   std::string* _internal_mutable_errormessage();
   public:
 
-  // .Protocol.RoomInfo room = 2;
+  // .Protocol.RoomListItemInfo room = 2;
   bool has_room() const;
   private:
   bool _internal_has_room() const;
   public:
   void clear_room();
-  const ::Protocol::RoomInfo& room() const;
-  PROTOBUF_NODISCARD ::Protocol::RoomInfo* release_room();
-  ::Protocol::RoomInfo* mutable_room();
-  void set_allocated_room(::Protocol::RoomInfo* room);
+  const ::Protocol::RoomListItemInfo& room() const;
+  PROTOBUF_NODISCARD ::Protocol::RoomListItemInfo* release_room();
+  ::Protocol::RoomListItemInfo* mutable_room();
+  void set_allocated_room(::Protocol::RoomListItemInfo* room);
   private:
-  const ::Protocol::RoomInfo& _internal_room() const;
-  ::Protocol::RoomInfo* _internal_mutable_room();
+  const ::Protocol::RoomListItemInfo& _internal_room() const;
+  ::Protocol::RoomListItemInfo* _internal_mutable_room();
   public:
   void unsafe_arena_set_allocated_room(
-      ::Protocol::RoomInfo* room);
-  ::Protocol::RoomInfo* unsafe_arena_release_room();
+      ::Protocol::RoomListItemInfo* room);
+  ::Protocol::RoomListItemInfo* unsafe_arena_release_room();
 
   // bool success = 1;
   void clear_success();
@@ -1831,7 +1792,7 @@ class S_SelectRoomRes final :
   typedef void DestructorSkippable_;
   struct Impl_ {
     ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr errormessage_;
-    ::Protocol::RoomInfo* room_;
+    ::Protocol::RoomListItemInfo* room_;
     bool success_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
@@ -2170,23 +2131,23 @@ class S_CreateRoomRes final :
   std::string* _internal_mutable_errormessage();
   public:
 
-  // .Protocol.RoomInfo room = 2;
+  // .Protocol.RoomDetailInfo room = 2;
   bool has_room() const;
   private:
   bool _internal_has_room() const;
   public:
   void clear_room();
-  const ::Protocol::RoomInfo& room() const;
-  PROTOBUF_NODISCARD ::Protocol::RoomInfo* release_room();
-  ::Protocol::RoomInfo* mutable_room();
-  void set_allocated_room(::Protocol::RoomInfo* room);
+  const ::Protocol::RoomDetailInfo& room() const;
+  PROTOBUF_NODISCARD ::Protocol::RoomDetailInfo* release_room();
+  ::Protocol::RoomDetailInfo* mutable_room();
+  void set_allocated_room(::Protocol::RoomDetailInfo* room);
   private:
-  const ::Protocol::RoomInfo& _internal_room() const;
-  ::Protocol::RoomInfo* _internal_mutable_room();
+  const ::Protocol::RoomDetailInfo& _internal_room() const;
+  ::Protocol::RoomDetailInfo* _internal_mutable_room();
   public:
   void unsafe_arena_set_allocated_room(
-      ::Protocol::RoomInfo* room);
-  ::Protocol::RoomInfo* unsafe_arena_release_room();
+      ::Protocol::RoomDetailInfo* room);
+  ::Protocol::RoomDetailInfo* unsafe_arena_release_room();
 
   // bool success = 1;
   void clear_success();
@@ -2206,7 +2167,7 @@ class S_CreateRoomRes final :
   typedef void DestructorSkippable_;
   struct Impl_ {
     ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr errormessage_;
-    ::Protocol::RoomInfo* room_;
+    ::Protocol::RoomDetailInfo* room_;
     bool success_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
@@ -2502,23 +2463,23 @@ class S_JoinRoomRes final :
   std::string* _internal_mutable_errormessage();
   public:
 
-  // .Protocol.RoomInfo room = 2;
+  // .Protocol.RoomDetailInfo room = 2;
   bool has_room() const;
   private:
   bool _internal_has_room() const;
   public:
   void clear_room();
-  const ::Protocol::RoomInfo& room() const;
-  PROTOBUF_NODISCARD ::Protocol::RoomInfo* release_room();
-  ::Protocol::RoomInfo* mutable_room();
-  void set_allocated_room(::Protocol::RoomInfo* room);
+  const ::Protocol::RoomDetailInfo& room() const;
+  PROTOBUF_NODISCARD ::Protocol::RoomDetailInfo* release_room();
+  ::Protocol::RoomDetailInfo* mutable_room();
+  void set_allocated_room(::Protocol::RoomDetailInfo* room);
   private:
-  const ::Protocol::RoomInfo& _internal_room() const;
-  ::Protocol::RoomInfo* _internal_mutable_room();
+  const ::Protocol::RoomDetailInfo& _internal_room() const;
+  ::Protocol::RoomDetailInfo* _internal_mutable_room();
   public:
   void unsafe_arena_set_allocated_room(
-      ::Protocol::RoomInfo* room);
-  ::Protocol::RoomInfo* unsafe_arena_release_room();
+      ::Protocol::RoomDetailInfo* room);
+  ::Protocol::RoomDetailInfo* unsafe_arena_release_room();
 
   // bool success = 1;
   void clear_success();
@@ -2538,7 +2499,7 @@ class S_JoinRoomRes final :
   typedef void DestructorSkippable_;
   struct Impl_ {
     ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr errormessage_;
-    ::Protocol::RoomInfo* room_;
+    ::Protocol::RoomDetailInfo* room_;
     bool success_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
@@ -5737,43 +5698,6 @@ inline void S_AuthRes::set_success(bool value) {
 
 // S_EnterLobbyRes
 
-// repeated .Protocol.RoomInfo rooms = 1;
-inline int S_EnterLobbyRes::_internal_rooms_size() const {
-  return _impl_.rooms_.size();
-}
-inline int S_EnterLobbyRes::rooms_size() const {
-  return _internal_rooms_size();
-}
-inline ::Protocol::RoomInfo* S_EnterLobbyRes::mutable_rooms(int index) {
-  // @@protoc_insertion_point(field_mutable:Protocol.S_EnterLobbyRes.rooms)
-  return _impl_.rooms_.Mutable(index);
-}
-inline ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Protocol::RoomInfo >*
-S_EnterLobbyRes::mutable_rooms() {
-  // @@protoc_insertion_point(field_mutable_list:Protocol.S_EnterLobbyRes.rooms)
-  return &_impl_.rooms_;
-}
-inline const ::Protocol::RoomInfo& S_EnterLobbyRes::_internal_rooms(int index) const {
-  return _impl_.rooms_.Get(index);
-}
-inline const ::Protocol::RoomInfo& S_EnterLobbyRes::rooms(int index) const {
-  // @@protoc_insertion_point(field_get:Protocol.S_EnterLobbyRes.rooms)
-  return _internal_rooms(index);
-}
-inline ::Protocol::RoomInfo* S_EnterLobbyRes::_internal_add_rooms() {
-  return _impl_.rooms_.Add();
-}
-inline ::Protocol::RoomInfo* S_EnterLobbyRes::add_rooms() {
-  ::Protocol::RoomInfo* _add = _internal_add_rooms();
-  // @@protoc_insertion_point(field_add:Protocol.S_EnterLobbyRes.rooms)
-  return _add;
-}
-inline const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Protocol::RoomInfo >&
-S_EnterLobbyRes::rooms() const {
-  // @@protoc_insertion_point(field_list:Protocol.S_EnterLobbyRes.rooms)
-  return _impl_.rooms_;
-}
-
 // -------------------------------------------------------------------
 
 // C_LobbyChat
@@ -5960,38 +5884,38 @@ inline void S_BroadcastLobbyChat::set_allocated_message(std::string* message) {
 
 // S_RoomListRes
 
-// repeated .Protocol.RoomInfo rooms = 1;
+// repeated .Protocol.RoomListItemInfo rooms = 1;
 inline int S_RoomListRes::_internal_rooms_size() const {
   return _impl_.rooms_.size();
 }
 inline int S_RoomListRes::rooms_size() const {
   return _internal_rooms_size();
 }
-inline ::Protocol::RoomInfo* S_RoomListRes::mutable_rooms(int index) {
+inline ::Protocol::RoomListItemInfo* S_RoomListRes::mutable_rooms(int index) {
   // @@protoc_insertion_point(field_mutable:Protocol.S_RoomListRes.rooms)
   return _impl_.rooms_.Mutable(index);
 }
-inline ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Protocol::RoomInfo >*
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Protocol::RoomListItemInfo >*
 S_RoomListRes::mutable_rooms() {
   // @@protoc_insertion_point(field_mutable_list:Protocol.S_RoomListRes.rooms)
   return &_impl_.rooms_;
 }
-inline const ::Protocol::RoomInfo& S_RoomListRes::_internal_rooms(int index) const {
+inline const ::Protocol::RoomListItemInfo& S_RoomListRes::_internal_rooms(int index) const {
   return _impl_.rooms_.Get(index);
 }
-inline const ::Protocol::RoomInfo& S_RoomListRes::rooms(int index) const {
+inline const ::Protocol::RoomListItemInfo& S_RoomListRes::rooms(int index) const {
   // @@protoc_insertion_point(field_get:Protocol.S_RoomListRes.rooms)
   return _internal_rooms(index);
 }
-inline ::Protocol::RoomInfo* S_RoomListRes::_internal_add_rooms() {
+inline ::Protocol::RoomListItemInfo* S_RoomListRes::_internal_add_rooms() {
   return _impl_.rooms_.Add();
 }
-inline ::Protocol::RoomInfo* S_RoomListRes::add_rooms() {
-  ::Protocol::RoomInfo* _add = _internal_add_rooms();
+inline ::Protocol::RoomListItemInfo* S_RoomListRes::add_rooms() {
+  ::Protocol::RoomListItemInfo* _add = _internal_add_rooms();
   // @@protoc_insertion_point(field_add:Protocol.S_RoomListRes.rooms)
   return _add;
 }
-inline const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Protocol::RoomInfo >&
+inline const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Protocol::RoomListItemInfo >&
 S_RoomListRes::rooms() const {
   // @@protoc_insertion_point(field_list:Protocol.S_RoomListRes.rooms)
   return _impl_.rooms_;
@@ -6045,24 +5969,24 @@ inline void S_SelectRoomRes::set_success(bool value) {
   // @@protoc_insertion_point(field_set:Protocol.S_SelectRoomRes.success)
 }
 
-// .Protocol.RoomInfo room = 2;
+// .Protocol.RoomListItemInfo room = 2;
 inline bool S_SelectRoomRes::_internal_has_room() const {
   return this != internal_default_instance() && _impl_.room_ != nullptr;
 }
 inline bool S_SelectRoomRes::has_room() const {
   return _internal_has_room();
 }
-inline const ::Protocol::RoomInfo& S_SelectRoomRes::_internal_room() const {
-  const ::Protocol::RoomInfo* p = _impl_.room_;
-  return p != nullptr ? *p : reinterpret_cast<const ::Protocol::RoomInfo&>(
-      ::Protocol::_RoomInfo_default_instance_);
+inline const ::Protocol::RoomListItemInfo& S_SelectRoomRes::_internal_room() const {
+  const ::Protocol::RoomListItemInfo* p = _impl_.room_;
+  return p != nullptr ? *p : reinterpret_cast<const ::Protocol::RoomListItemInfo&>(
+      ::Protocol::_RoomListItemInfo_default_instance_);
 }
-inline const ::Protocol::RoomInfo& S_SelectRoomRes::room() const {
+inline const ::Protocol::RoomListItemInfo& S_SelectRoomRes::room() const {
   // @@protoc_insertion_point(field_get:Protocol.S_SelectRoomRes.room)
   return _internal_room();
 }
 inline void S_SelectRoomRes::unsafe_arena_set_allocated_room(
-    ::Protocol::RoomInfo* room) {
+    ::Protocol::RoomListItemInfo* room) {
   if (GetArenaForAllocation() == nullptr) {
     delete reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.room_);
   }
@@ -6074,9 +5998,9 @@ inline void S_SelectRoomRes::unsafe_arena_set_allocated_room(
   }
   // @@protoc_insertion_point(field_unsafe_arena_set_allocated:Protocol.S_SelectRoomRes.room)
 }
-inline ::Protocol::RoomInfo* S_SelectRoomRes::release_room() {
+inline ::Protocol::RoomListItemInfo* S_SelectRoomRes::release_room() {
   
-  ::Protocol::RoomInfo* temp = _impl_.room_;
+  ::Protocol::RoomListItemInfo* temp = _impl_.room_;
   _impl_.room_ = nullptr;
 #ifdef PROTOBUF_FORCE_COPY_IN_RELEASE
   auto* old =  reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(temp);
@@ -6089,27 +6013,27 @@ inline ::Protocol::RoomInfo* S_SelectRoomRes::release_room() {
 #endif  // !PROTOBUF_FORCE_COPY_IN_RELEASE
   return temp;
 }
-inline ::Protocol::RoomInfo* S_SelectRoomRes::unsafe_arena_release_room() {
+inline ::Protocol::RoomListItemInfo* S_SelectRoomRes::unsafe_arena_release_room() {
   // @@protoc_insertion_point(field_release:Protocol.S_SelectRoomRes.room)
   
-  ::Protocol::RoomInfo* temp = _impl_.room_;
+  ::Protocol::RoomListItemInfo* temp = _impl_.room_;
   _impl_.room_ = nullptr;
   return temp;
 }
-inline ::Protocol::RoomInfo* S_SelectRoomRes::_internal_mutable_room() {
+inline ::Protocol::RoomListItemInfo* S_SelectRoomRes::_internal_mutable_room() {
   
   if (_impl_.room_ == nullptr) {
-    auto* p = CreateMaybeMessage<::Protocol::RoomInfo>(GetArenaForAllocation());
+    auto* p = CreateMaybeMessage<::Protocol::RoomListItemInfo>(GetArenaForAllocation());
     _impl_.room_ = p;
   }
   return _impl_.room_;
 }
-inline ::Protocol::RoomInfo* S_SelectRoomRes::mutable_room() {
-  ::Protocol::RoomInfo* _msg = _internal_mutable_room();
+inline ::Protocol::RoomListItemInfo* S_SelectRoomRes::mutable_room() {
+  ::Protocol::RoomListItemInfo* _msg = _internal_mutable_room();
   // @@protoc_insertion_point(field_mutable:Protocol.S_SelectRoomRes.room)
   return _msg;
 }
-inline void S_SelectRoomRes::set_allocated_room(::Protocol::RoomInfo* room) {
+inline void S_SelectRoomRes::set_allocated_room(::Protocol::RoomListItemInfo* room) {
   ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
   if (message_arena == nullptr) {
     delete reinterpret_cast< ::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.room_);
@@ -6348,24 +6272,24 @@ inline void S_CreateRoomRes::set_success(bool value) {
   // @@protoc_insertion_point(field_set:Protocol.S_CreateRoomRes.success)
 }
 
-// .Protocol.RoomInfo room = 2;
+// .Protocol.RoomDetailInfo room = 2;
 inline bool S_CreateRoomRes::_internal_has_room() const {
   return this != internal_default_instance() && _impl_.room_ != nullptr;
 }
 inline bool S_CreateRoomRes::has_room() const {
   return _internal_has_room();
 }
-inline const ::Protocol::RoomInfo& S_CreateRoomRes::_internal_room() const {
-  const ::Protocol::RoomInfo* p = _impl_.room_;
-  return p != nullptr ? *p : reinterpret_cast<const ::Protocol::RoomInfo&>(
-      ::Protocol::_RoomInfo_default_instance_);
+inline const ::Protocol::RoomDetailInfo& S_CreateRoomRes::_internal_room() const {
+  const ::Protocol::RoomDetailInfo* p = _impl_.room_;
+  return p != nullptr ? *p : reinterpret_cast<const ::Protocol::RoomDetailInfo&>(
+      ::Protocol::_RoomDetailInfo_default_instance_);
 }
-inline const ::Protocol::RoomInfo& S_CreateRoomRes::room() const {
+inline const ::Protocol::RoomDetailInfo& S_CreateRoomRes::room() const {
   // @@protoc_insertion_point(field_get:Protocol.S_CreateRoomRes.room)
   return _internal_room();
 }
 inline void S_CreateRoomRes::unsafe_arena_set_allocated_room(
-    ::Protocol::RoomInfo* room) {
+    ::Protocol::RoomDetailInfo* room) {
   if (GetArenaForAllocation() == nullptr) {
     delete reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.room_);
   }
@@ -6377,9 +6301,9 @@ inline void S_CreateRoomRes::unsafe_arena_set_allocated_room(
   }
   // @@protoc_insertion_point(field_unsafe_arena_set_allocated:Protocol.S_CreateRoomRes.room)
 }
-inline ::Protocol::RoomInfo* S_CreateRoomRes::release_room() {
+inline ::Protocol::RoomDetailInfo* S_CreateRoomRes::release_room() {
   
-  ::Protocol::RoomInfo* temp = _impl_.room_;
+  ::Protocol::RoomDetailInfo* temp = _impl_.room_;
   _impl_.room_ = nullptr;
 #ifdef PROTOBUF_FORCE_COPY_IN_RELEASE
   auto* old =  reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(temp);
@@ -6392,27 +6316,27 @@ inline ::Protocol::RoomInfo* S_CreateRoomRes::release_room() {
 #endif  // !PROTOBUF_FORCE_COPY_IN_RELEASE
   return temp;
 }
-inline ::Protocol::RoomInfo* S_CreateRoomRes::unsafe_arena_release_room() {
+inline ::Protocol::RoomDetailInfo* S_CreateRoomRes::unsafe_arena_release_room() {
   // @@protoc_insertion_point(field_release:Protocol.S_CreateRoomRes.room)
   
-  ::Protocol::RoomInfo* temp = _impl_.room_;
+  ::Protocol::RoomDetailInfo* temp = _impl_.room_;
   _impl_.room_ = nullptr;
   return temp;
 }
-inline ::Protocol::RoomInfo* S_CreateRoomRes::_internal_mutable_room() {
+inline ::Protocol::RoomDetailInfo* S_CreateRoomRes::_internal_mutable_room() {
   
   if (_impl_.room_ == nullptr) {
-    auto* p = CreateMaybeMessage<::Protocol::RoomInfo>(GetArenaForAllocation());
+    auto* p = CreateMaybeMessage<::Protocol::RoomDetailInfo>(GetArenaForAllocation());
     _impl_.room_ = p;
   }
   return _impl_.room_;
 }
-inline ::Protocol::RoomInfo* S_CreateRoomRes::mutable_room() {
-  ::Protocol::RoomInfo* _msg = _internal_mutable_room();
+inline ::Protocol::RoomDetailInfo* S_CreateRoomRes::mutable_room() {
+  ::Protocol::RoomDetailInfo* _msg = _internal_mutable_room();
   // @@protoc_insertion_point(field_mutable:Protocol.S_CreateRoomRes.room)
   return _msg;
 }
-inline void S_CreateRoomRes::set_allocated_room(::Protocol::RoomInfo* room) {
+inline void S_CreateRoomRes::set_allocated_room(::Protocol::RoomDetailInfo* room) {
   ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
   if (message_arena == nullptr) {
     delete reinterpret_cast< ::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.room_);
@@ -6531,24 +6455,24 @@ inline void S_JoinRoomRes::set_success(bool value) {
   // @@protoc_insertion_point(field_set:Protocol.S_JoinRoomRes.success)
 }
 
-// .Protocol.RoomInfo room = 2;
+// .Protocol.RoomDetailInfo room = 2;
 inline bool S_JoinRoomRes::_internal_has_room() const {
   return this != internal_default_instance() && _impl_.room_ != nullptr;
 }
 inline bool S_JoinRoomRes::has_room() const {
   return _internal_has_room();
 }
-inline const ::Protocol::RoomInfo& S_JoinRoomRes::_internal_room() const {
-  const ::Protocol::RoomInfo* p = _impl_.room_;
-  return p != nullptr ? *p : reinterpret_cast<const ::Protocol::RoomInfo&>(
-      ::Protocol::_RoomInfo_default_instance_);
+inline const ::Protocol::RoomDetailInfo& S_JoinRoomRes::_internal_room() const {
+  const ::Protocol::RoomDetailInfo* p = _impl_.room_;
+  return p != nullptr ? *p : reinterpret_cast<const ::Protocol::RoomDetailInfo&>(
+      ::Protocol::_RoomDetailInfo_default_instance_);
 }
-inline const ::Protocol::RoomInfo& S_JoinRoomRes::room() const {
+inline const ::Protocol::RoomDetailInfo& S_JoinRoomRes::room() const {
   // @@protoc_insertion_point(field_get:Protocol.S_JoinRoomRes.room)
   return _internal_room();
 }
 inline void S_JoinRoomRes::unsafe_arena_set_allocated_room(
-    ::Protocol::RoomInfo* room) {
+    ::Protocol::RoomDetailInfo* room) {
   if (GetArenaForAllocation() == nullptr) {
     delete reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.room_);
   }
@@ -6560,9 +6484,9 @@ inline void S_JoinRoomRes::unsafe_arena_set_allocated_room(
   }
   // @@protoc_insertion_point(field_unsafe_arena_set_allocated:Protocol.S_JoinRoomRes.room)
 }
-inline ::Protocol::RoomInfo* S_JoinRoomRes::release_room() {
+inline ::Protocol::RoomDetailInfo* S_JoinRoomRes::release_room() {
   
-  ::Protocol::RoomInfo* temp = _impl_.room_;
+  ::Protocol::RoomDetailInfo* temp = _impl_.room_;
   _impl_.room_ = nullptr;
 #ifdef PROTOBUF_FORCE_COPY_IN_RELEASE
   auto* old =  reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(temp);
@@ -6575,27 +6499,27 @@ inline ::Protocol::RoomInfo* S_JoinRoomRes::release_room() {
 #endif  // !PROTOBUF_FORCE_COPY_IN_RELEASE
   return temp;
 }
-inline ::Protocol::RoomInfo* S_JoinRoomRes::unsafe_arena_release_room() {
+inline ::Protocol::RoomDetailInfo* S_JoinRoomRes::unsafe_arena_release_room() {
   // @@protoc_insertion_point(field_release:Protocol.S_JoinRoomRes.room)
   
-  ::Protocol::RoomInfo* temp = _impl_.room_;
+  ::Protocol::RoomDetailInfo* temp = _impl_.room_;
   _impl_.room_ = nullptr;
   return temp;
 }
-inline ::Protocol::RoomInfo* S_JoinRoomRes::_internal_mutable_room() {
+inline ::Protocol::RoomDetailInfo* S_JoinRoomRes::_internal_mutable_room() {
   
   if (_impl_.room_ == nullptr) {
-    auto* p = CreateMaybeMessage<::Protocol::RoomInfo>(GetArenaForAllocation());
+    auto* p = CreateMaybeMessage<::Protocol::RoomDetailInfo>(GetArenaForAllocation());
     _impl_.room_ = p;
   }
   return _impl_.room_;
 }
-inline ::Protocol::RoomInfo* S_JoinRoomRes::mutable_room() {
-  ::Protocol::RoomInfo* _msg = _internal_mutable_room();
+inline ::Protocol::RoomDetailInfo* S_JoinRoomRes::mutable_room() {
+  ::Protocol::RoomDetailInfo* _msg = _internal_mutable_room();
   // @@protoc_insertion_point(field_mutable:Protocol.S_JoinRoomRes.room)
   return _msg;
 }
-inline void S_JoinRoomRes::set_allocated_room(::Protocol::RoomInfo* room) {
+inline void S_JoinRoomRes::set_allocated_room(::Protocol::RoomDetailInfo* room) {
   ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
   if (message_arena == nullptr) {
     delete reinterpret_cast< ::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.room_);

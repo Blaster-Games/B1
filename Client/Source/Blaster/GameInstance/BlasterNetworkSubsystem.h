@@ -6,6 +6,8 @@
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnAuthSuccessDelegate);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnAuthFailedDelegate, const FString&, ErrorMessage);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnEnterLobbyResponseDelegate);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnRoomListResponseDelegate, const TArray<FRoomListItemInfo>&, Rooms);
 
 UCLASS()
 class BLASTER_API UBlasterNetworkSubsystem : public UGameInstanceSubsystem
@@ -21,9 +23,22 @@ public:
     UPROPERTY(BlueprintAssignable, Category = "Network|Auth")
     FOnAuthFailedDelegate OnAuthFailed;
 
+    UPROPERTY(BlueprintAssignable, Category = "Network|Lobby")
+    FOnEnterLobbyResponseDelegate OnEnterLobbyResponse;
+
+    UPROPERTY(BlueprintAssignable, Category = "Network|Lobby")
+    FOnRoomListResponseDelegate OnRoomListResponse;
+
 public:
-    void HandleAuthRes(Protocol::S_AuthRes& packet);
     void SendAuthReq();
+    void HandleAuthRes(Protocol::S_AuthRes& packet);
+
+    void SendEnterLobbyReq();
+    void HandleEnterLobbyRes(Protocol::S_EnterLobbyRes& packet);
+
+    void SendRoomListReq();
+    void HandleRoomListRes(Protocol::S_RoomListRes& packet);
+
     void HandlePing();
     void SendPong();
 

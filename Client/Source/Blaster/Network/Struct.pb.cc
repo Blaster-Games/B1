@@ -37,27 +37,47 @@ struct PlayerInfoDefaultTypeInternal {
   };
 };
 PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 PlayerInfoDefaultTypeInternal _PlayerInfo_default_instance_;
-PROTOBUF_CONSTEXPR RoomInfo::RoomInfo(
+PROTOBUF_CONSTEXPR RoomListItemInfo::RoomListItemInfo(
     ::_pbi::ConstantInitialized): _impl_{
-    /*decltype(_impl_.players_)*/{}
-  , /*decltype(_impl_.title_)*/{&::_pbi::fixed_address_empty_string, ::_pbi::ConstantInitialized{}}
+    /*decltype(_impl_.roomname_)*/{&::_pbi::fixed_address_empty_string, ::_pbi::ConstantInitialized{}}
   , /*decltype(_impl_.mapname_)*/{&::_pbi::fixed_address_empty_string, ::_pbi::ConstantInitialized{}}
   , /*decltype(_impl_.roomid_)*/0
-  , /*decltype(_impl_.mode_)*/0
+  , /*decltype(_impl_.roomtype_)*/0
+  , /*decltype(_impl_.currentplayers_)*/0
   , /*decltype(_impl_.maxplayers_)*/0
   , /*decltype(_impl_.state_)*/0
   , /*decltype(_impl_._cached_size_)*/{}} {}
-struct RoomInfoDefaultTypeInternal {
-  PROTOBUF_CONSTEXPR RoomInfoDefaultTypeInternal()
+struct RoomListItemInfoDefaultTypeInternal {
+  PROTOBUF_CONSTEXPR RoomListItemInfoDefaultTypeInternal()
       : _instance(::_pbi::ConstantInitialized{}) {}
-  ~RoomInfoDefaultTypeInternal() {}
+  ~RoomListItemInfoDefaultTypeInternal() {}
   union {
-    RoomInfo _instance;
+    RoomListItemInfo _instance;
   };
 };
-PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 RoomInfoDefaultTypeInternal _RoomInfo_default_instance_;
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 RoomListItemInfoDefaultTypeInternal _RoomListItemInfo_default_instance_;
+PROTOBUF_CONSTEXPR RoomDetailInfo::RoomDetailInfo(
+    ::_pbi::ConstantInitialized): _impl_{
+    /*decltype(_impl_.players_)*/{}
+  , /*decltype(_impl_.roomname_)*/{&::_pbi::fixed_address_empty_string, ::_pbi::ConstantInitialized{}}
+  , /*decltype(_impl_.mapname_)*/{&::_pbi::fixed_address_empty_string, ::_pbi::ConstantInitialized{}}
+  , /*decltype(_impl_.roomid_)*/0
+  , /*decltype(_impl_.roomtype_)*/0
+  , /*decltype(_impl_.maxplayers_)*/0
+  , /*decltype(_impl_.state_)*/0
+  , /*decltype(_impl_.hostplayerid_)*/0
+  , /*decltype(_impl_._cached_size_)*/{}} {}
+struct RoomDetailInfoDefaultTypeInternal {
+  PROTOBUF_CONSTEXPR RoomDetailInfoDefaultTypeInternal()
+      : _instance(::_pbi::ConstantInitialized{}) {}
+  ~RoomDetailInfoDefaultTypeInternal() {}
+  union {
+    RoomDetailInfo _instance;
+  };
+};
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 RoomDetailInfoDefaultTypeInternal _RoomDetailInfo_default_instance_;
 }  // namespace Protocol
-static ::_pb::Metadata file_level_metadata_Struct_2eproto[2];
+static ::_pb::Metadata file_level_metadata_Struct_2eproto[3];
 static constexpr ::_pb::EnumDescriptor const** file_level_enum_descriptors_Struct_2eproto = nullptr;
 static constexpr ::_pb::ServiceDescriptor const** file_level_service_descriptors_Struct_2eproto = nullptr;
 
@@ -73,49 +93,70 @@ const uint32_t TableStruct_Struct_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE(p
   PROTOBUF_FIELD_OFFSET(::Protocol::PlayerInfo, _impl_.ishost_),
   PROTOBUF_FIELD_OFFSET(::Protocol::PlayerInfo, _impl_.team_),
   ~0u,  // no _has_bits_
-  PROTOBUF_FIELD_OFFSET(::Protocol::RoomInfo, _internal_metadata_),
+  PROTOBUF_FIELD_OFFSET(::Protocol::RoomListItemInfo, _internal_metadata_),
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
   ~0u,  // no _inlined_string_donated_
-  PROTOBUF_FIELD_OFFSET(::Protocol::RoomInfo, _impl_.roomid_),
-  PROTOBUF_FIELD_OFFSET(::Protocol::RoomInfo, _impl_.title_),
-  PROTOBUF_FIELD_OFFSET(::Protocol::RoomInfo, _impl_.mode_),
-  PROTOBUF_FIELD_OFFSET(::Protocol::RoomInfo, _impl_.maxplayers_),
-  PROTOBUF_FIELD_OFFSET(::Protocol::RoomInfo, _impl_.players_),
-  PROTOBUF_FIELD_OFFSET(::Protocol::RoomInfo, _impl_.state_),
-  PROTOBUF_FIELD_OFFSET(::Protocol::RoomInfo, _impl_.mapname_),
+  PROTOBUF_FIELD_OFFSET(::Protocol::RoomListItemInfo, _impl_.roomid_),
+  PROTOBUF_FIELD_OFFSET(::Protocol::RoomListItemInfo, _impl_.roomname_),
+  PROTOBUF_FIELD_OFFSET(::Protocol::RoomListItemInfo, _impl_.roomtype_),
+  PROTOBUF_FIELD_OFFSET(::Protocol::RoomListItemInfo, _impl_.currentplayers_),
+  PROTOBUF_FIELD_OFFSET(::Protocol::RoomListItemInfo, _impl_.maxplayers_),
+  PROTOBUF_FIELD_OFFSET(::Protocol::RoomListItemInfo, _impl_.state_),
+  PROTOBUF_FIELD_OFFSET(::Protocol::RoomListItemInfo, _impl_.mapname_),
+  ~0u,  // no _has_bits_
+  PROTOBUF_FIELD_OFFSET(::Protocol::RoomDetailInfo, _internal_metadata_),
+  ~0u,  // no _extensions_
+  ~0u,  // no _oneof_case_
+  ~0u,  // no _weak_field_map_
+  ~0u,  // no _inlined_string_donated_
+  PROTOBUF_FIELD_OFFSET(::Protocol::RoomDetailInfo, _impl_.roomid_),
+  PROTOBUF_FIELD_OFFSET(::Protocol::RoomDetailInfo, _impl_.roomname_),
+  PROTOBUF_FIELD_OFFSET(::Protocol::RoomDetailInfo, _impl_.roomtype_),
+  PROTOBUF_FIELD_OFFSET(::Protocol::RoomDetailInfo, _impl_.maxplayers_),
+  PROTOBUF_FIELD_OFFSET(::Protocol::RoomDetailInfo, _impl_.players_),
+  PROTOBUF_FIELD_OFFSET(::Protocol::RoomDetailInfo, _impl_.state_),
+  PROTOBUF_FIELD_OFFSET(::Protocol::RoomDetailInfo, _impl_.mapname_),
+  PROTOBUF_FIELD_OFFSET(::Protocol::RoomDetailInfo, _impl_.hostplayerid_),
 };
 static const ::_pbi::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
   { 0, -1, -1, sizeof(::Protocol::PlayerInfo)},
-  { 10, -1, -1, sizeof(::Protocol::RoomInfo)},
+  { 10, -1, -1, sizeof(::Protocol::RoomListItemInfo)},
+  { 23, -1, -1, sizeof(::Protocol::RoomDetailInfo)},
 };
 
 static const ::_pb::Message* const file_default_instances[] = {
   &::Protocol::_PlayerInfo_default_instance_._instance,
-  &::Protocol::_RoomInfo_default_instance_._instance,
+  &::Protocol::_RoomListItemInfo_default_instance_._instance,
+  &::Protocol::_RoomDetailInfo_default_instance_._instance,
 };
 
 const char descriptor_table_protodef_Struct_2eproto[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) =
   "\n\014Struct.proto\022\010Protocol\032\nEnum.proto\"e\n\n"
   "PlayerInfo\022\020\n\010playerId\030\001 \001(\005\022\022\n\nplayerNa"
   "me\030\002 \001(\t\022\016\n\006isHost\030\003 \001(\010\022!\n\004team\030\004 \001(\0162\023"
-  ".Protocol.ETeamType\"\275\001\n\010RoomInfo\022\016\n\006room"
-  "Id\030\001 \001(\005\022\r\n\005title\030\002 \001(\t\022!\n\004mode\030\003 \001(\0162\023."
-  "Protocol.EGameMode\022\022\n\nmaxPlayers\030\004 \001(\005\022%"
-  "\n\007players\030\005 \003(\0132\024.Protocol.PlayerInfo\022#\n"
+  ".Protocol.ETeamType\"\275\001\n\020RoomListItemInfo"
+  "\022\016\n\006roomId\030\001 \001(\005\022\020\n\010roomName\030\002 \001(\t\022%\n\010ro"
+  "omType\030\003 \001(\0162\023.Protocol.EGameMode\022\026\n\016cur"
+  "rentPlayers\030\004 \001(\005\022\022\n\nmaxPlayers\030\005 \001(\005\022#\n"
   "\005state\030\006 \001(\0162\024.Protocol.ERoomState\022\017\n\007ma"
-  "pName\030\007 \001(\tB\033\252\002\030Google.Protobuf.Protocol"
-  "b\006proto3"
+  "pName\030\007 \001(\t\"\340\001\n\016RoomDetailInfo\022\016\n\006roomId"
+  "\030\001 \001(\005\022\020\n\010roomName\030\002 \001(\t\022%\n\010roomType\030\003 \001"
+  "(\0162\023.Protocol.EGameMode\022\022\n\nmaxPlayers\030\004 "
+  "\001(\005\022%\n\007players\030\005 \003(\0132\024.Protocol.PlayerIn"
+  "fo\022#\n\005state\030\006 \001(\0162\024.Protocol.ERoomState\022"
+  "\017\n\007mapName\030\007 \001(\t\022\024\n\014hostPlayerId\030\010 \001(\005B\033"
+  "\252\002\030Google.Protobuf.Protocolb\006proto3"
   ;
 static const ::_pbi::DescriptorTable* const descriptor_table_Struct_2eproto_deps[1] = {
   &::descriptor_table_Enum_2eproto,
 };
 static ::_pbi::once_flag descriptor_table_Struct_2eproto_once;
 const ::_pbi::DescriptorTable descriptor_table_Struct_2eproto = {
-    false, false, 368, descriptor_table_protodef_Struct_2eproto,
+    false, false, 595, descriptor_table_protodef_Struct_2eproto,
     "Struct.proto",
-    &descriptor_table_Struct_2eproto_once, descriptor_table_Struct_2eproto_deps, 1, 2,
+    &descriptor_table_Struct_2eproto_once, descriptor_table_Struct_2eproto_deps, 1, 3,
     schemas, file_default_instances, TableStruct_Struct_2eproto::offsets,
     file_level_metadata_Struct_2eproto, file_level_enum_descriptors_Struct_2eproto,
     file_level_service_descriptors_Struct_2eproto,
@@ -420,36 +461,36 @@ void PlayerInfo::InternalSwap(PlayerInfo* other) {
 
 // ===================================================================
 
-class RoomInfo::_Internal {
+class RoomListItemInfo::_Internal {
  public:
 };
 
-RoomInfo::RoomInfo(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+RoomListItemInfo::RoomListItemInfo(::PROTOBUF_NAMESPACE_ID::Arena* arena,
                          bool is_message_owned)
   : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned) {
   SharedCtor(arena, is_message_owned);
-  // @@protoc_insertion_point(arena_constructor:Protocol.RoomInfo)
+  // @@protoc_insertion_point(arena_constructor:Protocol.RoomListItemInfo)
 }
-RoomInfo::RoomInfo(const RoomInfo& from)
+RoomListItemInfo::RoomListItemInfo(const RoomListItemInfo& from)
   : ::PROTOBUF_NAMESPACE_ID::Message() {
-  RoomInfo* const _this = this; (void)_this;
+  RoomListItemInfo* const _this = this; (void)_this;
   new (&_impl_) Impl_{
-      decltype(_impl_.players_){from._impl_.players_}
-    , decltype(_impl_.title_){}
+      decltype(_impl_.roomname_){}
     , decltype(_impl_.mapname_){}
     , decltype(_impl_.roomid_){}
-    , decltype(_impl_.mode_){}
+    , decltype(_impl_.roomtype_){}
+    , decltype(_impl_.currentplayers_){}
     , decltype(_impl_.maxplayers_){}
     , decltype(_impl_.state_){}
     , /*decltype(_impl_._cached_size_)*/{}};
 
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
-  _impl_.title_.InitDefault();
+  _impl_.roomname_.InitDefault();
   #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-    _impl_.title_.Set("", GetArenaForAllocation());
+    _impl_.roomname_.Set("", GetArenaForAllocation());
   #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  if (!from._internal_title().empty()) {
-    _this->_impl_.title_.Set(from._internal_title(), 
+  if (!from._internal_roomname().empty()) {
+    _this->_impl_.roomname_.Set(from._internal_roomname(), 
       _this->GetArenaForAllocation());
   }
   _impl_.mapname_.InitDefault();
@@ -463,26 +504,26 @@ RoomInfo::RoomInfo(const RoomInfo& from)
   ::memcpy(&_impl_.roomid_, &from._impl_.roomid_,
     static_cast<size_t>(reinterpret_cast<char*>(&_impl_.state_) -
     reinterpret_cast<char*>(&_impl_.roomid_)) + sizeof(_impl_.state_));
-  // @@protoc_insertion_point(copy_constructor:Protocol.RoomInfo)
+  // @@protoc_insertion_point(copy_constructor:Protocol.RoomListItemInfo)
 }
 
-inline void RoomInfo::SharedCtor(
+inline void RoomListItemInfo::SharedCtor(
     ::_pb::Arena* arena, bool is_message_owned) {
   (void)arena;
   (void)is_message_owned;
   new (&_impl_) Impl_{
-      decltype(_impl_.players_){arena}
-    , decltype(_impl_.title_){}
+      decltype(_impl_.roomname_){}
     , decltype(_impl_.mapname_){}
     , decltype(_impl_.roomid_){0}
-    , decltype(_impl_.mode_){0}
+    , decltype(_impl_.roomtype_){0}
+    , decltype(_impl_.currentplayers_){0}
     , decltype(_impl_.maxplayers_){0}
     , decltype(_impl_.state_){0}
     , /*decltype(_impl_._cached_size_)*/{}
   };
-  _impl_.title_.InitDefault();
+  _impl_.roomname_.InitDefault();
   #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-    _impl_.title_.Set("", GetArenaForAllocation());
+    _impl_.roomname_.Set("", GetArenaForAllocation());
   #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
   _impl_.mapname_.InitDefault();
   #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
@@ -490,8 +531,8 @@ inline void RoomInfo::SharedCtor(
   #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
 }
 
-RoomInfo::~RoomInfo() {
-  // @@protoc_insertion_point(destructor:Protocol.RoomInfo)
+RoomListItemInfo::~RoomListItemInfo() {
+  // @@protoc_insertion_point(destructor:Protocol.RoomListItemInfo)
   if (auto *arena = _internal_metadata_.DeleteReturnArena<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>()) {
   (void)arena;
     return;
@@ -499,25 +540,23 @@ RoomInfo::~RoomInfo() {
   SharedDtor();
 }
 
-inline void RoomInfo::SharedDtor() {
+inline void RoomListItemInfo::SharedDtor() {
   GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
-  _impl_.players_.~RepeatedPtrField();
-  _impl_.title_.Destroy();
+  _impl_.roomname_.Destroy();
   _impl_.mapname_.Destroy();
 }
 
-void RoomInfo::SetCachedSize(int size) const {
+void RoomListItemInfo::SetCachedSize(int size) const {
   _impl_._cached_size_.Set(size);
 }
 
-void RoomInfo::Clear() {
-// @@protoc_insertion_point(message_clear_start:Protocol.RoomInfo)
+void RoomListItemInfo::Clear() {
+// @@protoc_insertion_point(message_clear_start:Protocol.RoomListItemInfo)
   uint32_t cached_has_bits = 0;
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
-  _impl_.players_.Clear();
-  _impl_.title_.ClearToEmpty();
+  _impl_.roomname_.ClearToEmpty();
   _impl_.mapname_.ClearToEmpty();
   ::memset(&_impl_.roomid_, 0, static_cast<size_t>(
       reinterpret_cast<char*>(&_impl_.state_) -
@@ -525,7 +564,7 @@ void RoomInfo::Clear() {
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
-const char* RoomInfo::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx) {
+const char* RoomListItemInfo::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx) {
 #define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
   while (!ctx->Done(&ptr)) {
     uint32_t tag;
@@ -539,22 +578,417 @@ const char* RoomInfo::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx)
         } else
           goto handle_unusual;
         continue;
-      // string title = 2;
+      // string roomName = 2;
       case 2:
         if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 18)) {
-          auto str = _internal_mutable_title();
+          auto str = _internal_mutable_roomname();
           ptr = ::_pbi::InlineGreedyStringParser(str, ptr, ctx);
           CHK_(ptr);
-          CHK_(::_pbi::VerifyUTF8(str, "Protocol.RoomInfo.title"));
+          CHK_(::_pbi::VerifyUTF8(str, "Protocol.RoomListItemInfo.roomName"));
         } else
           goto handle_unusual;
         continue;
-      // .Protocol.EGameMode mode = 3;
+      // .Protocol.EGameMode roomType = 3;
       case 3:
         if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 24)) {
           uint64_t val = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
           CHK_(ptr);
-          _internal_set_mode(static_cast<::Protocol::EGameMode>(val));
+          _internal_set_roomtype(static_cast<::Protocol::EGameMode>(val));
+        } else
+          goto handle_unusual;
+        continue;
+      // int32 currentPlayers = 4;
+      case 4:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 32)) {
+          _impl_.currentplayers_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // int32 maxPlayers = 5;
+      case 5:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 40)) {
+          _impl_.maxplayers_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // .Protocol.ERoomState state = 6;
+      case 6:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 48)) {
+          uint64_t val = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
+          CHK_(ptr);
+          _internal_set_state(static_cast<::Protocol::ERoomState>(val));
+        } else
+          goto handle_unusual;
+        continue;
+      // string mapName = 7;
+      case 7:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 58)) {
+          auto str = _internal_mutable_mapname();
+          ptr = ::_pbi::InlineGreedyStringParser(str, ptr, ctx);
+          CHK_(ptr);
+          CHK_(::_pbi::VerifyUTF8(str, "Protocol.RoomListItemInfo.mapName"));
+        } else
+          goto handle_unusual;
+        continue;
+      default:
+        goto handle_unusual;
+    }  // switch
+  handle_unusual:
+    if ((tag == 0) || ((tag & 7) == 4)) {
+      CHK_(ptr);
+      ctx->SetLastTag(tag);
+      goto message_done;
+    }
+    ptr = UnknownFieldParse(
+        tag,
+        _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+        ptr, ctx);
+    CHK_(ptr != nullptr);
+  }  // while
+message_done:
+  return ptr;
+failure:
+  ptr = nullptr;
+  goto message_done;
+#undef CHK_
+}
+
+uint8_t* RoomListItemInfo::_InternalSerialize(
+    uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
+  // @@protoc_insertion_point(serialize_to_array_start:Protocol.RoomListItemInfo)
+  uint32_t cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // int32 roomId = 1;
+  if (this->_internal_roomid() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteInt32ToArray(1, this->_internal_roomid(), target);
+  }
+
+  // string roomName = 2;
+  if (!this->_internal_roomname().empty()) {
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
+      this->_internal_roomname().data(), static_cast<int>(this->_internal_roomname().length()),
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
+      "Protocol.RoomListItemInfo.roomName");
+    target = stream->WriteStringMaybeAliased(
+        2, this->_internal_roomname(), target);
+  }
+
+  // .Protocol.EGameMode roomType = 3;
+  if (this->_internal_roomtype() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteEnumToArray(
+      3, this->_internal_roomtype(), target);
+  }
+
+  // int32 currentPlayers = 4;
+  if (this->_internal_currentplayers() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteInt32ToArray(4, this->_internal_currentplayers(), target);
+  }
+
+  // int32 maxPlayers = 5;
+  if (this->_internal_maxplayers() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteInt32ToArray(5, this->_internal_maxplayers(), target);
+  }
+
+  // .Protocol.ERoomState state = 6;
+  if (this->_internal_state() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteEnumToArray(
+      6, this->_internal_state(), target);
+  }
+
+  // string mapName = 7;
+  if (!this->_internal_mapname().empty()) {
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
+      this->_internal_mapname().data(), static_cast<int>(this->_internal_mapname().length()),
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
+      "Protocol.RoomListItemInfo.mapName");
+    target = stream->WriteStringMaybeAliased(
+        7, this->_internal_mapname(), target);
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    target = ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:Protocol.RoomListItemInfo)
+  return target;
+}
+
+size_t RoomListItemInfo::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:Protocol.RoomListItemInfo)
+  size_t total_size = 0;
+
+  uint32_t cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  // string roomName = 2;
+  if (!this->_internal_roomname().empty()) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
+        this->_internal_roomname());
+  }
+
+  // string mapName = 7;
+  if (!this->_internal_mapname().empty()) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
+        this->_internal_mapname());
+  }
+
+  // int32 roomId = 1;
+  if (this->_internal_roomid() != 0) {
+    total_size += ::_pbi::WireFormatLite::Int32SizePlusOne(this->_internal_roomid());
+  }
+
+  // .Protocol.EGameMode roomType = 3;
+  if (this->_internal_roomtype() != 0) {
+    total_size += 1 +
+      ::_pbi::WireFormatLite::EnumSize(this->_internal_roomtype());
+  }
+
+  // int32 currentPlayers = 4;
+  if (this->_internal_currentplayers() != 0) {
+    total_size += ::_pbi::WireFormatLite::Int32SizePlusOne(this->_internal_currentplayers());
+  }
+
+  // int32 maxPlayers = 5;
+  if (this->_internal_maxplayers() != 0) {
+    total_size += ::_pbi::WireFormatLite::Int32SizePlusOne(this->_internal_maxplayers());
+  }
+
+  // .Protocol.ERoomState state = 6;
+  if (this->_internal_state() != 0) {
+    total_size += 1 +
+      ::_pbi::WireFormatLite::EnumSize(this->_internal_state());
+  }
+
+  return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
+}
+
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData RoomListItemInfo::_class_data_ = {
+    ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSourceCheck,
+    RoomListItemInfo::MergeImpl
+};
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*RoomListItemInfo::GetClassData() const { return &_class_data_; }
+
+
+void RoomListItemInfo::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg) {
+  auto* const _this = static_cast<RoomListItemInfo*>(&to_msg);
+  auto& from = static_cast<const RoomListItemInfo&>(from_msg);
+  // @@protoc_insertion_point(class_specific_merge_from_start:Protocol.RoomListItemInfo)
+  GOOGLE_DCHECK_NE(&from, _this);
+  uint32_t cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  if (!from._internal_roomname().empty()) {
+    _this->_internal_set_roomname(from._internal_roomname());
+  }
+  if (!from._internal_mapname().empty()) {
+    _this->_internal_set_mapname(from._internal_mapname());
+  }
+  if (from._internal_roomid() != 0) {
+    _this->_internal_set_roomid(from._internal_roomid());
+  }
+  if (from._internal_roomtype() != 0) {
+    _this->_internal_set_roomtype(from._internal_roomtype());
+  }
+  if (from._internal_currentplayers() != 0) {
+    _this->_internal_set_currentplayers(from._internal_currentplayers());
+  }
+  if (from._internal_maxplayers() != 0) {
+    _this->_internal_set_maxplayers(from._internal_maxplayers());
+  }
+  if (from._internal_state() != 0) {
+    _this->_internal_set_state(from._internal_state());
+  }
+  _this->_internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+}
+
+void RoomListItemInfo::CopyFrom(const RoomListItemInfo& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:Protocol.RoomListItemInfo)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool RoomListItemInfo::IsInitialized() const {
+  return true;
+}
+
+void RoomListItemInfo::InternalSwap(RoomListItemInfo* other) {
+  using std::swap;
+  auto* lhs_arena = GetArenaForAllocation();
+  auto* rhs_arena = other->GetArenaForAllocation();
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::InternalSwap(
+      &_impl_.roomname_, lhs_arena,
+      &other->_impl_.roomname_, rhs_arena
+  );
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::InternalSwap(
+      &_impl_.mapname_, lhs_arena,
+      &other->_impl_.mapname_, rhs_arena
+  );
+  ::PROTOBUF_NAMESPACE_ID::internal::memswap<
+      PROTOBUF_FIELD_OFFSET(RoomListItemInfo, _impl_.state_)
+      + sizeof(RoomListItemInfo::_impl_.state_)
+      - PROTOBUF_FIELD_OFFSET(RoomListItemInfo, _impl_.roomid_)>(
+          reinterpret_cast<char*>(&_impl_.roomid_),
+          reinterpret_cast<char*>(&other->_impl_.roomid_));
+}
+
+::PROTOBUF_NAMESPACE_ID::Metadata RoomListItemInfo::GetMetadata() const {
+  return ::_pbi::AssignDescriptors(
+      &descriptor_table_Struct_2eproto_getter, &descriptor_table_Struct_2eproto_once,
+      file_level_metadata_Struct_2eproto[1]);
+}
+
+// ===================================================================
+
+class RoomDetailInfo::_Internal {
+ public:
+};
+
+RoomDetailInfo::RoomDetailInfo(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                         bool is_message_owned)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned) {
+  SharedCtor(arena, is_message_owned);
+  // @@protoc_insertion_point(arena_constructor:Protocol.RoomDetailInfo)
+}
+RoomDetailInfo::RoomDetailInfo(const RoomDetailInfo& from)
+  : ::PROTOBUF_NAMESPACE_ID::Message() {
+  RoomDetailInfo* const _this = this; (void)_this;
+  new (&_impl_) Impl_{
+      decltype(_impl_.players_){from._impl_.players_}
+    , decltype(_impl_.roomname_){}
+    , decltype(_impl_.mapname_){}
+    , decltype(_impl_.roomid_){}
+    , decltype(_impl_.roomtype_){}
+    , decltype(_impl_.maxplayers_){}
+    , decltype(_impl_.state_){}
+    , decltype(_impl_.hostplayerid_){}
+    , /*decltype(_impl_._cached_size_)*/{}};
+
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  _impl_.roomname_.InitDefault();
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+    _impl_.roomname_.Set("", GetArenaForAllocation());
+  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (!from._internal_roomname().empty()) {
+    _this->_impl_.roomname_.Set(from._internal_roomname(), 
+      _this->GetArenaForAllocation());
+  }
+  _impl_.mapname_.InitDefault();
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+    _impl_.mapname_.Set("", GetArenaForAllocation());
+  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (!from._internal_mapname().empty()) {
+    _this->_impl_.mapname_.Set(from._internal_mapname(), 
+      _this->GetArenaForAllocation());
+  }
+  ::memcpy(&_impl_.roomid_, &from._impl_.roomid_,
+    static_cast<size_t>(reinterpret_cast<char*>(&_impl_.hostplayerid_) -
+    reinterpret_cast<char*>(&_impl_.roomid_)) + sizeof(_impl_.hostplayerid_));
+  // @@protoc_insertion_point(copy_constructor:Protocol.RoomDetailInfo)
+}
+
+inline void RoomDetailInfo::SharedCtor(
+    ::_pb::Arena* arena, bool is_message_owned) {
+  (void)arena;
+  (void)is_message_owned;
+  new (&_impl_) Impl_{
+      decltype(_impl_.players_){arena}
+    , decltype(_impl_.roomname_){}
+    , decltype(_impl_.mapname_){}
+    , decltype(_impl_.roomid_){0}
+    , decltype(_impl_.roomtype_){0}
+    , decltype(_impl_.maxplayers_){0}
+    , decltype(_impl_.state_){0}
+    , decltype(_impl_.hostplayerid_){0}
+    , /*decltype(_impl_._cached_size_)*/{}
+  };
+  _impl_.roomname_.InitDefault();
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+    _impl_.roomname_.Set("", GetArenaForAllocation());
+  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  _impl_.mapname_.InitDefault();
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+    _impl_.mapname_.Set("", GetArenaForAllocation());
+  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+}
+
+RoomDetailInfo::~RoomDetailInfo() {
+  // @@protoc_insertion_point(destructor:Protocol.RoomDetailInfo)
+  if (auto *arena = _internal_metadata_.DeleteReturnArena<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>()) {
+  (void)arena;
+    return;
+  }
+  SharedDtor();
+}
+
+inline void RoomDetailInfo::SharedDtor() {
+  GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
+  _impl_.players_.~RepeatedPtrField();
+  _impl_.roomname_.Destroy();
+  _impl_.mapname_.Destroy();
+}
+
+void RoomDetailInfo::SetCachedSize(int size) const {
+  _impl_._cached_size_.Set(size);
+}
+
+void RoomDetailInfo::Clear() {
+// @@protoc_insertion_point(message_clear_start:Protocol.RoomDetailInfo)
+  uint32_t cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  _impl_.players_.Clear();
+  _impl_.roomname_.ClearToEmpty();
+  _impl_.mapname_.ClearToEmpty();
+  ::memset(&_impl_.roomid_, 0, static_cast<size_t>(
+      reinterpret_cast<char*>(&_impl_.hostplayerid_) -
+      reinterpret_cast<char*>(&_impl_.roomid_)) + sizeof(_impl_.hostplayerid_));
+  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+const char* RoomDetailInfo::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx) {
+#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  while (!ctx->Done(&ptr)) {
+    uint32_t tag;
+    ptr = ::_pbi::ReadTag(ptr, &tag);
+    switch (tag >> 3) {
+      // int32 roomId = 1;
+      case 1:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 8)) {
+          _impl_.roomid_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // string roomName = 2;
+      case 2:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 18)) {
+          auto str = _internal_mutable_roomname();
+          ptr = ::_pbi::InlineGreedyStringParser(str, ptr, ctx);
+          CHK_(ptr);
+          CHK_(::_pbi::VerifyUTF8(str, "Protocol.RoomDetailInfo.roomName"));
+        } else
+          goto handle_unusual;
+        continue;
+      // .Protocol.EGameMode roomType = 3;
+      case 3:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 24)) {
+          uint64_t val = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
+          CHK_(ptr);
+          _internal_set_roomtype(static_cast<::Protocol::EGameMode>(val));
         } else
           goto handle_unusual;
         continue;
@@ -594,7 +1028,15 @@ const char* RoomInfo::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx)
           auto str = _internal_mutable_mapname();
           ptr = ::_pbi::InlineGreedyStringParser(str, ptr, ctx);
           CHK_(ptr);
-          CHK_(::_pbi::VerifyUTF8(str, "Protocol.RoomInfo.mapName"));
+          CHK_(::_pbi::VerifyUTF8(str, "Protocol.RoomDetailInfo.mapName"));
+        } else
+          goto handle_unusual;
+        continue;
+      // int32 hostPlayerId = 8;
+      case 8:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 64)) {
+          _impl_.hostplayerid_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
+          CHK_(ptr);
         } else
           goto handle_unusual;
         continue;
@@ -621,9 +1063,9 @@ failure:
 #undef CHK_
 }
 
-uint8_t* RoomInfo::_InternalSerialize(
+uint8_t* RoomDetailInfo::_InternalSerialize(
     uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
-  // @@protoc_insertion_point(serialize_to_array_start:Protocol.RoomInfo)
+  // @@protoc_insertion_point(serialize_to_array_start:Protocol.RoomDetailInfo)
   uint32_t cached_has_bits = 0;
   (void) cached_has_bits;
 
@@ -633,21 +1075,21 @@ uint8_t* RoomInfo::_InternalSerialize(
     target = ::_pbi::WireFormatLite::WriteInt32ToArray(1, this->_internal_roomid(), target);
   }
 
-  // string title = 2;
-  if (!this->_internal_title().empty()) {
+  // string roomName = 2;
+  if (!this->_internal_roomname().empty()) {
     ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
-      this->_internal_title().data(), static_cast<int>(this->_internal_title().length()),
+      this->_internal_roomname().data(), static_cast<int>(this->_internal_roomname().length()),
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
-      "Protocol.RoomInfo.title");
+      "Protocol.RoomDetailInfo.roomName");
     target = stream->WriteStringMaybeAliased(
-        2, this->_internal_title(), target);
+        2, this->_internal_roomname(), target);
   }
 
-  // .Protocol.EGameMode mode = 3;
-  if (this->_internal_mode() != 0) {
+  // .Protocol.EGameMode roomType = 3;
+  if (this->_internal_roomtype() != 0) {
     target = stream->EnsureSpace(target);
     target = ::_pbi::WireFormatLite::WriteEnumToArray(
-      3, this->_internal_mode(), target);
+      3, this->_internal_roomtype(), target);
   }
 
   // int32 maxPlayers = 4;
@@ -676,21 +1118,27 @@ uint8_t* RoomInfo::_InternalSerialize(
     ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
       this->_internal_mapname().data(), static_cast<int>(this->_internal_mapname().length()),
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
-      "Protocol.RoomInfo.mapName");
+      "Protocol.RoomDetailInfo.mapName");
     target = stream->WriteStringMaybeAliased(
         7, this->_internal_mapname(), target);
+  }
+
+  // int32 hostPlayerId = 8;
+  if (this->_internal_hostplayerid() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteInt32ToArray(8, this->_internal_hostplayerid(), target);
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
     target = ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
         _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
   }
-  // @@protoc_insertion_point(serialize_to_array_end:Protocol.RoomInfo)
+  // @@protoc_insertion_point(serialize_to_array_end:Protocol.RoomDetailInfo)
   return target;
 }
 
-size_t RoomInfo::ByteSizeLong() const {
-// @@protoc_insertion_point(message_byte_size_start:Protocol.RoomInfo)
+size_t RoomDetailInfo::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:Protocol.RoomDetailInfo)
   size_t total_size = 0;
 
   uint32_t cached_has_bits = 0;
@@ -704,11 +1152,11 @@ size_t RoomInfo::ByteSizeLong() const {
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(msg);
   }
 
-  // string title = 2;
-  if (!this->_internal_title().empty()) {
+  // string roomName = 2;
+  if (!this->_internal_roomname().empty()) {
     total_size += 1 +
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
-        this->_internal_title());
+        this->_internal_roomname());
   }
 
   // string mapName = 7;
@@ -723,10 +1171,10 @@ size_t RoomInfo::ByteSizeLong() const {
     total_size += ::_pbi::WireFormatLite::Int32SizePlusOne(this->_internal_roomid());
   }
 
-  // .Protocol.EGameMode mode = 3;
-  if (this->_internal_mode() != 0) {
+  // .Protocol.EGameMode roomType = 3;
+  if (this->_internal_roomtype() != 0) {
     total_size += 1 +
-      ::_pbi::WireFormatLite::EnumSize(this->_internal_mode());
+      ::_pbi::WireFormatLite::EnumSize(this->_internal_roomtype());
   }
 
   // int32 maxPlayers = 4;
@@ -740,27 +1188,32 @@ size_t RoomInfo::ByteSizeLong() const {
       ::_pbi::WireFormatLite::EnumSize(this->_internal_state());
   }
 
+  // int32 hostPlayerId = 8;
+  if (this->_internal_hostplayerid() != 0) {
+    total_size += ::_pbi::WireFormatLite::Int32SizePlusOne(this->_internal_hostplayerid());
+  }
+
   return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
 }
 
-const ::PROTOBUF_NAMESPACE_ID::Message::ClassData RoomInfo::_class_data_ = {
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData RoomDetailInfo::_class_data_ = {
     ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSourceCheck,
-    RoomInfo::MergeImpl
+    RoomDetailInfo::MergeImpl
 };
-const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*RoomInfo::GetClassData() const { return &_class_data_; }
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*RoomDetailInfo::GetClassData() const { return &_class_data_; }
 
 
-void RoomInfo::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg) {
-  auto* const _this = static_cast<RoomInfo*>(&to_msg);
-  auto& from = static_cast<const RoomInfo&>(from_msg);
-  // @@protoc_insertion_point(class_specific_merge_from_start:Protocol.RoomInfo)
+void RoomDetailInfo::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg) {
+  auto* const _this = static_cast<RoomDetailInfo*>(&to_msg);
+  auto& from = static_cast<const RoomDetailInfo&>(from_msg);
+  // @@protoc_insertion_point(class_specific_merge_from_start:Protocol.RoomDetailInfo)
   GOOGLE_DCHECK_NE(&from, _this);
   uint32_t cached_has_bits = 0;
   (void) cached_has_bits;
 
   _this->_impl_.players_.MergeFrom(from._impl_.players_);
-  if (!from._internal_title().empty()) {
-    _this->_internal_set_title(from._internal_title());
+  if (!from._internal_roomname().empty()) {
+    _this->_internal_set_roomname(from._internal_roomname());
   }
   if (!from._internal_mapname().empty()) {
     _this->_internal_set_mapname(from._internal_mapname());
@@ -768,8 +1221,8 @@ void RoomInfo::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTO
   if (from._internal_roomid() != 0) {
     _this->_internal_set_roomid(from._internal_roomid());
   }
-  if (from._internal_mode() != 0) {
-    _this->_internal_set_mode(from._internal_mode());
+  if (from._internal_roomtype() != 0) {
+    _this->_internal_set_roomtype(from._internal_roomtype());
   }
   if (from._internal_maxplayers() != 0) {
     _this->_internal_set_maxplayers(from._internal_maxplayers());
@@ -777,46 +1230,49 @@ void RoomInfo::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTO
   if (from._internal_state() != 0) {
     _this->_internal_set_state(from._internal_state());
   }
+  if (from._internal_hostplayerid() != 0) {
+    _this->_internal_set_hostplayerid(from._internal_hostplayerid());
+  }
   _this->_internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
 }
 
-void RoomInfo::CopyFrom(const RoomInfo& from) {
-// @@protoc_insertion_point(class_specific_copy_from_start:Protocol.RoomInfo)
+void RoomDetailInfo::CopyFrom(const RoomDetailInfo& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:Protocol.RoomDetailInfo)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
 }
 
-bool RoomInfo::IsInitialized() const {
+bool RoomDetailInfo::IsInitialized() const {
   return true;
 }
 
-void RoomInfo::InternalSwap(RoomInfo* other) {
+void RoomDetailInfo::InternalSwap(RoomDetailInfo* other) {
   using std::swap;
   auto* lhs_arena = GetArenaForAllocation();
   auto* rhs_arena = other->GetArenaForAllocation();
   _internal_metadata_.InternalSwap(&other->_internal_metadata_);
   _impl_.players_.InternalSwap(&other->_impl_.players_);
   ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::InternalSwap(
-      &_impl_.title_, lhs_arena,
-      &other->_impl_.title_, rhs_arena
+      &_impl_.roomname_, lhs_arena,
+      &other->_impl_.roomname_, rhs_arena
   );
   ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::InternalSwap(
       &_impl_.mapname_, lhs_arena,
       &other->_impl_.mapname_, rhs_arena
   );
   ::PROTOBUF_NAMESPACE_ID::internal::memswap<
-      PROTOBUF_FIELD_OFFSET(RoomInfo, _impl_.state_)
-      + sizeof(RoomInfo::_impl_.state_)
-      - PROTOBUF_FIELD_OFFSET(RoomInfo, _impl_.roomid_)>(
+      PROTOBUF_FIELD_OFFSET(RoomDetailInfo, _impl_.hostplayerid_)
+      + sizeof(RoomDetailInfo::_impl_.hostplayerid_)
+      - PROTOBUF_FIELD_OFFSET(RoomDetailInfo, _impl_.roomid_)>(
           reinterpret_cast<char*>(&_impl_.roomid_),
           reinterpret_cast<char*>(&other->_impl_.roomid_));
 }
 
-::PROTOBUF_NAMESPACE_ID::Metadata RoomInfo::GetMetadata() const {
+::PROTOBUF_NAMESPACE_ID::Metadata RoomDetailInfo::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_Struct_2eproto_getter, &descriptor_table_Struct_2eproto_once,
-      file_level_metadata_Struct_2eproto[1]);
+      file_level_metadata_Struct_2eproto[2]);
 }
 
 // @@protoc_insertion_point(namespace_scope)
@@ -826,9 +1282,13 @@ template<> PROTOBUF_NOINLINE ::Protocol::PlayerInfo*
 Arena::CreateMaybeMessage< ::Protocol::PlayerInfo >(Arena* arena) {
   return Arena::CreateMessageInternal< ::Protocol::PlayerInfo >(arena);
 }
-template<> PROTOBUF_NOINLINE ::Protocol::RoomInfo*
-Arena::CreateMaybeMessage< ::Protocol::RoomInfo >(Arena* arena) {
-  return Arena::CreateMessageInternal< ::Protocol::RoomInfo >(arena);
+template<> PROTOBUF_NOINLINE ::Protocol::RoomListItemInfo*
+Arena::CreateMaybeMessage< ::Protocol::RoomListItemInfo >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::Protocol::RoomListItemInfo >(arena);
+}
+template<> PROTOBUF_NOINLINE ::Protocol::RoomDetailInfo*
+Arena::CreateMaybeMessage< ::Protocol::RoomDetailInfo >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::Protocol::RoomDetailInfo >(arena);
 }
 PROTOBUF_NAMESPACE_CLOSE
 

@@ -25,7 +25,6 @@ message C_EnterLobbyReq {
 }
 
 message S_EnterLobbyRes {
-    repeated RoomInfo rooms = 1;
 }
 
 message C_LobbyChat {
@@ -43,7 +42,7 @@ message C_RoomListReq {
 }
 
 message S_RoomListRes {
-    repeated RoomInfo rooms = 1;
+    repeated RoomListItemInfo rooms = 1;
 }
 
 // ∑Î º±≈√
@@ -53,7 +52,7 @@ message C_SelectRoomReq {
 
 message S_SelectRoomRes {
     bool success = 1;
-    RoomInfo room = 2;
+    RoomListItemInfo room = 2;
     string errorMessage = 3;
 }
 
@@ -67,7 +66,7 @@ message C_CreateRoomReq {
 
 message S_CreateRoomRes {
     bool success = 1;
-    RoomInfo room = 2;
+    RoomDetailInfo room = 2;
     string errorMessage = 3;
 }
 
@@ -78,7 +77,7 @@ message C_JoinRoomReq {
 
 message S_JoinRoomRes {
     bool success = 1;
-    RoomInfo room = 2;
+    RoomDetailInfo room = 2;
     string errorMessage = 3;
 }
 

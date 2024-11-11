@@ -4,6 +4,7 @@
 #include "Serialization/ArrayWriter.h"
 #include "SocketSubsystem.h"
 #include "BlasterGameInstance.h"
+#include "HUD/Lobby/RoomList.h"
 
 void UBlasterNetworkSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 {
@@ -140,6 +141,52 @@ void UBlasterNetworkSubsystem::HandleAuthRes(Protocol::S_AuthRes& packet)
         UE_LOG(LogTemp, Error, TEXT("[NetworkSubsystem] Auth failed"));
         OnAuthFailed.Broadcast(TEXT("인증에 실패했습니다."));
     }
+}
+
+void UBlasterNetworkSubsystem::SendEnterLobbyReq()
+{
+    Protocol::C_EnterLobbyReq EnterLobbyReq;
+
+    SendBufferRef SendBuffer = ClientPacketHandler::MakeSendBuffer(EnterLobbyReq);
+    SendPacket(SendBuffer);
+}
+
+void UBlasterNetworkSubsystem::HandleEnterLobbyRes(Protocol::S_EnterLobbyRes& packet)
+{
+    OnEnterLobbyResponse.Broadcast();
+}
+
+void UBlasterNetworkSubsystem::SendRoomListReq()
+{
+    Protocol::C_RoomListReq RoomListReq;
+
+    SendBufferRef SendBuffer = ClientPacketHandler::MakeSendBuffer(RoomListReq);
+    SendPacket(SendBuffer);
+}
+
+void UBlasterNetworkSubsystem::HandleRoomListRes(Protocol::S_RoomListRes& packet)
+{
+    TArray<FRoomListItemInfo> Rooms;
+
+    // Protocol의 room 목록을 순회하면서 FRoomListItemInfo로 변환
+    for (const auto& protoRoom : packet.rooms())
+    {
+        FRoomListItemInfo RoomInfo;
+
+        // Protocol 데이터를 FRoomListItemInfo에 복사
+        RoomInfo.RoomId = protoRoom.roomid();
+        RoomInfo.RoomName = FString(UTF8_TO_TCHAR(protoRoom.roomname().c_str()));
+        RoomInfo.RoomType = static_cast<EGameMode>(protoRoom.roomtype());
+        RoomInfo.CurrentPlayers = protoRoom.currentplayers();
+        RoomInfo.MaxPlayers = protoRoom.maxplayers();
+        RoomInfo.State = static_cast<ERoomState>(protoRoom.state());
+        RoomInfo.MapName = FString(UTF8_TO_TCHAR(protoRoom.mapname().c_str()));
+
+        Rooms.Add(RoomInfo);
+    }
+
+    // 델리게이트를 통해 변환된 데이터 전달
+    OnRoomListResponse.Broadcast(Rooms);
 }
 
 void UBlasterNetworkSubsystem::HandlePing()

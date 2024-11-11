@@ -47,7 +47,12 @@ bool Handle_S_AuthRes(PacketSessionRef& session, Protocol::S_AuthRes& pkt)
 
 bool Handle_S_EnterLobbyRes(PacketSessionRef& session, Protocol::S_EnterLobbyRes& pkt)
 {
-    return false;
+    if (auto NetworkSystem = GetNetworkSystem(session))
+    {
+        NetworkSystem->HandleEnterLobbyRes(pkt);
+        return true;
+    }
+    return true;
 }
 
 bool Handle_S_BroadcastLobbyChat(PacketSessionRef& session, Protocol::S_BroadcastLobbyChat& pkt)

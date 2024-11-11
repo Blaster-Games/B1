@@ -27,4 +27,10 @@ protected:
 
     UFUNCTION()
     void OnEnterLobbyButtonClicked();
+
+    UFUNCTION()
+    void HandleEnterLobbyResponse();
+
+    UPROPERTY(EditDefaultsOnly, Category = "UI")
+    TSubclassOf<UUserWidget> LobbyWidgetClass;
 };

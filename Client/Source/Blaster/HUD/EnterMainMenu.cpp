@@ -71,7 +71,6 @@ void UEnterMainMenu::HandleEnterSuccess()
 
 void UEnterMainMenu::HandleEnterFailed(const FString& ErrorMessage)
 {
-    // 실패 처리
     if (EnterMainMenuText)
     {
         EnterMainMenuText->SetText(FText::FromString(ErrorMessage));

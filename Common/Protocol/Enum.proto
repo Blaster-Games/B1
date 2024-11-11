@@ -6,7 +6,7 @@ option csharp_namespace = "Google.Protobuf.Protocol";
 enum EGameMode {
     MODE_NONE = 0;
     MODE_DEATHMATCH = 1;
-    MODE_TEAM = 2;
+    MODE_TEAMDEATHMATCH = 2;
 }
 
 enum ETeamType {

@@ -12,12 +12,25 @@ message PlayerInfo {
     ETeamType team = 4;         // 팀전에서 사용
 }
 
-message RoomInfo {
-    int32 roomId = 1;                   // 방 ID
-    string title = 2;                   // 방 제목
-    EGameMode mode = 3;                  // 게임 모드
-    int32 maxPlayers = 4;               // 최대 인원
-    repeated PlayerInfo players = 5;    // 참가 플레이어들
-    ERoomState state = 6;                // 방 상태
-    string mapName = 7;                 // 맵 이름
+// 로비에서 방 목록 표시용 (간단한 정보)
+message RoomListItemInfo {
+    int32 roomId = 1;
+    string roomName = 2;
+    EGameMode roomType = 3;
+    int32 currentPlayers = 4;
+    int32 maxPlayers = 5;    // 최대 인원 추가
+    ERoomState state = 6;
+    string mapName = 7;
+}
+
+// 방 내부에서 사용할 상세 정보
+message RoomDetailInfo {
+    int32 roomId = 1;
+    string roomName = 2;
+    EGameMode roomType = 3;
+    int32 maxPlayers = 4;
+    repeated PlayerInfo players = 5;    // 참가자 상세 정보
+    ERoomState state = 6;
+    string mapName = 7;
+    int32 hostPlayerId = 8;   // 방장 ID
 }

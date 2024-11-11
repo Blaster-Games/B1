@@ -32,7 +32,8 @@ namespace GameServer
 
         public void HandleEnterLobbyReq(C_EnterLobbyReq reqPacket)
         {
-            throw new NotImplementedException();
+            S_EnterLobbyRes resPacket = new S_EnterLobbyRes();
+            Send(resPacket);
         }
     }
 }

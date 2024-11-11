@@ -27,17 +27,23 @@ namespace Google.Protobuf.Protocol {
             "CgxTdHJ1Y3QucHJvdG8SCFByb3RvY29sGgpFbnVtLnByb3RvImUKClBsYXll",
             "ckluZm8SEAoIcGxheWVySWQYASABKAUSEgoKcGxheWVyTmFtZRgCIAEoCRIO",
             "CgZpc0hvc3QYAyABKAgSIQoEdGVhbRgEIAEoDjITLlByb3RvY29sLkVUZWFt",
-            "VHlwZSK9AQoIUm9vbUluZm8SDgoGcm9vbUlkGAEgASgFEg0KBXRpdGxlGAIg",
-            "ASgJEiEKBG1vZGUYAyABKA4yEy5Qcm90b2NvbC5FR2FtZU1vZGUSEgoKbWF4",
-            "UGxheWVycxgEIAEoBRIlCgdwbGF5ZXJzGAUgAygLMhQuUHJvdG9jb2wuUGxh",
-            "eWVySW5mbxIjCgVzdGF0ZRgGIAEoDjIULlByb3RvY29sLkVSb29tU3RhdGUS",
-            "DwoHbWFwTmFtZRgHIAEoCUIbqgIYR29vZ2xlLlByb3RvYnVmLlByb3RvY29s",
-            "YgZwcm90bzM="));
+            "VHlwZSK9AQoQUm9vbUxpc3RJdGVtSW5mbxIOCgZyb29tSWQYASABKAUSEAoI",
+            "cm9vbU5hbWUYAiABKAkSJQoIcm9vbVR5cGUYAyABKA4yEy5Qcm90b2NvbC5F",
+            "R2FtZU1vZGUSFgoOY3VycmVudFBsYXllcnMYBCABKAUSEgoKbWF4UGxheWVy",
+            "cxgFIAEoBRIjCgVzdGF0ZRgGIAEoDjIULlByb3RvY29sLkVSb29tU3RhdGUS",
+            "DwoHbWFwTmFtZRgHIAEoCSLgAQoOUm9vbURldGFpbEluZm8SDgoGcm9vbUlk",
+            "GAEgASgFEhAKCHJvb21OYW1lGAIgASgJEiUKCHJvb21UeXBlGAMgASgOMhMu",
+            "UHJvdG9jb2wuRUdhbWVNb2RlEhIKCm1heFBsYXllcnMYBCABKAUSJQoHcGxh",
+            "eWVycxgFIAMoCzIULlByb3RvY29sLlBsYXllckluZm8SIwoFc3RhdGUYBiAB",
+            "KA4yFC5Qcm90b2NvbC5FUm9vbVN0YXRlEg8KB21hcE5hbWUYByABKAkSFAoM",
+            "aG9zdFBsYXllcklkGAggASgFQhuqAhhHb29nbGUuUHJvdG9idWYuUHJvdG9j",
+            "b2xiBnByb3RvMw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::Google.Protobuf.Protocol.EnumReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
             new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.PlayerInfo), global::Google.Protobuf.Protocol.PlayerInfo.Parser, new[]{ "PlayerId", "PlayerName", "IsHost", "Team" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.RoomInfo), global::Google.Protobuf.Protocol.RoomInfo.Parser, new[]{ "RoomId", "Title", "Mode", "MaxPlayers", "Players", "State", "MapName" }, null, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.RoomListItemInfo), global::Google.Protobuf.Protocol.RoomListItemInfo.Parser, new[]{ "RoomId", "RoomName", "RoomType", "CurrentPlayers", "MaxPlayers", "State", "MapName" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.RoomDetailInfo), global::Google.Protobuf.Protocol.RoomDetailInfo.Parser, new[]{ "RoomId", "RoomName", "RoomType", "MaxPlayers", "Players", "State", "MapName", "HostPlayerId" }, null, null, null, null)
           }));
     }
     #endregion
@@ -356,16 +362,19 @@ namespace Google.Protobuf.Protocol {
 
   }
 
-  public sealed partial class RoomInfo : pb::IMessage<RoomInfo>
+  /// <summary>
+  /// 로비에서 방 목록 표시용 (간단한 정보)
+  /// </summary>
+  public sealed partial class RoomListItemInfo : pb::IMessage<RoomListItemInfo>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
       , pb::IBufferMessage
   #endif
   {
-    private static readonly pb::MessageParser<RoomInfo> _parser = new pb::MessageParser<RoomInfo>(() => new RoomInfo());
+    private static readonly pb::MessageParser<RoomListItemInfo> _parser = new pb::MessageParser<RoomListItemInfo>(() => new RoomListItemInfo());
     private pb::UnknownFieldSet _unknownFields;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public static pb::MessageParser<RoomInfo> Parser { get { return _parser; } }
+    public static pb::MessageParser<RoomListItemInfo> Parser { get { return _parser; } }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -381,7 +390,7 @@ namespace Google.Protobuf.Protocol {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public RoomInfo() {
+    public RoomListItemInfo() {
       OnConstruction();
     }
 
@@ -389,12 +398,12 @@ namespace Google.Protobuf.Protocol {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public RoomInfo(RoomInfo other) : this() {
+    public RoomListItemInfo(RoomListItemInfo other) : this() {
       roomId_ = other.roomId_;
-      title_ = other.title_;
-      mode_ = other.mode_;
+      roomName_ = other.roomName_;
+      roomType_ = other.roomType_;
+      currentPlayers_ = other.currentPlayers_;
       maxPlayers_ = other.maxPlayers_;
-      players_ = other.players_.Clone();
       state_ = other.state_;
       mapName_ = other.mapName_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
@@ -402,16 +411,13 @@ namespace Google.Protobuf.Protocol {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public RoomInfo Clone() {
-      return new RoomInfo(this);
+    public RoomListItemInfo Clone() {
+      return new RoomListItemInfo(this);
     }
 
     /// <summary>Field number for the "roomId" field.</summary>
     public const int RoomIdFieldNumber = 1;
     private int roomId_;
-    /// <summary>
-    /// 방 ID
-    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public int RoomId {
@@ -421,41 +427,47 @@ namespace Google.Protobuf.Protocol {
       }
     }
 
-    /// <summary>Field number for the "title" field.</summary>
-    public const int TitleFieldNumber = 2;
-    private string title_ = "";
-    /// <summary>
-    /// 방 제목
-    /// </summary>
+    /// <summary>Field number for the "roomName" field.</summary>
+    public const int RoomNameFieldNumber = 2;
+    private string roomName_ = "";
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public string Title {
-      get { return title_; }
+    public string RoomName {
+      get { return roomName_; }
       set {
-        title_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+        roomName_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
       }
     }
 
-    /// <summary>Field number for the "mode" field.</summary>
-    public const int ModeFieldNumber = 3;
-    private global::Google.Protobuf.Protocol.EGameMode mode_ = global::Google.Protobuf.Protocol.EGameMode.ModeNone;
-    /// <summary>
-    /// 게임 모드
-    /// </summary>
+    /// <summary>Field number for the "roomType" field.</summary>
+    public const int RoomTypeFieldNumber = 3;
+    private global::Google.Protobuf.Protocol.EGameMode roomType_ = global::Google.Protobuf.Protocol.EGameMode.ModeNone;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public global::Google.Protobuf.Protocol.EGameMode Mode {
-      get { return mode_; }
+    public global::Google.Protobuf.Protocol.EGameMode RoomType {
+      get { return roomType_; }
       set {
-        mode_ = value;
+        roomType_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "currentPlayers" field.</summary>
+    public const int CurrentPlayersFieldNumber = 4;
+    private int currentPlayers_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int CurrentPlayers {
+      get { return currentPlayers_; }
+      set {
+        currentPlayers_ = value;
       }
     }
 
     /// <summary>Field number for the "maxPlayers" field.</summary>
-    public const int MaxPlayersFieldNumber = 4;
+    public const int MaxPlayersFieldNumber = 5;
     private int maxPlayers_;
     /// <summary>
-    /// 최대 인원
+    /// 최대 인원 추가
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -466,26 +478,9 @@ namespace Google.Protobuf.Protocol {
       }
     }
 
-    /// <summary>Field number for the "players" field.</summary>
-    public const int PlayersFieldNumber = 5;
-    private static readonly pb::FieldCodec<global::Google.Protobuf.Protocol.PlayerInfo> _repeated_players_codec
-        = pb::FieldCodec.ForMessage(42, global::Google.Protobuf.Protocol.PlayerInfo.Parser);
-    private readonly pbc::RepeatedField<global::Google.Protobuf.Protocol.PlayerInfo> players_ = new pbc::RepeatedField<global::Google.Protobuf.Protocol.PlayerInfo>();
-    /// <summary>
-    /// 참가 플레이어들
-    /// </summary>
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public pbc::RepeatedField<global::Google.Protobuf.Protocol.PlayerInfo> Players {
-      get { return players_; }
-    }
-
     /// <summary>Field number for the "state" field.</summary>
     public const int StateFieldNumber = 6;
     private global::Google.Protobuf.Protocol.ERoomState state_ = global::Google.Protobuf.Protocol.ERoomState.StateNone;
-    /// <summary>
-    /// 방 상태
-    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public global::Google.Protobuf.Protocol.ERoomState State {
@@ -498,9 +493,6 @@ namespace Google.Protobuf.Protocol {
     /// <summary>Field number for the "mapName" field.</summary>
     public const int MapNameFieldNumber = 7;
     private string mapName_ = "";
-    /// <summary>
-    /// 맵 이름
-    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public string MapName {
@@ -513,12 +505,12 @@ namespace Google.Protobuf.Protocol {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override bool Equals(object other) {
-      return Equals(other as RoomInfo);
+      return Equals(other as RoomListItemInfo);
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public bool Equals(RoomInfo other) {
+    public bool Equals(RoomListItemInfo other) {
       if (ReferenceEquals(other, null)) {
         return false;
       }
@@ -526,10 +518,10 @@ namespace Google.Protobuf.Protocol {
         return true;
       }
       if (RoomId != other.RoomId) return false;
-      if (Title != other.Title) return false;
-      if (Mode != other.Mode) return false;
+      if (RoomName != other.RoomName) return false;
+      if (RoomType != other.RoomType) return false;
+      if (CurrentPlayers != other.CurrentPlayers) return false;
       if (MaxPlayers != other.MaxPlayers) return false;
-      if(!players_.Equals(other.players_)) return false;
       if (State != other.State) return false;
       if (MapName != other.MapName) return false;
       return Equals(_unknownFields, other._unknownFields);
@@ -540,10 +532,10 @@ namespace Google.Protobuf.Protocol {
     public override int GetHashCode() {
       int hash = 1;
       if (RoomId != 0) hash ^= RoomId.GetHashCode();
-      if (Title.Length != 0) hash ^= Title.GetHashCode();
-      if (Mode != global::Google.Protobuf.Protocol.EGameMode.ModeNone) hash ^= Mode.GetHashCode();
+      if (RoomName.Length != 0) hash ^= RoomName.GetHashCode();
+      if (RoomType != global::Google.Protobuf.Protocol.EGameMode.ModeNone) hash ^= RoomType.GetHashCode();
+      if (CurrentPlayers != 0) hash ^= CurrentPlayers.GetHashCode();
       if (MaxPlayers != 0) hash ^= MaxPlayers.GetHashCode();
-      hash ^= players_.GetHashCode();
       if (State != global::Google.Protobuf.Protocol.ERoomState.StateNone) hash ^= State.GetHashCode();
       if (MapName.Length != 0) hash ^= MapName.GetHashCode();
       if (_unknownFields != null) {
@@ -568,19 +560,22 @@ namespace Google.Protobuf.Protocol {
         output.WriteRawTag(8);
         output.WriteInt32(RoomId);
       }
-      if (Title.Length != 0) {
+      if (RoomName.Length != 0) {
         output.WriteRawTag(18);
-        output.WriteString(Title);
+        output.WriteString(RoomName);
       }
-      if (Mode != global::Google.Protobuf.Protocol.EGameMode.ModeNone) {
+      if (RoomType != global::Google.Protobuf.Protocol.EGameMode.ModeNone) {
         output.WriteRawTag(24);
-        output.WriteEnum((int) Mode);
+        output.WriteEnum((int) RoomType);
+      }
+      if (CurrentPlayers != 0) {
+        output.WriteRawTag(32);
+        output.WriteInt32(CurrentPlayers);
       }
       if (MaxPlayers != 0) {
-        output.WriteRawTag(32);
+        output.WriteRawTag(40);
         output.WriteInt32(MaxPlayers);
       }
-      players_.WriteTo(output, _repeated_players_codec);
       if (State != global::Google.Protobuf.Protocol.ERoomState.StateNone) {
         output.WriteRawTag(48);
         output.WriteEnum((int) State);
@@ -603,19 +598,22 @@ namespace Google.Protobuf.Protocol {
         output.WriteRawTag(8);
         output.WriteInt32(RoomId);
       }
-      if (Title.Length != 0) {
+      if (RoomName.Length != 0) {
         output.WriteRawTag(18);
-        output.WriteString(Title);
+        output.WriteString(RoomName);
       }
-      if (Mode != global::Google.Protobuf.Protocol.EGameMode.ModeNone) {
+      if (RoomType != global::Google.Protobuf.Protocol.EGameMode.ModeNone) {
         output.WriteRawTag(24);
-        output.WriteEnum((int) Mode);
+        output.WriteEnum((int) RoomType);
+      }
+      if (CurrentPlayers != 0) {
+        output.WriteRawTag(32);
+        output.WriteInt32(CurrentPlayers);
       }
       if (MaxPlayers != 0) {
-        output.WriteRawTag(32);
+        output.WriteRawTag(40);
         output.WriteInt32(MaxPlayers);
       }
-      players_.WriteTo(ref output, _repeated_players_codec);
       if (State != global::Google.Protobuf.Protocol.ERoomState.StateNone) {
         output.WriteRawTag(48);
         output.WriteEnum((int) State);
@@ -637,16 +635,18 @@ namespace Google.Protobuf.Protocol {
       if (RoomId != 0) {
         size += 1 + pb::CodedOutputStream.ComputeInt32Size(RoomId);
       }
-      if (Title.Length != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeStringSize(Title);
+      if (RoomName.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(RoomName);
       }
-      if (Mode != global::Google.Protobuf.Protocol.EGameMode.ModeNone) {
-        size += 1 + pb::CodedOutputStream.ComputeEnumSize((int) Mode);
+      if (RoomType != global::Google.Protobuf.Protocol.EGameMode.ModeNone) {
+        size += 1 + pb::CodedOutputStream.ComputeEnumSize((int) RoomType);
+      }
+      if (CurrentPlayers != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(CurrentPlayers);
       }
       if (MaxPlayers != 0) {
         size += 1 + pb::CodedOutputStream.ComputeInt32Size(MaxPlayers);
       }
-      size += players_.CalculateSize(_repeated_players_codec);
       if (State != global::Google.Protobuf.Protocol.ERoomState.StateNone) {
         size += 1 + pb::CodedOutputStream.ComputeEnumSize((int) State);
       }
@@ -661,23 +661,25 @@ namespace Google.Protobuf.Protocol {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public void MergeFrom(RoomInfo other) {
+    public void MergeFrom(RoomListItemInfo other) {
       if (other == null) {
         return;
       }
       if (other.RoomId != 0) {
         RoomId = other.RoomId;
       }
-      if (other.Title.Length != 0) {
-        Title = other.Title;
+      if (other.RoomName.Length != 0) {
+        RoomName = other.RoomName;
       }
-      if (other.Mode != global::Google.Protobuf.Protocol.EGameMode.ModeNone) {
-        Mode = other.Mode;
+      if (other.RoomType != global::Google.Protobuf.Protocol.EGameMode.ModeNone) {
+        RoomType = other.RoomType;
+      }
+      if (other.CurrentPlayers != 0) {
+        CurrentPlayers = other.CurrentPlayers;
       }
       if (other.MaxPlayers != 0) {
         MaxPlayers = other.MaxPlayers;
       }
-      players_.Add(other.players_);
       if (other.State != global::Google.Protobuf.Protocol.ERoomState.StateNone) {
         State = other.State;
       }
@@ -704,19 +706,19 @@ namespace Google.Protobuf.Protocol {
             break;
           }
           case 18: {
-            Title = input.ReadString();
+            RoomName = input.ReadString();
             break;
           }
           case 24: {
-            Mode = (global::Google.Protobuf.Protocol.EGameMode) input.ReadEnum();
+            RoomType = (global::Google.Protobuf.Protocol.EGameMode) input.ReadEnum();
             break;
           }
           case 32: {
-            MaxPlayers = input.ReadInt32();
+            CurrentPlayers = input.ReadInt32();
             break;
           }
-          case 42: {
-            players_.AddEntriesFrom(input, _repeated_players_codec);
+          case 40: {
+            MaxPlayers = input.ReadInt32();
             break;
           }
           case 48: {
@@ -747,11 +749,453 @@ namespace Google.Protobuf.Protocol {
             break;
           }
           case 18: {
-            Title = input.ReadString();
+            RoomName = input.ReadString();
             break;
           }
           case 24: {
-            Mode = (global::Google.Protobuf.Protocol.EGameMode) input.ReadEnum();
+            RoomType = (global::Google.Protobuf.Protocol.EGameMode) input.ReadEnum();
+            break;
+          }
+          case 32: {
+            CurrentPlayers = input.ReadInt32();
+            break;
+          }
+          case 40: {
+            MaxPlayers = input.ReadInt32();
+            break;
+          }
+          case 48: {
+            State = (global::Google.Protobuf.Protocol.ERoomState) input.ReadEnum();
+            break;
+          }
+          case 58: {
+            MapName = input.ReadString();
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  /// <summary>
+  /// 방 내부에서 사용할 상세 정보
+  /// </summary>
+  public sealed partial class RoomDetailInfo : pb::IMessage<RoomDetailInfo>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<RoomDetailInfo> _parser = new pb::MessageParser<RoomDetailInfo>(() => new RoomDetailInfo());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pb::MessageParser<RoomDetailInfo> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Google.Protobuf.Protocol.StructReflection.Descriptor.MessageTypes[2]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public RoomDetailInfo() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public RoomDetailInfo(RoomDetailInfo other) : this() {
+      roomId_ = other.roomId_;
+      roomName_ = other.roomName_;
+      roomType_ = other.roomType_;
+      maxPlayers_ = other.maxPlayers_;
+      players_ = other.players_.Clone();
+      state_ = other.state_;
+      mapName_ = other.mapName_;
+      hostPlayerId_ = other.hostPlayerId_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public RoomDetailInfo Clone() {
+      return new RoomDetailInfo(this);
+    }
+
+    /// <summary>Field number for the "roomId" field.</summary>
+    public const int RoomIdFieldNumber = 1;
+    private int roomId_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int RoomId {
+      get { return roomId_; }
+      set {
+        roomId_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "roomName" field.</summary>
+    public const int RoomNameFieldNumber = 2;
+    private string roomName_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string RoomName {
+      get { return roomName_; }
+      set {
+        roomName_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "roomType" field.</summary>
+    public const int RoomTypeFieldNumber = 3;
+    private global::Google.Protobuf.Protocol.EGameMode roomType_ = global::Google.Protobuf.Protocol.EGameMode.ModeNone;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Google.Protobuf.Protocol.EGameMode RoomType {
+      get { return roomType_; }
+      set {
+        roomType_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "maxPlayers" field.</summary>
+    public const int MaxPlayersFieldNumber = 4;
+    private int maxPlayers_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int MaxPlayers {
+      get { return maxPlayers_; }
+      set {
+        maxPlayers_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "players" field.</summary>
+    public const int PlayersFieldNumber = 5;
+    private static readonly pb::FieldCodec<global::Google.Protobuf.Protocol.PlayerInfo> _repeated_players_codec
+        = pb::FieldCodec.ForMessage(42, global::Google.Protobuf.Protocol.PlayerInfo.Parser);
+    private readonly pbc::RepeatedField<global::Google.Protobuf.Protocol.PlayerInfo> players_ = new pbc::RepeatedField<global::Google.Protobuf.Protocol.PlayerInfo>();
+    /// <summary>
+    /// 참가자 상세 정보
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public pbc::RepeatedField<global::Google.Protobuf.Protocol.PlayerInfo> Players {
+      get { return players_; }
+    }
+
+    /// <summary>Field number for the "state" field.</summary>
+    public const int StateFieldNumber = 6;
+    private global::Google.Protobuf.Protocol.ERoomState state_ = global::Google.Protobuf.Protocol.ERoomState.StateNone;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::Google.Protobuf.Protocol.ERoomState State {
+      get { return state_; }
+      set {
+        state_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "mapName" field.</summary>
+    public const int MapNameFieldNumber = 7;
+    private string mapName_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public string MapName {
+      get { return mapName_; }
+      set {
+        mapName_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "hostPlayerId" field.</summary>
+    public const int HostPlayerIdFieldNumber = 8;
+    private int hostPlayerId_;
+    /// <summary>
+    /// 방장 ID
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int HostPlayerId {
+      get { return hostPlayerId_; }
+      set {
+        hostPlayerId_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override bool Equals(object other) {
+      return Equals(other as RoomDetailInfo);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Equals(RoomDetailInfo other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (RoomId != other.RoomId) return false;
+      if (RoomName != other.RoomName) return false;
+      if (RoomType != other.RoomType) return false;
+      if (MaxPlayers != other.MaxPlayers) return false;
+      if(!players_.Equals(other.players_)) return false;
+      if (State != other.State) return false;
+      if (MapName != other.MapName) return false;
+      if (HostPlayerId != other.HostPlayerId) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (RoomId != 0) hash ^= RoomId.GetHashCode();
+      if (RoomName.Length != 0) hash ^= RoomName.GetHashCode();
+      if (RoomType != global::Google.Protobuf.Protocol.EGameMode.ModeNone) hash ^= RoomType.GetHashCode();
+      if (MaxPlayers != 0) hash ^= MaxPlayers.GetHashCode();
+      hash ^= players_.GetHashCode();
+      if (State != global::Google.Protobuf.Protocol.ERoomState.StateNone) hash ^= State.GetHashCode();
+      if (MapName.Length != 0) hash ^= MapName.GetHashCode();
+      if (HostPlayerId != 0) hash ^= HostPlayerId.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (RoomId != 0) {
+        output.WriteRawTag(8);
+        output.WriteInt32(RoomId);
+      }
+      if (RoomName.Length != 0) {
+        output.WriteRawTag(18);
+        output.WriteString(RoomName);
+      }
+      if (RoomType != global::Google.Protobuf.Protocol.EGameMode.ModeNone) {
+        output.WriteRawTag(24);
+        output.WriteEnum((int) RoomType);
+      }
+      if (MaxPlayers != 0) {
+        output.WriteRawTag(32);
+        output.WriteInt32(MaxPlayers);
+      }
+      players_.WriteTo(output, _repeated_players_codec);
+      if (State != global::Google.Protobuf.Protocol.ERoomState.StateNone) {
+        output.WriteRawTag(48);
+        output.WriteEnum((int) State);
+      }
+      if (MapName.Length != 0) {
+        output.WriteRawTag(58);
+        output.WriteString(MapName);
+      }
+      if (HostPlayerId != 0) {
+        output.WriteRawTag(64);
+        output.WriteInt32(HostPlayerId);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (RoomId != 0) {
+        output.WriteRawTag(8);
+        output.WriteInt32(RoomId);
+      }
+      if (RoomName.Length != 0) {
+        output.WriteRawTag(18);
+        output.WriteString(RoomName);
+      }
+      if (RoomType != global::Google.Protobuf.Protocol.EGameMode.ModeNone) {
+        output.WriteRawTag(24);
+        output.WriteEnum((int) RoomType);
+      }
+      if (MaxPlayers != 0) {
+        output.WriteRawTag(32);
+        output.WriteInt32(MaxPlayers);
+      }
+      players_.WriteTo(ref output, _repeated_players_codec);
+      if (State != global::Google.Protobuf.Protocol.ERoomState.StateNone) {
+        output.WriteRawTag(48);
+        output.WriteEnum((int) State);
+      }
+      if (MapName.Length != 0) {
+        output.WriteRawTag(58);
+        output.WriteString(MapName);
+      }
+      if (HostPlayerId != 0) {
+        output.WriteRawTag(64);
+        output.WriteInt32(HostPlayerId);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int CalculateSize() {
+      int size = 0;
+      if (RoomId != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(RoomId);
+      }
+      if (RoomName.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(RoomName);
+      }
+      if (RoomType != global::Google.Protobuf.Protocol.EGameMode.ModeNone) {
+        size += 1 + pb::CodedOutputStream.ComputeEnumSize((int) RoomType);
+      }
+      if (MaxPlayers != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(MaxPlayers);
+      }
+      size += players_.CalculateSize(_repeated_players_codec);
+      if (State != global::Google.Protobuf.Protocol.ERoomState.StateNone) {
+        size += 1 + pb::CodedOutputStream.ComputeEnumSize((int) State);
+      }
+      if (MapName.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(MapName);
+      }
+      if (HostPlayerId != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(HostPlayerId);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(RoomDetailInfo other) {
+      if (other == null) {
+        return;
+      }
+      if (other.RoomId != 0) {
+        RoomId = other.RoomId;
+      }
+      if (other.RoomName.Length != 0) {
+        RoomName = other.RoomName;
+      }
+      if (other.RoomType != global::Google.Protobuf.Protocol.EGameMode.ModeNone) {
+        RoomType = other.RoomType;
+      }
+      if (other.MaxPlayers != 0) {
+        MaxPlayers = other.MaxPlayers;
+      }
+      players_.Add(other.players_);
+      if (other.State != global::Google.Protobuf.Protocol.ERoomState.StateNone) {
+        State = other.State;
+      }
+      if (other.MapName.Length != 0) {
+        MapName = other.MapName;
+      }
+      if (other.HostPlayerId != 0) {
+        HostPlayerId = other.HostPlayerId;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 8: {
+            RoomId = input.ReadInt32();
+            break;
+          }
+          case 18: {
+            RoomName = input.ReadString();
+            break;
+          }
+          case 24: {
+            RoomType = (global::Google.Protobuf.Protocol.EGameMode) input.ReadEnum();
+            break;
+          }
+          case 32: {
+            MaxPlayers = input.ReadInt32();
+            break;
+          }
+          case 42: {
+            players_.AddEntriesFrom(input, _repeated_players_codec);
+            break;
+          }
+          case 48: {
+            State = (global::Google.Protobuf.Protocol.ERoomState) input.ReadEnum();
+            break;
+          }
+          case 58: {
+            MapName = input.ReadString();
+            break;
+          }
+          case 64: {
+            HostPlayerId = input.ReadInt32();
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 8: {
+            RoomId = input.ReadInt32();
+            break;
+          }
+          case 18: {
+            RoomName = input.ReadString();
+            break;
+          }
+          case 24: {
+            RoomType = (global::Google.Protobuf.Protocol.EGameMode) input.ReadEnum();
             break;
           }
           case 32: {
@@ -768,6 +1212,10 @@ namespace Google.Protobuf.Protocol {
           }
           case 58: {
             MapName = input.ReadString();
+            break;
+          }
+          case 64: {
+            HostPlayerId = input.ReadInt32();
             break;
           }
         }
