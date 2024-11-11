@@ -8,6 +8,9 @@
 #include "GameFramework/PlayerStart.h"
 #include "Blaster/PlayerState/BlasterPlayerState.h"
 #include "Blaster/GameState/BlasterGameState.h"
+#include "Blaster/BlasterComponents/BuffComponent.h"
+#include "GameFramework/GameState.h" 
+
 
 namespace MatchState
 {
@@ -176,6 +179,29 @@ void ABlasterGameMode::StartNewRound()
 
 	LevelStartingTime = GetWorld()->GetTimeSeconds();
 	ResetAllPlayers();
+
+	if (BlasterGS)
+	{
+		for (APlayerState* PS : BlasterGS->PlayerArray)
+		{
+			if (ABlasterPlayerState* BPS = Cast<ABlasterPlayerState>(PS))
+			{
+				// 구매한 버프들 적용
+				if (AMyBlasterCharacter* Character = Cast<AMyBlasterCharacter>(BPS->GetPawn()))
+				{
+					if (UBuffComponent* BuffComp = Character->GetBuff())
+					{
+						TArray<EBuffType> ActiveBuffs = BPS->GetActiveBuffs();
+						for (EBuffType Buff : ActiveBuffs)
+						{
+							BuffComp->ApplyBuff(Buff);
+						}
+					}
+				}
+			}
+		}
+	}
+
 	SetMatchState(MatchState::InProgress);
 }
 
@@ -184,8 +210,17 @@ void ABlasterGameMode::EndRound()
 	// 라운드 종료 처리 (승자 결정 등)
 	if (ABlasterGameState* BlasterGS = GetGameState<ABlasterGameState>())
 	{
-		//
+		// 모든 플레이어의 버프 초기화
+		for (APlayerState* PS : BlasterGS->PlayerArray)
+		{
+			if (ABlasterPlayerState* BPS = Cast<ABlasterPlayerState>(PS))
+			{
+				BPS->ClearBuff();
+			}
+		}
 	}
+
+	
 
 	SetMatchState(MatchState::Cooldown);
 }

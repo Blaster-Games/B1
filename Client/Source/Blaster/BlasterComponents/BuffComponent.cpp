@@ -146,6 +146,26 @@ void UBuffComponent::MulticastJumpBuff_Implementation(float JumpVelocity)
 	}
 }
 
+// 현재는 하드코딩이지만 나중에 바꿀 계획이 있음.
+void UBuffComponent::ApplyBuff(EBuffType BuffType)
+{
+	switch (BuffType)
+	{
+	case EBuffType::EBT_Health:
+		Heal(1800.f, 180.f);
+		break;
+	case EBuffType::EBT_Shield:
+		ReplenishShield(100.f, 5.f);
+		break;
+	case EBuffType::EBT_Speed:
+		BuffSpeed(1600.f, 850.f, 180.f);
+		break;
+	case EBuffType::EBT_Jump:
+		BuffJump(4000.f, 180.f);
+		break;
+	}
+}
+
 void UBuffComponent::BeginPlay()
 {
 	Super::BeginPlay();

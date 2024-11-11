@@ -6,11 +6,14 @@
 #include "Components/TextBlock.h"
 #include "Components/Button.h"
 #include "Blaster/Character/MyBlasterCharacter.h"
+#include "Blaster/PlayerState/BlasterPlayerState.h"
 #include "Blaster/BlasterComponents/ShopComponent.h"
 
 void UAdditionalItem::NativeConstruct()
 {
     Super::NativeConstruct();
+
+    if (OwnedText) OwnedText->SetVisibility(ESlateVisibility::Collapsed);
 
     if (BuyButton) BuyButton->OnClicked.AddDynamic(this, &UAdditionalItem::OnBuyClicked);
 
@@ -18,6 +21,16 @@ void UAdditionalItem::NativeConstruct()
     if (AMyBlasterCharacter* Character = Cast<AMyBlasterCharacter>(GetOwningPlayerPawn()))
     {
         ShopComponent = Character->GetShop();
+    }
+
+
+    // PlayerState의 델리게이트에 바인딩
+    if (AMyBlasterCharacter* Character = Cast<AMyBlasterCharacter>(GetOwningPlayerPawn()))
+    {
+        if (ABlasterPlayerState* PS = Cast<ABlasterPlayerState>(Character->GetPlayerState()))
+        {
+            PS->OnBuffStateChanged.AddDynamic(this, &UAdditionalItem::OnBuffStateChanged);
+        }
     }
 }
 
@@ -85,5 +98,34 @@ void UAdditionalItem::OnBuyClicked()
         {
             ShopComponent->RequestBuffPurchase(BuffData);
         }
+    }
+}
+
+void UAdditionalItem::OnBuffStateChanged(EBuffType BuffType, bool bActive)
+{
+    if (!bIsThrowable && BuffData.BuffType == BuffType)
+    {
+        UpdatePurchaseState(bActive);
+    }
+}
+
+
+
+void UAdditionalItem::UpdatePurchaseState(bool bIsPurchased)
+{
+    // Owned 텍스트 처리
+    if (OwnedText)
+    {
+        OwnedText->SetVisibility(bIsPurchased ? ESlateVisibility::Visible : ESlateVisibility::Collapsed);
+    }
+
+    // 구매 버튼과 가격 정보 처리
+    if (BuyButton)
+    {
+        BuyButton->SetVisibility(bIsPurchased ? ESlateVisibility::Collapsed : ESlateVisibility::Visible);
+    }
+    if (PriceText)
+    {
+        PriceText->SetVisibility(bIsPurchased ? ESlateVisibility::Collapsed : ESlateVisibility::Visible);
     }
 }

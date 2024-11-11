@@ -24,6 +24,8 @@ public:
 	void SetThrowData(const FThrowData& InThrowData);
 	void SetBuffData(const FBuffData& InBuffData);
 
+    void UpdatePurchaseState(bool bIsPurchased);
+
 private:
 
     bool bIsThrowable; // 어떤 타입인지 구분지을려고 추가
@@ -33,6 +35,9 @@ private:
 
     UPROPERTY(meta = (BindWidget))
     UImage* ItemImage;
+
+    UPROPERTY(meta = (BindWidget))
+    UTextBlock* OwnedText;
 
     UPROPERTY(meta = (BindWidget))
     UTextBlock* PriceText;
@@ -48,4 +53,8 @@ private:
 
     UFUNCTION()
     void OnBuyClicked();
+
+    UFUNCTION()
+    void OnBuffStateChanged(EBuffType BuffType, bool bActive);
+    
 };

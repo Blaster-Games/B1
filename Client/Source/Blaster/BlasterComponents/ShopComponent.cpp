@@ -24,9 +24,7 @@ void UShopComponent::BeginPlay()
         Controller = Controller == nullptr ? Cast<ABlasterPlayerController>(Character->Controller) : Controller;
         PlayerState = PlayerState == nullptr ? Cast<ABlasterPlayerState>(Character->GetPlayerState<ABlasterPlayerState>()) : PlayerState;
     }
-
 }
-
 
 
 
