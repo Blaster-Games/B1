@@ -17,7 +17,7 @@ void UBlasterWebSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 {
     Super::Initialize(Collection);
     HttpModule = &FHttpModule::Get();
-    BaseUrl = TEXT("http://localhost:8080");
+    BaseUrl = TEXT("https://native-pika-possibly.ngrok-free.app");
 }
 
 void UBlasterWebSubsystem::Deinitialize()
