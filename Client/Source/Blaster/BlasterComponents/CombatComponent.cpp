@@ -425,6 +425,20 @@ void UCombatComponent::AddWeaponToSlot(AWeapon* NewWeapon)
 	}
 }
 
+void UCombatComponent::AddWeaponToSpecificSlot(AWeapon* Weapon, int32 SlotIndex)
+{
+	if (!Weapon) return;
+
+	// 배열 크기가 충분한지 확인
+	if (WeaponSlots.Num() <= SlotIndex)
+	{
+		WeaponSlots.SetNum(SlotIndex + 1);
+	}
+
+	// 해당 슬롯에 무기 추가
+	WeaponSlots[SlotIndex] = Weapon;
+}
+
 void UCombatComponent::OnRep_Aiming()
 {
 	if (Character && Character->IsLocallyControlled())

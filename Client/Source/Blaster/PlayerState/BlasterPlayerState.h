@@ -48,7 +48,7 @@ class BLASTER_API ABlasterPlayerState : public APlayerState
 
 public:
 	virtual void GetLifetimeReplicatedProps(TArray< FLifetimeProperty >& OutLifetimeProps) const override;
-	
+	virtual void BeginPlay() override;
 	// 델리게이트 관련
 	FOnWeaponPurchasedDelegate OnWeaponPurchased;
 	FOnWeaponSlotsUpdated OnWeaponSlotsUpdated;

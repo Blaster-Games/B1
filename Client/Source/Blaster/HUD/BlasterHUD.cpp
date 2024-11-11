@@ -91,7 +91,7 @@ void ABlasterHUD::AddShop()
 	if (PlayerController && ShopClass)
 	{
 		Shop = CreateWidget<UShop>(PlayerController, ShopClass);
-		Shop->AddToViewport();
+		Shop->InitializeShop();  // 초기 설정
 	}
 }
 

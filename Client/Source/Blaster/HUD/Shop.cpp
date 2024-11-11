@@ -2,6 +2,7 @@
 
 
 #include "HUD/Shop.h"
+#include "GameFramework/PlayerController.h"
 #include "WeaponItem.h"
 #include "AdditionalItem.h"
 #include "Engine/DataTable.h"
@@ -30,6 +31,40 @@ void UShop::NativeConstruct()
             UpdateMoneyText(PS->GetMoney());
             UpdateSlotImages();
         }
+    }
+}
+
+void UShop::InitializeShop()
+{
+    AddToViewport();
+    bIsFocusable = true;
+
+    if (UWorld* World = GetWorld())
+    {
+        PlayerController = PlayerController == nullptr ? World->GetFirstPlayerController() : PlayerController;
+    }
+}
+
+void UShop::ShowShop()
+{
+    SetVisibility(ESlateVisibility::Visible);
+    if (PlayerController)
+    {
+        FInputModeGameAndUI InputModeData;
+        InputModeData.SetWidgetToFocus(TakeWidget());
+        PlayerController->SetInputMode(InputModeData);
+        PlayerController->SetShowMouseCursor(true);
+    }
+}
+
+void UShop::HideShop()
+{
+    SetVisibility(ESlateVisibility::Hidden);
+    if (PlayerController)
+    {
+        FInputModeGameOnly InputModeData;
+        PlayerController->SetInputMode(InputModeData);
+        PlayerController->SetShowMouseCursor(false);
     }
 }
 

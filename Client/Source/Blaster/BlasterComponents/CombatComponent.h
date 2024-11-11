@@ -151,6 +151,8 @@ private:
 
 	int32 GetWeaponSlotIndex(AWeapon* Weapon) const;
 	void AddWeaponToSlot(AWeapon* NewWeapon);
+	// 라운드, 상점용.
+	void AddWeaponToSpecificSlot(AWeapon* Weapon, int32 SlotIndex);
 
 	// 줌을 잠깐만 누르면 이상해지는 현상 발생
 	// 로컬에서 Aiming을 누르고 있는지를 알려줘야 됨.

@@ -93,9 +93,12 @@ void ABlasterPlayerController::HideTeamScores()
 	}
 }
 
+// 여기 수정 필요, 라운드 개념이 들어가서....
 void ABlasterPlayerController::InitTeamScores()
 {
 	BlasterHUD = BlasterHUD == nullptr ? Cast<ABlasterHUD>(GetHUD()) : BlasterHUD;
+
+	
 
 	bool bHUDValid = BlasterHUD &&
 		BlasterHUD->CharacterOverlay &&
@@ -104,10 +107,11 @@ void ABlasterPlayerController::InitTeamScores()
 		BlasterHUD->CharacterOverlay->ScoreSpacerText;
 	if (bHUDValid)
 	{
-		FString Zero("0");
 		FString Spacer("|");
-		BlasterHUD->CharacterOverlay->RedTeamScore->SetText(FText::FromString(Zero));
-		BlasterHUD->CharacterOverlay->BlueTeamScore->SetText(FText::FromString(Zero));
+		FString RedScoreText = FString::Printf(TEXT("%d"), CachedRedScore);
+		FString BlueScoreText = FString::Printf(TEXT("%d"), CachedBlueScore);
+		BlasterHUD->CharacterOverlay->RedTeamScore->SetText(FText::FromString(RedScoreText));
+		BlasterHUD->CharacterOverlay->BlueTeamScore->SetText(FText::FromString(BlueScoreText));
 		BlasterHUD->CharacterOverlay->ScoreSpacerText->SetText(FText::FromString(Spacer));
 	}
 }
@@ -115,13 +119,16 @@ void ABlasterPlayerController::InitTeamScores()
 void ABlasterPlayerController::SetHUDRedTeamScores(int32 RedScore)
 {
 	BlasterHUD = BlasterHUD == nullptr ? Cast<ABlasterHUD>(GetHUD()) : BlasterHUD;
+	FString ScoreText = FString::Printf(TEXT("%d"), RedScore);
+
+	CachedRedScore = RedScore;
 
 	bool bHUDValid = BlasterHUD &&
 		BlasterHUD->CharacterOverlay &&
 		BlasterHUD->CharacterOverlay->RedTeamScore;
+
 	if (bHUDValid)
 	{
-		FString ScoreText = FString::Printf(TEXT("%d"), RedScore);
 		BlasterHUD->CharacterOverlay->RedTeamScore->SetText(FText::FromString(ScoreText));
 	}
 }
@@ -129,13 +136,16 @@ void ABlasterPlayerController::SetHUDRedTeamScores(int32 RedScore)
 void ABlasterPlayerController::SetHUDBlueTeamScores(int32 BlueScore)
 {
 	BlasterHUD = BlasterHUD == nullptr ? Cast<ABlasterHUD>(GetHUD()) : BlasterHUD;
+	FString ScoreText = FString::Printf(TEXT("%d"), BlueScore);
+
+	CachedBlueScore = BlueScore;
 
 	bool bHUDValid = BlasterHUD &&
 		BlasterHUD->CharacterOverlay &&
 		BlasterHUD->CharacterOverlay->BlueTeamScore;
+
 	if (bHUDValid)
 	{
-		FString ScoreText = FString::Printf(TEXT("%d"), BlueScore);
 		BlasterHUD->CharacterOverlay->BlueTeamScore->SetText(FText::FromString(ScoreText));
 	}
 }
@@ -173,10 +183,6 @@ void ABlasterPlayerController::CheckPing(float DeltaTime)
 		PlayerState = PlayerState == nullptr ? *GetPlayerState<APlayerState>() : PlayerState;
 		if (PlayerState)
 		{
-			// GetPing()는 사용 중단 되었고 이와 다른 GetPingInMilliseconds의 차이점은 *4가 되어있다는 점이다.
-			/*UE_LOG(LogTemp, Warning, TEXT("PlayerState->GetPingInMilliseconds(): %f"), PlayerState->GetPingInMilliseconds());
-			if (PlayerState->GetPingInMilliseconds() > HighPingThreshold)*/
-			//UE_LOG(LogTemp, Warning, TEXT("PlayerState->GetCompressedPing() * 4: %d"), PlayerState->GetCompressedPing() * 4);
 			if (PlayerState->GetCompressedPing() * 4 > HighPingThreshold)
 			{
 				HighPingWarning();
@@ -502,24 +508,39 @@ void ABlasterPlayerController::SetHUDMatchCountdown(float CountdownTime)
 
 void ABlasterPlayerController::SetHUDAnnouncementCountdown(float CountdownTime)
 {
+	// Visible 방식으로 필요한 것만 업데이트 하려고 했는데 오류 나서 일단 둠.
+
 	BlasterHUD = BlasterHUD == nullptr ? Cast<ABlasterHUD>(GetHUD()) : BlasterHUD;
-	bool bHUDValid = BlasterHUD &&
+
+	// 카운트다운 텍스트 생성
+	FString CountdownText;
+	if (CountdownTime < 0.f)
+	{
+		CountdownText = FString();
+	}
+	else
+	{
+		int32 Minutes = FMath::FloorToInt(CountdownTime / 60.f);
+		int32 Seconds = CountdownTime - Minutes * 60;
+		CountdownText = FString::Printf(TEXT("%02d:%02d"), Minutes, Seconds);
+	}
+
+	bool bAnnouncementValid = BlasterHUD &&
 		BlasterHUD->Announcement &&
 		BlasterHUD->Announcement->WarmupTime;
 
-	if (bHUDValid)
+	if (bAnnouncementValid)
 	{
-		if (CountdownTime < 0.f)
-		{
-			BlasterHUD->Announcement->WarmupTime->SetText(FText());
-			return;
-		}
-
-		int32 Minutes = FMath::FloorToInt(CountdownTime / 60.f);
-		int32 Seconds = CountdownTime - Minutes * 60;
-
-		FString CountdownText = FString::Printf(TEXT("%02d:%02d"), Minutes, Seconds);
 		BlasterHUD->Announcement->WarmupTime->SetText(FText::FromString(CountdownText));
+	}
+
+	bool bShopValid = BlasterHUD &&
+		BlasterHUD->Shop &&
+		BlasterHUD->Shop->WarmupTime;
+
+	if (bShopValid)
+	{
+		BlasterHUD->Shop->WarmupTime->SetText(FText::FromString(CountdownText));
 	}
 }
 
@@ -671,8 +692,6 @@ void ABlasterPlayerController::OnMatchStateSet(FName State, bool bTeamsMatch)
 
 void ABlasterPlayerController::OnRep_MatchState()
 {
-	// 여기도 수정이 필요해보임.
-
 	if (MatchState == MatchState::InProgress)
 	{
 		HandleMatchHasStarted(bShowTeamScores); // 이거 때문이었네...
@@ -680,6 +699,27 @@ void ABlasterPlayerController::OnRep_MatchState()
 	else if (MatchState == MatchState::Cooldown)
 	{
 		HandleCooldown();
+	}
+}
+
+void ABlasterPlayerController::ApplyCachedScores()
+{
+	if (BlasterHUD && BlasterHUD->Shop)
+	{
+		FString BlueScoreText = FString::Printf(TEXT("%d"), CachedBlueScore);
+		FString RedScoreText = FString::Printf(TEXT("%d"), CachedRedScore);
+
+
+		bool bHUDValid = BlasterHUD &&
+			BlasterHUD->Shop &&
+			BlasterHUD->Shop->RedTeamScore &&
+			BlasterHUD->Shop->BlueTeamScore;
+
+		if (bHUDValid)
+		{
+			BlasterHUD->Shop->BlueTeamScore->SetText(FText::FromString(BlueScoreText));
+			BlasterHUD->Shop->RedTeamScore->SetText(FText::FromString(RedScoreText));
+		}
 	}
 }
 
@@ -697,19 +737,18 @@ void ABlasterPlayerController::HandleMatchHasStarted(bool bTeamsMatch)
 		{
 			BlasterHUD->CharacterOverlay->SetVisibility(ESlateVisibility::Visible);
 		}
-
-		// 테스트
-		if (BlasterHUD->Shop == nullptr) BlasterHUD->AddShop();
-
 		if (BlasterHUD->Announcement)
 		{
 			// 승리나 패배 관련으로 Announcement을 재활용 할 것이므로 제거는 안함.
 			BlasterHUD->Announcement->SetVisibility(ESlateVisibility::Hidden);
 		}
-		//if (!HasAuthority()) return; //이걸 죽임으로써 모드에 따른 갱신이 제대로 되도록 함, 이걸 죽이면 또 다른 모드에 문제가 생김.
+		if (BlasterHUD->Shop)
+		{
+			BlasterHUD->Shop->HideShop();
+		}
+		//if (!HasAuthority()) return;
 		if (!IsLocalController()) return;
 		// 안된 이유 : false -> false는 값이 바뀌지 않아 값복사가 되지 않음...
-		// 근데 true로 바꾸고 했으면 true에서 false로 되니깐 값복사가 되어야 되는데 왜 안되는거지?
 		if (bTeamsMatch)
 		{
 			InitTeamScores();
@@ -732,52 +771,30 @@ void ABlasterPlayerController::HandleCooldown()
 	BlasterHUD = BlasterHUD == nullptr ? Cast<ABlasterHUD>(GetHUD()) : BlasterHUD;
 	if (BlasterHUD)
 	{
-		// 라운드 기능 추가 때문에 CharacterOverlay를 제거하지 않고 숨기기
-		// 좀 더 효율적으로 짠다면, 라운드 여부에 따라 삭제를 시키던가하면 됨.
 		if (BlasterHUD->CharacterOverlay)
 		{
 			BlasterHUD->CharacterOverlay->SetVisibility(ESlateVisibility::Hidden);
 		}
-
 		//BlasterHUD->CharacterOverlay->RemoveFromParent();
-		bool bHUDValid = BlasterHUD->Announcement &&
-			BlasterHUD->Announcement->AnnouncementText &&
-			BlasterHUD->Announcement->InfoText;
 
-		if (bHUDValid)
+		// GameState 체크
+		ABlasterGameState* BlasterGS = Cast<ABlasterGameState>(UGameplayStatics::GetGameState(this));
+		if (!BlasterGS) return;
+
+		// 라운드 체크
+		bool bIsMatchEnded = BlasterGS->GetCurrentRound() >= BlasterGS->GetMaxRounds();
+
+		if (bIsMatchEnded)
 		{
-			BlasterHUD->Announcement->SetVisibility(ESlateVisibility::Visible);
+			bool bHUDValid = BlasterHUD &&
+				BlasterHUD->Announcement &&
+				BlasterHUD->Announcement->AnnouncementText &&
+				BlasterHUD->Announcement->InfoText;
 
-			// GameState를 통해 라운드 정보 확인
-			ABlasterGameState* BlasterGS = Cast<ABlasterGameState>(UGameplayStatics::GetGameState(this));
-			if (BlasterGS)
+			if (bHUDValid)
 			{
-				// 마지막 라운드인지 체크
-				if (BlasterGS->GetCurrentRound() >= BlasterGS->GetMaxRounds())
-				{
-					FString AnnouncementText = FString::Printf(TEXT("Game End!"));
-					BlasterHUD->Announcement->AnnouncementText->SetText(FText::FromString(AnnouncementText));
-				}
-				else
-				{
-					FString AnnouncementText = FString::Printf(TEXT("Round %d Ended\nNext Round Starts In"), BlasterGS->GetCurrentRound());
-					BlasterHUD->Announcement->AnnouncementText->SetText(FText::FromString(AnnouncementText));
-				}
-
-				// 스코어 정보 표시
-				ABlasterPlayerState* BlasterPlayerState = GetPlayerState<ABlasterPlayerState>();
-				if (BlasterPlayerState)
-				{
-					TArray<ABlasterPlayerState*> TopPlayers = BlasterGS->TopScoringPlayers;
-					FString InfoTextString = bShowTeamScores ? GetTeamsInfoText(BlasterGS) : GetInfoText(TopPlayers);
-					BlasterHUD->Announcement->InfoText->SetText(FText::FromString(InfoTextString));
-				}
-			}
-			else
-			{
-				// 기존 로직 (비라운드 게임모드용)
-				FString AnnouncementText = Announcement::NewMatchStartsIn;
-				BlasterHUD->Announcement->AnnouncementText->SetText(FText::FromString(AnnouncementText));
+				BlasterHUD->Announcement->SetVisibility(ESlateVisibility::Visible);
+				BlasterHUD->Announcement->AnnouncementText->SetText(FText::FromString(TEXT("Game End!")));
 
 				ABlasterGameState* BlasterGameState = Cast<ABlasterGameState>(UGameplayStatics::GetGameState(this));
 				ABlasterPlayerState* BlasterPlayerState = GetPlayerState<ABlasterPlayerState>();
@@ -787,10 +804,19 @@ void ABlasterPlayerController::HandleCooldown()
 					FString InfoTextString = bShowTeamScores ? GetTeamsInfoText(BlasterGameState) : GetInfoText(TopPlayers);
 					BlasterHUD->Announcement->InfoText->SetText(FText::FromString(InfoTextString));
 				}
-			}
+			}	
 		}
-	}
+		else
+		{
+			if (!BlasterHUD->Shop)
+			{
+				BlasterHUD->AddShop();
+			}
+			BlasterHUD->Shop->ShowShop();
+			ApplyCachedScores();
+		}
 
+	}
 
 	// 캐릭터 게임플레이 비활성화
 	AMyBlasterCharacter* BlasterCharacter = Cast<AMyBlasterCharacter>(GetPawn());

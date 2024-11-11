@@ -173,4 +173,9 @@ private:
 
 	UPROPERTY(EditAnywhere)
 	float HighPingThreshold = 50.f;
+
+	int32 CachedBlueScore = 0;
+	int32 CachedRedScore = 0;
+
+	void ApplyCachedScores();
 };

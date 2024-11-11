@@ -22,6 +22,19 @@ void ABlasterPlayerState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& 
 
 }
 
+void ABlasterPlayerState::BeginPlay()
+{
+	Super::BeginPlay();
+
+	if (HasAuthority())
+	{
+		// 권총 기본 지급
+		AddWeapon(EWeaponType::EWT_Pistol);
+		SetWeaponToSlot(EWeaponType::EWT_Pistol, 1);
+	}
+
+}
+
 void ABlasterPlayerState::AddToScore(float ScoreAmount)
 {
 	SetScore(GetScore() + ScoreAmount);

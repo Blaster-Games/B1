@@ -29,7 +29,17 @@ public:
 
 	UPROPERTY(meta = (BindWidget))
 	UTextBlock* MoneyText;
+
+	UPROPERTY(meta = (BindWidget))
+	UTextBlock* BlueTeamScore;
+
+	UPROPERTY(meta = (BindWidget))
+	UTextBlock* RedTeamScore;
 	
+	void ShowShop();
+	void HideShop();  
+	void InitializeShop();
+
 private:
 
 	UPROPERTY(meta = (BindWidget))
@@ -61,6 +71,9 @@ private:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Shop")
 	TSubclassOf<UUserWidget> AdditionalItemWidgetClass;
+
+	UPROPERTY()
+	class APlayerController* PlayerController;
 
 	void CreateWeaponItems();
 	void CreateThrowItems();
