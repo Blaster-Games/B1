@@ -12,9 +12,9 @@ namespace GameServer
 {
     public partial class ClientSession : PacketSession
     {
+        public Player Player { get; set; }
         public long AccountDbId { get; set; }
         public int SessionId { get; set; }
-        public string Nickname { get; set; }
 
         long _pingpongTick = 0;
 

@@ -10,7 +10,6 @@ namespace GameServer
 {
     public class GameLogic : JobSerializer
     {
-        public static GameLogic Instance { get; } = new GameLogic();
 
         // 게임룸 관련
         static Dictionary<int, GameRoom> _rooms = new Dictionary<int, GameRoom>();
@@ -21,38 +20,68 @@ namespace GameServer
         // 로비 관련
         static LobbyRoom _lobbyRoom;
 
-        public GameLogic()
+        static readonly object _roomLock = new object();
+
+        static GameLogic()
         {
-            // 로비 초기화
+            _rooms = new Dictionary<int, GameRoom>();
+            _roomIdGenerator = 1;
+            _updateQueue = new ConcurrentQueue<GameRoom>();
+        }
+
+        private static readonly GameLogic _instance = new GameLogic();
+        public static GameLogic Instance { get { return _instance; } }
+
+        private GameLogic()
+        {
             _lobbyRoom = new LobbyRoom();
             _lobbyRoom.Init();
+
+            CreateDummyRooms();
         }
 
-        #region Room 관리
-        static public GameRoom Add()
+        public List<RoomListItemInfo> GetRoomListItems()
         {
-            GameRoom gameRoom = new GameRoom();
-            gameRoom.Init();
-            gameRoom.GameRoomId = _roomIdGenerator;
-            _rooms.Add(_roomIdGenerator, gameRoom);
-            _roomIdGenerator++;
-
-            // 실시간 업데이트가 필요한 게임룸만 큐에 추가
-            _updateQueue.Enqueue(gameRoom);
-            return gameRoom;
+            return _rooms.Values.Select(room => new RoomListItemInfo
+            {
+                RoomId = room.GameRoomId,
+                RoomName = room.RoomName,
+                RoomType = room.GameMode,
+                CurrentPlayers = room.CurrentPlayerCount,
+                MaxPlayers = room.MaxPlayers,
+                State = room.State,
+                MapName = room.MapName
+            }).ToList();
         }
 
-        static public void Remove(int roomId)
+        public GameRoom AddRoom(GameRoom room)
         {
-            if (_rooms.ContainsKey(roomId))
-                _rooms.Remove(roomId);
+            Console.WriteLine("룸 생성! " + room.RoomName);
+            lock (_roomLock)
+            {
+                room.GameRoomId = _roomIdGenerator;
+                _rooms.Add(_roomIdGenerator, room);
+                _roomIdGenerator++;
+                _updateQueue.Enqueue(room);
+                return room;
+            }
         }
-        #endregion
+
+        public void RemoveRoom(int roomId)
+        {
+            lock (_roomLock)
+            {
+                if (_rooms.TryGetValue(roomId, out GameRoom room))
+                {
+                    _rooms.Remove(roomId);
+                    room.State = ERoomState.StateTerminated;
+                }
+            }
+        }
 
         #region 로비 관리
         public void EnterLobby(ClientSession session)
         {
-            // 로비 입장은 메인스레드에서 처리
             Push(() =>
             {
                 _lobbyRoom.Enter(session);
@@ -82,7 +111,6 @@ namespace GameServer
             Thread.CurrentThread.Name = "MainThread";
             while (true)
             {
-                // 메인스레드에서 로비 관련 작업 처리
                 Instance.Flush();
                 Thread.Sleep(0);
             }
@@ -109,11 +137,31 @@ namespace GameServer
                 {
                     continue;
                 }
-                gameRoom.Flush();
-                _updateQueue.Enqueue(gameRoom);
+                if (gameRoom.State != ERoomState.StateTerminated)
+                {
+                    gameRoom.Flush();
+                    _updateQueue.Enqueue(gameRoom);
+                }
                 Thread.Sleep(0);
             }
         }
         #endregion
+
+        private void CreateDummyRooms()
+        {
+            for (int i = 1; i <= 3; i++)
+            {
+                GameRoom room = new GameRoom();
+                room.Init();
+                room.RoomName = $"Test Room {i}";
+                room.GameMode = EGameMode.ModeTeamdeathmatch;
+                room.MaxPlayers = 8;
+                room.MapName = $"Map_{i}";
+                room.State = ERoomState.StateWaiting;
+
+                // 모든 속성 설정 후 AddRoom
+                AddRoom(room);
+            }
+        }
     }
 }

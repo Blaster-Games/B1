@@ -107,6 +107,7 @@ void UBlasterNetworkSubsystem::SendAuthReq()
     {
         AuthReq.set_jwt(TCHAR_TO_UTF8(*GameInst->AccessToken));
         AuthReq.set_accountdbid(GameInst->UserId);
+        AuthReq.set_nickname(TCHAR_TO_UTF8(*GameInst->Nickname));
 
         // 로그 출력
         UE_LOG(LogTemp, Log, TEXT("[NetworkSubsystem] SendAuthReq - JWT: %s, AccountDbId: %d"),
@@ -114,7 +115,9 @@ void UBlasterNetworkSubsystem::SendAuthReq()
 
         // 화면에도 디버그 메시지 표시 (선택사항)
         GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green,
-            FString::Printf(TEXT("Sending Auth - ID: %d"), GameInst->UserId));
+            FString::Printf(TEXT("Sending Auth - ID: %d : Nickname: %s"),
+                GameInst->UserId,
+                *GameInst->Nickname));
     }
     else
     {

@@ -435,6 +435,7 @@ class C_AuthReq final :
 
   enum : int {
     kJwtFieldNumber = 1,
+    kNicknameFieldNumber = 3,
     kAccountDbIdFieldNumber = 2,
   };
   // string jwt = 1;
@@ -449,6 +450,20 @@ class C_AuthReq final :
   const std::string& _internal_jwt() const;
   inline PROTOBUF_ALWAYS_INLINE void _internal_set_jwt(const std::string& value);
   std::string* _internal_mutable_jwt();
+  public:
+
+  // string nickname = 3;
+  void clear_nickname();
+  const std::string& nickname() const;
+  template <typename ArgT0 = const std::string&, typename... ArgT>
+  void set_nickname(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_nickname();
+  PROTOBUF_NODISCARD std::string* release_nickname();
+  void set_allocated_nickname(std::string* nickname);
+  private:
+  const std::string& _internal_nickname() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_nickname(const std::string& value);
+  std::string* _internal_mutable_nickname();
   public:
 
   // int64 accountDbId = 2;
@@ -469,6 +484,7 @@ class C_AuthReq final :
   typedef void DestructorSkippable_;
   struct Impl_ {
     ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr jwt_;
+    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr nickname_;
     int64_t accountdbid_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
@@ -5664,6 +5680,56 @@ inline void C_AuthReq::_internal_set_accountdbid(int64_t value) {
 inline void C_AuthReq::set_accountdbid(int64_t value) {
   _internal_set_accountdbid(value);
   // @@protoc_insertion_point(field_set:Protocol.C_AuthReq.accountDbId)
+}
+
+// string nickname = 3;
+inline void C_AuthReq::clear_nickname() {
+  _impl_.nickname_.ClearToEmpty();
+}
+inline const std::string& C_AuthReq::nickname() const {
+  // @@protoc_insertion_point(field_get:Protocol.C_AuthReq.nickname)
+  return _internal_nickname();
+}
+template <typename ArgT0, typename... ArgT>
+inline PROTOBUF_ALWAYS_INLINE
+void C_AuthReq::set_nickname(ArgT0&& arg0, ArgT... args) {
+ 
+ _impl_.nickname_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:Protocol.C_AuthReq.nickname)
+}
+inline std::string* C_AuthReq::mutable_nickname() {
+  std::string* _s = _internal_mutable_nickname();
+  // @@protoc_insertion_point(field_mutable:Protocol.C_AuthReq.nickname)
+  return _s;
+}
+inline const std::string& C_AuthReq::_internal_nickname() const {
+  return _impl_.nickname_.Get();
+}
+inline void C_AuthReq::_internal_set_nickname(const std::string& value) {
+  
+  _impl_.nickname_.Set(value, GetArenaForAllocation());
+}
+inline std::string* C_AuthReq::_internal_mutable_nickname() {
+  
+  return _impl_.nickname_.Mutable(GetArenaForAllocation());
+}
+inline std::string* C_AuthReq::release_nickname() {
+  // @@protoc_insertion_point(field_release:Protocol.C_AuthReq.nickname)
+  return _impl_.nickname_.Release();
+}
+inline void C_AuthReq::set_allocated_nickname(std::string* nickname) {
+  if (nickname != nullptr) {
+    
+  } else {
+    
+  }
+  _impl_.nickname_.SetAllocated(nickname, GetArenaForAllocation());
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.nickname_.IsDefault()) {
+    _impl_.nickname_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:Protocol.C_AuthReq.nickname)
 }
 
 // -------------------------------------------------------------------

@@ -21,6 +21,7 @@ namespace GameServer
 
             Authenticated = true;
             AccountDbId = reqPacket.AccountDbId;
+            Player.PlayerName = reqPacket.Nickname;
 
             Console.WriteLine("접속 유저 ID : " + reqPacket.AccountDbId);
 
@@ -32,7 +33,19 @@ namespace GameServer
 
         public void HandleEnterLobbyReq(C_EnterLobbyReq reqPacket)
         {
+            GameLogic.Instance.EnterLobby(this);
             S_EnterLobbyRes resPacket = new S_EnterLobbyRes();
+            Send(resPacket);
+        }
+
+        public void HandleRoomListReq(C_RoomListReq reqPacket)
+        {
+            Console.WriteLine(this.Player.PlayerName + "님이 방을 새로고침 했습니다.");
+
+            List<RoomListItemInfo> roomInfoList = GameLogic.Instance.GetRoomListItems();
+
+            S_RoomListRes resPacket = new S_RoomListRes();
+            resPacket.Rooms.AddRange(roomInfoList);
             Send(resPacket);
         }
     }

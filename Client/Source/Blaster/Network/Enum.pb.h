@@ -50,13 +50,13 @@ namespace Protocol {
 enum EGameMode : int {
   MODE_NONE = 0,
   MODE_DEATHMATCH = 1,
-  MODE_TEAM = 2,
+  MODE_TEAMDEATHMATCH = 2,
   EGameMode_INT_MIN_SENTINEL_DO_NOT_USE_ = std::numeric_limits<int32_t>::min(),
   EGameMode_INT_MAX_SENTINEL_DO_NOT_USE_ = std::numeric_limits<int32_t>::max()
 };
 bool EGameMode_IsValid(int value);
 constexpr EGameMode EGameMode_MIN = MODE_NONE;
-constexpr EGameMode EGameMode_MAX = MODE_TEAM;
+constexpr EGameMode EGameMode_MAX = MODE_TEAMDEATHMATCH;
 constexpr int EGameMode_ARRAYSIZE = EGameMode_MAX + 1;
 
 const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* EGameMode_descriptor();
@@ -103,12 +103,13 @@ enum ERoomState : int {
   STATE_NONE = 0,
   STATE_WAITING = 1,
   STATE_PLAYING = 2,
+  STATE_TERMINATED = 3,
   ERoomState_INT_MIN_SENTINEL_DO_NOT_USE_ = std::numeric_limits<int32_t>::min(),
   ERoomState_INT_MAX_SENTINEL_DO_NOT_USE_ = std::numeric_limits<int32_t>::max()
 };
 bool ERoomState_IsValid(int value);
 constexpr ERoomState ERoomState_MIN = STATE_NONE;
-constexpr ERoomState ERoomState_MAX = STATE_PLAYING;
+constexpr ERoomState ERoomState_MAX = STATE_TERMINATED;
 constexpr int ERoomState_ARRAYSIZE = ERoomState_MAX + 1;
 
 const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* ERoomState_descriptor();

@@ -35,6 +35,7 @@ PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORIT
 PROTOBUF_CONSTEXPR C_AuthReq::C_AuthReq(
     ::_pbi::ConstantInitialized): _impl_{
     /*decltype(_impl_.jwt_)*/{&::_pbi::fixed_address_empty_string, ::_pbi::ConstantInitialized{}}
+  , /*decltype(_impl_.nickname_)*/{&::_pbi::fixed_address_empty_string, ::_pbi::ConstantInitialized{}}
   , /*decltype(_impl_.accountdbid_)*/int64_t{0}
   , /*decltype(_impl_._cached_size_)*/{}} {}
 struct C_AuthReqDefaultTypeInternal {
@@ -506,6 +507,7 @@ const uint32_t TableStruct_Protocol_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE
   ~0u,  // no _inlined_string_donated_
   PROTOBUF_FIELD_OFFSET(::Protocol::C_AuthReq, _impl_.jwt_),
   PROTOBUF_FIELD_OFFSET(::Protocol::C_AuthReq, _impl_.accountdbid_),
+  PROTOBUF_FIELD_OFFSET(::Protocol::C_AuthReq, _impl_.nickname_),
   ~0u,  // no _has_bits_
   PROTOBUF_FIELD_OFFSET(::Protocol::S_AuthRes, _internal_metadata_),
   ~0u,  // no _extensions_
@@ -758,39 +760,39 @@ const uint32_t TableStruct_Protocol_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE
 static const ::_pbi::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
   { 0, -1, -1, sizeof(::Protocol::S_Connected)},
   { 6, -1, -1, sizeof(::Protocol::C_AuthReq)},
-  { 14, -1, -1, sizeof(::Protocol::S_AuthRes)},
-  { 21, -1, -1, sizeof(::Protocol::C_EnterLobbyReq)},
-  { 27, -1, -1, sizeof(::Protocol::S_EnterLobbyRes)},
-  { 33, -1, -1, sizeof(::Protocol::C_LobbyChat)},
-  { 40, -1, -1, sizeof(::Protocol::S_BroadcastLobbyChat)},
-  { 49, -1, -1, sizeof(::Protocol::C_RoomListReq)},
-  { 55, -1, -1, sizeof(::Protocol::S_RoomListRes)},
-  { 62, -1, -1, sizeof(::Protocol::C_SelectRoomReq)},
-  { 69, -1, -1, sizeof(::Protocol::S_SelectRoomRes)},
-  { 78, -1, -1, sizeof(::Protocol::C_CreateRoomReq)},
-  { 88, -1, -1, sizeof(::Protocol::S_CreateRoomRes)},
-  { 97, -1, -1, sizeof(::Protocol::C_JoinRoomReq)},
-  { 104, -1, -1, sizeof(::Protocol::S_JoinRoomRes)},
-  { 113, -1, -1, sizeof(::Protocol::S_BroadcastJoinRoom)},
-  { 120, -1, -1, sizeof(::Protocol::C_LeaveRoomReq)},
-  { 126, -1, -1, sizeof(::Protocol::S_LeaveRoomRes)},
-  { 133, -1, -1, sizeof(::Protocol::S_BroadcastLeaveRoom)},
-  { 141, -1, -1, sizeof(::Protocol::C_RoomChat)},
-  { 148, -1, -1, sizeof(::Protocol::S_BroadcastRoomChat)},
-  { 157, -1, -1, sizeof(::Protocol::C_ReadyGameReq)},
-  { 164, -1, -1, sizeof(::Protocol::S_BroadcastReadyGame)},
-  { 172, -1, -1, sizeof(::Protocol::C_StartGameReq)},
-  { 180, -1, -1, sizeof(::Protocol::S_StartGameRes)},
-  { 189, -1, -1, sizeof(::Protocol::S_BroadcastStartGame)},
-  { 198, -1, -1, sizeof(::Protocol::C_EndGameReq)},
-  { 205, -1, -1, sizeof(::Protocol::S_EndGameRes)},
-  { 212, -1, -1, sizeof(::Protocol::S_BroadcastEndGame)},
-  { 220, -1, -1, sizeof(::Protocol::S_BroadcastChangeHost)},
-  { 228, -1, -1, sizeof(::Protocol::S_BroadcastRoomState)},
-  { 236, -1, -1, sizeof(::Protocol::S_ErrorMessage)},
-  { 243, -1, -1, sizeof(::Protocol::S_KickPlayer)},
-  { 250, -1, -1, sizeof(::Protocol::S_Ping)},
-  { 256, -1, -1, sizeof(::Protocol::C_Pong)},
+  { 15, -1, -1, sizeof(::Protocol::S_AuthRes)},
+  { 22, -1, -1, sizeof(::Protocol::C_EnterLobbyReq)},
+  { 28, -1, -1, sizeof(::Protocol::S_EnterLobbyRes)},
+  { 34, -1, -1, sizeof(::Protocol::C_LobbyChat)},
+  { 41, -1, -1, sizeof(::Protocol::S_BroadcastLobbyChat)},
+  { 50, -1, -1, sizeof(::Protocol::C_RoomListReq)},
+  { 56, -1, -1, sizeof(::Protocol::S_RoomListRes)},
+  { 63, -1, -1, sizeof(::Protocol::C_SelectRoomReq)},
+  { 70, -1, -1, sizeof(::Protocol::S_SelectRoomRes)},
+  { 79, -1, -1, sizeof(::Protocol::C_CreateRoomReq)},
+  { 89, -1, -1, sizeof(::Protocol::S_CreateRoomRes)},
+  { 98, -1, -1, sizeof(::Protocol::C_JoinRoomReq)},
+  { 105, -1, -1, sizeof(::Protocol::S_JoinRoomRes)},
+  { 114, -1, -1, sizeof(::Protocol::S_BroadcastJoinRoom)},
+  { 121, -1, -1, sizeof(::Protocol::C_LeaveRoomReq)},
+  { 127, -1, -1, sizeof(::Protocol::S_LeaveRoomRes)},
+  { 134, -1, -1, sizeof(::Protocol::S_BroadcastLeaveRoom)},
+  { 142, -1, -1, sizeof(::Protocol::C_RoomChat)},
+  { 149, -1, -1, sizeof(::Protocol::S_BroadcastRoomChat)},
+  { 158, -1, -1, sizeof(::Protocol::C_ReadyGameReq)},
+  { 165, -1, -1, sizeof(::Protocol::S_BroadcastReadyGame)},
+  { 173, -1, -1, sizeof(::Protocol::C_StartGameReq)},
+  { 181, -1, -1, sizeof(::Protocol::S_StartGameRes)},
+  { 190, -1, -1, sizeof(::Protocol::S_BroadcastStartGame)},
+  { 199, -1, -1, sizeof(::Protocol::C_EndGameReq)},
+  { 206, -1, -1, sizeof(::Protocol::S_EndGameRes)},
+  { 213, -1, -1, sizeof(::Protocol::S_BroadcastEndGame)},
+  { 221, -1, -1, sizeof(::Protocol::S_BroadcastChangeHost)},
+  { 229, -1, -1, sizeof(::Protocol::S_BroadcastRoomState)},
+  { 237, -1, -1, sizeof(::Protocol::S_ErrorMessage)},
+  { 244, -1, -1, sizeof(::Protocol::S_KickPlayer)},
+  { 251, -1, -1, sizeof(::Protocol::S_Ping)},
+  { 257, -1, -1, sizeof(::Protocol::C_Pong)},
 };
 
 static const ::_pb::Message* const file_default_instances[] = {
@@ -833,51 +835,52 @@ static const ::_pb::Message* const file_default_instances[] = {
 
 const char descriptor_table_protodef_Protocol_2eproto[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) =
   "\n\016Protocol.proto\022\010Protocol\032\nEnum.proto\032\014"
-  "Struct.proto\"\r\n\013S_Connected\"-\n\tC_AuthReq"
-  "\022\013\n\003jwt\030\001 \001(\t\022\023\n\013accountDbId\030\002 \001(\003\"\034\n\tS_"
-  "AuthRes\022\017\n\007success\030\001 \001(\010\"\021\n\017C_EnterLobby"
-  "Req\"\021\n\017S_EnterLobbyRes\"\036\n\013C_LobbyChat\022\017\n"
-  "\007message\030\001 \001(\t\"M\n\024S_BroadcastLobbyChat\022\020"
-  "\n\010playerId\030\001 \001(\005\022\022\n\nplayerName\030\002 \001(\t\022\017\n\007"
-  "message\030\003 \001(\t\"\017\n\rC_RoomListReq\":\n\rS_Room"
-  "ListRes\022)\n\005rooms\030\001 \003(\0132\032.Protocol.RoomLi"
-  "stItemInfo\"!\n\017C_SelectRoomReq\022\016\n\006roomId\030"
-  "\001 \001(\005\"b\n\017S_SelectRoomRes\022\017\n\007success\030\001 \001("
-  "\010\022(\n\004room\030\002 \001(\0132\032.Protocol.RoomListItemI"
-  "nfo\022\024\n\014errorMessage\030\003 \001(\t\"h\n\017C_CreateRoo"
-  "mReq\022\r\n\005title\030\001 \001(\t\022!\n\004mode\030\002 \001(\0162\023.Prot"
-  "ocol.EGameMode\022\022\n\nmaxPlayers\030\003 \001(\005\022\017\n\007ma"
-  "pName\030\004 \001(\t\"`\n\017S_CreateRoomRes\022\017\n\007succes"
-  "s\030\001 \001(\010\022&\n\004room\030\002 \001(\0132\030.Protocol.RoomDet"
-  "ailInfo\022\024\n\014errorMessage\030\003 \001(\t\"\037\n\rC_JoinR"
-  "oomReq\022\016\n\006roomId\030\001 \001(\005\"^\n\rS_JoinRoomRes\022"
-  "\017\n\007success\030\001 \001(\010\022&\n\004room\030\002 \001(\0132\030.Protoco"
-  "l.RoomDetailInfo\022\024\n\014errorMessage\030\003 \001(\t\">"
-  "\n\023S_BroadcastJoinRoom\022\'\n\tnewPlayer\030\001 \001(\013"
-  "2\024.Protocol.PlayerInfo\"\020\n\016C_LeaveRoomReq"
-  "\"!\n\016S_LeaveRoomRes\022\017\n\007success\030\001 \001(\010\"8\n\024S"
-  "_BroadcastLeaveRoom\022\020\n\010playerId\030\001 \001(\005\022\016\n"
-  "\006isHost\030\002 \001(\010\"\035\n\nC_RoomChat\022\017\n\007message\030\001"
-  " \001(\t\"L\n\023S_BroadcastRoomChat\022\020\n\010playerId\030"
-  "\001 \001(\005\022\022\n\nplayerName\030\002 \001(\t\022\017\n\007message\030\003 \001"
-  "(\t\"\037\n\016C_ReadyGameReq\022\r\n\005ready\030\001 \001(\010\"7\n\024S"
-  "_BroadcastReadyGame\022\020\n\010playerId\030\001 \001(\005\022\r\n"
-  "\005ready\030\002 \001(\010\"3\n\016C_StartGameReq\022\023\n\013hostAd"
-  "dress\030\001 \001(\t\022\014\n\004port\030\002 \001(\005\"^\n\016S_StartGame"
-  "Res\022\017\n\007success\030\001 \001(\010\022%\n\007players\030\002 \003(\0132\024."
-  "Protocol.PlayerInfo\022\024\n\014errorMessage\030\003 \001("
-  "\t\"L\n\024S_BroadcastStartGame\022\023\n\013hostAddress"
-  "\030\001 \001(\t\022\014\n\004port\030\002 \001(\005\022\021\n\tsessionId\030\003 \001(\005\""
-  "\036\n\014C_EndGameReq\022\016\n\006reason\030\001 \001(\t\"\037\n\014S_End"
-  "GameRes\022\017\n\007success\030\001 \001(\010\"7\n\022S_BroadcastE"
-  "ndGame\022\016\n\006reason\030\001 \001(\t\022\021\n\tnewHostId\030\002 \001("
-  "\003\"D\n\025S_BroadcastChangeHost\022\027\n\017newHostPla"
-  "yerId\030\001 \001(\005\022\022\n\nplayerName\030\002 \001(\t\"K\n\024S_Bro"
-  "adcastRoomState\022\016\n\006roomId\030\001 \001(\005\022#\n\005state"
-  "\030\002 \001(\0162\024.Protocol.ERoomState\"!\n\016S_ErrorM"
-  "essage\022\017\n\007message\030\001 \001(\t\"\036\n\014S_KickPlayer\022"
-  "\016\n\006reason\030\001 \001(\t\"\010\n\006S_Ping\"\010\n\006C_PongB\033\252\002\030"
-  "Google.Protobuf.ProtocolP\000P\001b\006proto3"
+  "Struct.proto\"\r\n\013S_Connected\"\?\n\tC_AuthReq"
+  "\022\013\n\003jwt\030\001 \001(\t\022\023\n\013accountDbId\030\002 \001(\003\022\020\n\010ni"
+  "ckname\030\003 \001(\t\"\034\n\tS_AuthRes\022\017\n\007success\030\001 \001"
+  "(\010\"\021\n\017C_EnterLobbyReq\"\021\n\017S_EnterLobbyRes"
+  "\"\036\n\013C_LobbyChat\022\017\n\007message\030\001 \001(\t\"M\n\024S_Br"
+  "oadcastLobbyChat\022\020\n\010playerId\030\001 \001(\005\022\022\n\npl"
+  "ayerName\030\002 \001(\t\022\017\n\007message\030\003 \001(\t\"\017\n\rC_Roo"
+  "mListReq\":\n\rS_RoomListRes\022)\n\005rooms\030\001 \003(\013"
+  "2\032.Protocol.RoomListItemInfo\"!\n\017C_Select"
+  "RoomReq\022\016\n\006roomId\030\001 \001(\005\"b\n\017S_SelectRoomR"
+  "es\022\017\n\007success\030\001 \001(\010\022(\n\004room\030\002 \001(\0132\032.Prot"
+  "ocol.RoomListItemInfo\022\024\n\014errorMessage\030\003 "
+  "\001(\t\"h\n\017C_CreateRoomReq\022\r\n\005title\030\001 \001(\t\022!\n"
+  "\004mode\030\002 \001(\0162\023.Protocol.EGameMode\022\022\n\nmaxP"
+  "layers\030\003 \001(\005\022\017\n\007mapName\030\004 \001(\t\"`\n\017S_Creat"
+  "eRoomRes\022\017\n\007success\030\001 \001(\010\022&\n\004room\030\002 \001(\0132"
+  "\030.Protocol.RoomDetailInfo\022\024\n\014errorMessag"
+  "e\030\003 \001(\t\"\037\n\rC_JoinRoomReq\022\016\n\006roomId\030\001 \001(\005"
+  "\"^\n\rS_JoinRoomRes\022\017\n\007success\030\001 \001(\010\022&\n\004ro"
+  "om\030\002 \001(\0132\030.Protocol.RoomDetailInfo\022\024\n\014er"
+  "rorMessage\030\003 \001(\t\">\n\023S_BroadcastJoinRoom\022"
+  "\'\n\tnewPlayer\030\001 \001(\0132\024.Protocol.PlayerInfo"
+  "\"\020\n\016C_LeaveRoomReq\"!\n\016S_LeaveRoomRes\022\017\n\007"
+  "success\030\001 \001(\010\"8\n\024S_BroadcastLeaveRoom\022\020\n"
+  "\010playerId\030\001 \001(\005\022\016\n\006isHost\030\002 \001(\010\"\035\n\nC_Roo"
+  "mChat\022\017\n\007message\030\001 \001(\t\"L\n\023S_BroadcastRoo"
+  "mChat\022\020\n\010playerId\030\001 \001(\005\022\022\n\nplayerName\030\002 "
+  "\001(\t\022\017\n\007message\030\003 \001(\t\"\037\n\016C_ReadyGameReq\022\r"
+  "\n\005ready\030\001 \001(\010\"7\n\024S_BroadcastReadyGame\022\020\n"
+  "\010playerId\030\001 \001(\005\022\r\n\005ready\030\002 \001(\010\"3\n\016C_Star"
+  "tGameReq\022\023\n\013hostAddress\030\001 \001(\t\022\014\n\004port\030\002 "
+  "\001(\005\"^\n\016S_StartGameRes\022\017\n\007success\030\001 \001(\010\022%"
+  "\n\007players\030\002 \003(\0132\024.Protocol.PlayerInfo\022\024\n"
+  "\014errorMessage\030\003 \001(\t\"L\n\024S_BroadcastStartG"
+  "ame\022\023\n\013hostAddress\030\001 \001(\t\022\014\n\004port\030\002 \001(\005\022\021"
+  "\n\tsessionId\030\003 \001(\005\"\036\n\014C_EndGameReq\022\016\n\006rea"
+  "son\030\001 \001(\t\"\037\n\014S_EndGameRes\022\017\n\007success\030\001 \001"
+  "(\010\"7\n\022S_BroadcastEndGame\022\016\n\006reason\030\001 \001(\t"
+  "\022\021\n\tnewHostId\030\002 \001(\003\"D\n\025S_BroadcastChange"
+  "Host\022\027\n\017newHostPlayerId\030\001 \001(\005\022\022\n\nplayerN"
+  "ame\030\002 \001(\t\"K\n\024S_BroadcastRoomState\022\016\n\006roo"
+  "mId\030\001 \001(\005\022#\n\005state\030\002 \001(\0162\024.Protocol.ERoo"
+  "mState\"!\n\016S_ErrorMessage\022\017\n\007message\030\001 \001("
+  "\t\"\036\n\014S_KickPlayer\022\016\n\006reason\030\001 \001(\t\"\010\n\006S_P"
+  "ing\"\010\n\006C_PongB\033\252\002\030Google.Protobuf.Protoc"
+  "olP\000P\001b\006proto3"
   ;
 static const ::_pbi::DescriptorTable* const descriptor_table_Protocol_2eproto_deps[2] = {
   &::descriptor_table_Enum_2eproto,
@@ -885,7 +888,7 @@ static const ::_pbi::DescriptorTable* const descriptor_table_Protocol_2eproto_de
 };
 static ::_pbi::once_flag descriptor_table_Protocol_2eproto_once;
 const ::_pbi::DescriptorTable descriptor_table_Protocol_2eproto = {
-    false, false, 1836, descriptor_table_protodef_Protocol_2eproto,
+    false, false, 1854, descriptor_table_protodef_Protocol_2eproto,
     "Protocol.proto",
     &descriptor_table_Protocol_2eproto_once, descriptor_table_Protocol_2eproto_deps, 2, 35,
     schemas, file_default_instances, TableStruct_Protocol_2eproto::offsets,
@@ -957,6 +960,7 @@ C_AuthReq::C_AuthReq(const C_AuthReq& from)
   C_AuthReq* const _this = this; (void)_this;
   new (&_impl_) Impl_{
       decltype(_impl_.jwt_){}
+    , decltype(_impl_.nickname_){}
     , decltype(_impl_.accountdbid_){}
     , /*decltype(_impl_._cached_size_)*/{}};
 
@@ -969,6 +973,14 @@ C_AuthReq::C_AuthReq(const C_AuthReq& from)
     _this->_impl_.jwt_.Set(from._internal_jwt(), 
       _this->GetArenaForAllocation());
   }
+  _impl_.nickname_.InitDefault();
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+    _impl_.nickname_.Set("", GetArenaForAllocation());
+  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (!from._internal_nickname().empty()) {
+    _this->_impl_.nickname_.Set(from._internal_nickname(), 
+      _this->GetArenaForAllocation());
+  }
   _this->_impl_.accountdbid_ = from._impl_.accountdbid_;
   // @@protoc_insertion_point(copy_constructor:Protocol.C_AuthReq)
 }
@@ -979,12 +991,17 @@ inline void C_AuthReq::SharedCtor(
   (void)is_message_owned;
   new (&_impl_) Impl_{
       decltype(_impl_.jwt_){}
+    , decltype(_impl_.nickname_){}
     , decltype(_impl_.accountdbid_){int64_t{0}}
     , /*decltype(_impl_._cached_size_)*/{}
   };
   _impl_.jwt_.InitDefault();
   #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
     _impl_.jwt_.Set("", GetArenaForAllocation());
+  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  _impl_.nickname_.InitDefault();
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+    _impl_.nickname_.Set("", GetArenaForAllocation());
   #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
 }
 
@@ -1000,6 +1017,7 @@ C_AuthReq::~C_AuthReq() {
 inline void C_AuthReq::SharedDtor() {
   GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
   _impl_.jwt_.Destroy();
+  _impl_.nickname_.Destroy();
 }
 
 void C_AuthReq::SetCachedSize(int size) const {
@@ -1013,6 +1031,7 @@ void C_AuthReq::Clear() {
   (void) cached_has_bits;
 
   _impl_.jwt_.ClearToEmpty();
+  _impl_.nickname_.ClearToEmpty();
   _impl_.accountdbid_ = int64_t{0};
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
@@ -1038,6 +1057,16 @@ const char* C_AuthReq::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx
         if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 16)) {
           _impl_.accountdbid_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
           CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // string nickname = 3;
+      case 3:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 26)) {
+          auto str = _internal_mutable_nickname();
+          ptr = ::_pbi::InlineGreedyStringParser(str, ptr, ctx);
+          CHK_(ptr);
+          CHK_(::_pbi::VerifyUTF8(str, "Protocol.C_AuthReq.nickname"));
         } else
           goto handle_unusual;
         continue;
@@ -1086,6 +1115,16 @@ uint8_t* C_AuthReq::_InternalSerialize(
     target = ::_pbi::WireFormatLite::WriteInt64ToArray(2, this->_internal_accountdbid(), target);
   }
 
+  // string nickname = 3;
+  if (!this->_internal_nickname().empty()) {
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
+      this->_internal_nickname().data(), static_cast<int>(this->_internal_nickname().length()),
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
+      "Protocol.C_AuthReq.nickname");
+    target = stream->WriteStringMaybeAliased(
+        3, this->_internal_nickname(), target);
+  }
+
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
     target = ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
         _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
@@ -1107,6 +1146,13 @@ size_t C_AuthReq::ByteSizeLong() const {
     total_size += 1 +
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
         this->_internal_jwt());
+  }
+
+  // string nickname = 3;
+  if (!this->_internal_nickname().empty()) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
+        this->_internal_nickname());
   }
 
   // int64 accountDbId = 2;
@@ -1135,6 +1181,9 @@ void C_AuthReq::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROT
   if (!from._internal_jwt().empty()) {
     _this->_internal_set_jwt(from._internal_jwt());
   }
+  if (!from._internal_nickname().empty()) {
+    _this->_internal_set_nickname(from._internal_nickname());
+  }
   if (from._internal_accountdbid() != 0) {
     _this->_internal_set_accountdbid(from._internal_accountdbid());
   }
@@ -1160,6 +1209,10 @@ void C_AuthReq::InternalSwap(C_AuthReq* other) {
   ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::InternalSwap(
       &_impl_.jwt_, lhs_arena,
       &other->_impl_.jwt_, rhs_arena
+  );
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::InternalSwap(
+      &_impl_.nickname_, lhs_arena,
+      &other->_impl_.nickname_, rhs_arena
   );
   swap(_impl_.accountdbid_, other->_impl_.accountdbid_);
 }

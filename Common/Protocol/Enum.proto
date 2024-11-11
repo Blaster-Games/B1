@@ -19,4 +19,5 @@ enum ERoomState {
     STATE_NONE = 0;
     STATE_WAITING = 1;
     STATE_PLAYING = 2;
+    STATE_TERMINATED = 3;
 }

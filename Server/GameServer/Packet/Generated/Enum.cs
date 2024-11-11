@@ -24,12 +24,13 @@ namespace Google.Protobuf.Protocol {
     static EnumReflection() {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
-            "CgpFbnVtLnByb3RvEghQcm90b2NvbCo+CglFR2FtZU1vZGUSDQoJTU9ERV9O",
-            "T05FEAASEwoPTU9ERV9ERUFUSE1BVENIEAESDQoJTU9ERV9URUFNEAIqNwoJ",
-            "RVRlYW1UeXBlEg0KCVRFQU1fTk9ORRAAEgwKCFRFQU1fUkVEEAESDQoJVEVB",
-            "TV9CTFVFEAIqQgoKRVJvb21TdGF0ZRIOCgpTVEFURV9OT05FEAASEQoNU1RB",
-            "VEVfV0FJVElORxABEhEKDVNUQVRFX1BMQVlJTkcQAkIbqgIYR29vZ2xlLlBy",
-            "b3RvYnVmLlByb3RvY29sYgZwcm90bzM="));
+            "CgpFbnVtLnByb3RvEghQcm90b2NvbCpICglFR2FtZU1vZGUSDQoJTU9ERV9O",
+            "T05FEAASEwoPTU9ERV9ERUFUSE1BVENIEAESFwoTTU9ERV9URUFNREVBVEhN",
+            "QVRDSBACKjcKCUVUZWFtVHlwZRINCglURUFNX05PTkUQABIMCghURUFNX1JF",
+            "RBABEg0KCVRFQU1fQkxVRRACKlgKCkVSb29tU3RhdGUSDgoKU1RBVEVfTk9O",
+            "RRAAEhEKDVNUQVRFX1dBSVRJTkcQARIRCg1TVEFURV9QTEFZSU5HEAISFAoQ",
+            "U1RBVEVfVEVSTUlOQVRFRBADQhuqAhhHb29nbGUuUHJvdG9idWYuUHJvdG9j",
+            "b2xiBnByb3RvMw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Google.Protobuf.Protocol.EGameMode), typeof(global::Google.Protobuf.Protocol.ETeamType), typeof(global::Google.Protobuf.Protocol.ERoomState), }, null, null));
@@ -41,7 +42,7 @@ namespace Google.Protobuf.Protocol {
   public enum EGameMode {
     [pbr::OriginalName("MODE_NONE")] ModeNone = 0,
     [pbr::OriginalName("MODE_DEATHMATCH")] ModeDeathmatch = 1,
-    [pbr::OriginalName("MODE_TEAM")] ModeTeam = 2,
+    [pbr::OriginalName("MODE_TEAMDEATHMATCH")] ModeTeamdeathmatch = 2,
   }
 
   public enum ETeamType {
@@ -54,6 +55,7 @@ namespace Google.Protobuf.Protocol {
     [pbr::OriginalName("STATE_NONE")] StateNone = 0,
     [pbr::OriginalName("STATE_WAITING")] StateWaiting = 1,
     [pbr::OriginalName("STATE_PLAYING")] StatePlaying = 2,
+    [pbr::OriginalName("STATE_TERMINATED")] StateTerminated = 3,
   }
 
   #endregion
