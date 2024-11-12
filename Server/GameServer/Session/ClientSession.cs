@@ -18,6 +18,11 @@ namespace GameServer
 
         long _pingpongTick = 0;
 
+        public ClientSession() 
+        { 
+            Player = new Player();
+        }
+
         public void Ping()
         {
             if (_pingpongTick > 0)

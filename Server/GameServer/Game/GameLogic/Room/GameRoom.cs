@@ -17,8 +17,12 @@ namespace GameServer
 
         // Player 관리
         private List<Player> _players = new List<Player>();
-        public int CurrentPlayerCount => _players.Count;
+        public IReadOnlyList<Player> Players => _players;
+
         private Player _host;
+        public Player Host => _host;
+
+        public int CurrentPlayerCount => _players.Count;
         public int HostPlayerId => _host?.PlayerId ?? 0;
 
         public void Init()
@@ -31,16 +35,22 @@ namespace GameServer
             MapName = "";
         }
 
-        public void EnterGame(ClientSession session)
+        public void EnterRoom(ClientSession session, Action<bool> callback)
         {
             Push(() =>
             {
                 if (_players.Count >= MaxPlayers)
+                {
+                    callback.Invoke(false);
                     return;
+                }
 
                 Player player = session.Player;
                 if (player == null)
+                {
+                    callback.Invoke(false);
                     return;
+                }
 
                 if (_players.Count == 0)
                 {
@@ -49,8 +59,9 @@ namespace GameServer
                 }
 
                 _players.Add(player);
+                //BroadcastEnterGame(player);
 
-                BroadcastEnterGame(player);
+                callback.Invoke(true);
             });
         }
 

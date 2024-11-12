@@ -54,7 +54,6 @@ message C_SelectRoomReq {
 message S_SelectRoomRes {
     bool success = 1;
     RoomListItemInfo room = 2;
-    string errorMessage = 3;
 }
 
 // 룸 생성
@@ -68,7 +67,6 @@ message C_CreateRoomReq {
 message S_CreateRoomRes {
     bool success = 1;
     RoomDetailInfo room = 2;
-    string errorMessage = 3;
 }
 
 // 룸 입장
@@ -79,7 +77,6 @@ message C_JoinRoomReq {
 message S_JoinRoomRes {
     bool success = 1;
     RoomDetailInfo room = 2;
-    string errorMessage = 3;
 }
 
 message S_BroadcastJoinRoom {
@@ -129,7 +126,6 @@ message C_StartGameReq {
 message S_StartGameRes {
     bool success = 1;
     repeated PlayerInfo players = 2;    // 호스트에게 보내는 다른 플레이어들 정보
-    string errorMessage = 3;
 }
 
 message S_BroadcastStartGame {

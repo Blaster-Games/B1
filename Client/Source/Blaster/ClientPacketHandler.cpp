@@ -42,7 +42,7 @@ bool Handle_S_AuthRes(PacketSessionRef& session, Protocol::S_AuthRes& pkt)
         NetworkSystem->HandleAuthRes(pkt);
         return true;
     }
-    return true;
+    return false;
 }
 
 bool Handle_S_EnterLobbyRes(PacketSessionRef& session, Protocol::S_EnterLobbyRes& pkt)
@@ -52,7 +52,7 @@ bool Handle_S_EnterLobbyRes(PacketSessionRef& session, Protocol::S_EnterLobbyRes
         NetworkSystem->HandleEnterLobbyRes(pkt);
         return true;
     }
-    return true;
+    return false;
 }
 
 bool Handle_S_BroadcastLobbyChat(PacketSessionRef& session, Protocol::S_BroadcastLobbyChat& pkt)
@@ -62,6 +62,11 @@ bool Handle_S_BroadcastLobbyChat(PacketSessionRef& session, Protocol::S_Broadcas
 
 bool Handle_S_RoomListRes(PacketSessionRef& session, Protocol::S_RoomListRes& pkt)
 {
+    if (auto NetworkSystem = GetNetworkSystem(session))
+    {
+        NetworkSystem->HandleRoomListRes(pkt);
+        return true;
+    }
     return false;
 }
 
@@ -77,7 +82,7 @@ bool Handle_S_CreateRoomRes(PacketSessionRef& session, Protocol::S_CreateRoomRes
 
 bool Handle_S_JoinRoomRes(PacketSessionRef& session, Protocol::S_JoinRoomRes& pkt)
 {
-    return false;
+    return true;
 }
 
 bool Handle_S_BroadcastJoinRoom(PacketSessionRef& session, Protocol::S_BroadcastJoinRoom& pkt)

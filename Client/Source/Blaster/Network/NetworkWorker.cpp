@@ -107,12 +107,6 @@ bool RecvWorker::ReceivePacket(TArray<uint8>& OutPacket)
 
 bool RecvWorker::ReceiveDesiredBytes(uint8* Results, int32 Size)
 {
-	if (!Socket || !Results || Size <= 0 ||
-		Socket->GetConnectionState() != ESocketConnectionState::SCS_Connected)
-	{
-		return false;
-	}
-
 	uint32 PendingDataSize;
 	if (Socket->HasPendingData(PendingDataSize) == false || PendingDataSize <= 0)
 		return false;
@@ -134,7 +128,6 @@ bool RecvWorker::ReceiveDesiredBytes(uint8* Results, int32 Size)
 
 	return true;
 }
-
 
 // SendWorker
 

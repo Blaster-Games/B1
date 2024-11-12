@@ -1754,24 +1754,9 @@ class S_SelectRoomRes final :
   // accessors -------------------------------------------------------
 
   enum : int {
-    kErrorMessageFieldNumber = 3,
     kRoomFieldNumber = 2,
     kSuccessFieldNumber = 1,
   };
-  // string errorMessage = 3;
-  void clear_errormessage();
-  const std::string& errormessage() const;
-  template <typename ArgT0 = const std::string&, typename... ArgT>
-  void set_errormessage(ArgT0&& arg0, ArgT... args);
-  std::string* mutable_errormessage();
-  PROTOBUF_NODISCARD std::string* release_errormessage();
-  void set_allocated_errormessage(std::string* errormessage);
-  private:
-  const std::string& _internal_errormessage() const;
-  inline PROTOBUF_ALWAYS_INLINE void _internal_set_errormessage(const std::string& value);
-  std::string* _internal_mutable_errormessage();
-  public:
-
   // .Protocol.RoomListItemInfo room = 2;
   bool has_room() const;
   private:
@@ -1807,7 +1792,6 @@ class S_SelectRoomRes final :
   typedef void InternalArenaConstructable_;
   typedef void DestructorSkippable_;
   struct Impl_ {
-    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr errormessage_;
     ::Protocol::RoomListItemInfo* room_;
     bool success_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
@@ -2129,24 +2113,9 @@ class S_CreateRoomRes final :
   // accessors -------------------------------------------------------
 
   enum : int {
-    kErrorMessageFieldNumber = 3,
     kRoomFieldNumber = 2,
     kSuccessFieldNumber = 1,
   };
-  // string errorMessage = 3;
-  void clear_errormessage();
-  const std::string& errormessage() const;
-  template <typename ArgT0 = const std::string&, typename... ArgT>
-  void set_errormessage(ArgT0&& arg0, ArgT... args);
-  std::string* mutable_errormessage();
-  PROTOBUF_NODISCARD std::string* release_errormessage();
-  void set_allocated_errormessage(std::string* errormessage);
-  private:
-  const std::string& _internal_errormessage() const;
-  inline PROTOBUF_ALWAYS_INLINE void _internal_set_errormessage(const std::string& value);
-  std::string* _internal_mutable_errormessage();
-  public:
-
   // .Protocol.RoomDetailInfo room = 2;
   bool has_room() const;
   private:
@@ -2182,7 +2151,6 @@ class S_CreateRoomRes final :
   typedef void InternalArenaConstructable_;
   typedef void DestructorSkippable_;
   struct Impl_ {
-    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr errormessage_;
     ::Protocol::RoomDetailInfo* room_;
     bool success_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
@@ -2461,24 +2429,9 @@ class S_JoinRoomRes final :
   // accessors -------------------------------------------------------
 
   enum : int {
-    kErrorMessageFieldNumber = 3,
     kRoomFieldNumber = 2,
     kSuccessFieldNumber = 1,
   };
-  // string errorMessage = 3;
-  void clear_errormessage();
-  const std::string& errormessage() const;
-  template <typename ArgT0 = const std::string&, typename... ArgT>
-  void set_errormessage(ArgT0&& arg0, ArgT... args);
-  std::string* mutable_errormessage();
-  PROTOBUF_NODISCARD std::string* release_errormessage();
-  void set_allocated_errormessage(std::string* errormessage);
-  private:
-  const std::string& _internal_errormessage() const;
-  inline PROTOBUF_ALWAYS_INLINE void _internal_set_errormessage(const std::string& value);
-  std::string* _internal_mutable_errormessage();
-  public:
-
   // .Protocol.RoomDetailInfo room = 2;
   bool has_room() const;
   private:
@@ -2514,7 +2467,6 @@ class S_JoinRoomRes final :
   typedef void InternalArenaConstructable_;
   typedef void DestructorSkippable_;
   struct Impl_ {
-    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr errormessage_;
     ::Protocol::RoomDetailInfo* room_;
     bool success_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
@@ -4032,7 +3984,6 @@ class S_StartGameRes final :
 
   enum : int {
     kPlayersFieldNumber = 2,
-    kErrorMessageFieldNumber = 3,
     kSuccessFieldNumber = 1,
   };
   // repeated .Protocol.PlayerInfo players = 2;
@@ -4053,20 +4004,6 @@ class S_StartGameRes final :
   const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Protocol::PlayerInfo >&
       players() const;
 
-  // string errorMessage = 3;
-  void clear_errormessage();
-  const std::string& errormessage() const;
-  template <typename ArgT0 = const std::string&, typename... ArgT>
-  void set_errormessage(ArgT0&& arg0, ArgT... args);
-  std::string* mutable_errormessage();
-  PROTOBUF_NODISCARD std::string* release_errormessage();
-  void set_allocated_errormessage(std::string* errormessage);
-  private:
-  const std::string& _internal_errormessage() const;
-  inline PROTOBUF_ALWAYS_INLINE void _internal_set_errormessage(const std::string& value);
-  std::string* _internal_mutable_errormessage();
-  public:
-
   // bool success = 1;
   void clear_success();
   bool success() const;
@@ -4085,7 +4022,6 @@ class S_StartGameRes final :
   typedef void DestructorSkippable_;
   struct Impl_ {
     ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Protocol::PlayerInfo > players_;
-    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr errormessage_;
     bool success_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
@@ -6120,56 +6056,6 @@ inline void S_SelectRoomRes::set_allocated_room(::Protocol::RoomListItemInfo* ro
   // @@protoc_insertion_point(field_set_allocated:Protocol.S_SelectRoomRes.room)
 }
 
-// string errorMessage = 3;
-inline void S_SelectRoomRes::clear_errormessage() {
-  _impl_.errormessage_.ClearToEmpty();
-}
-inline const std::string& S_SelectRoomRes::errormessage() const {
-  // @@protoc_insertion_point(field_get:Protocol.S_SelectRoomRes.errorMessage)
-  return _internal_errormessage();
-}
-template <typename ArgT0, typename... ArgT>
-inline PROTOBUF_ALWAYS_INLINE
-void S_SelectRoomRes::set_errormessage(ArgT0&& arg0, ArgT... args) {
- 
- _impl_.errormessage_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
-  // @@protoc_insertion_point(field_set:Protocol.S_SelectRoomRes.errorMessage)
-}
-inline std::string* S_SelectRoomRes::mutable_errormessage() {
-  std::string* _s = _internal_mutable_errormessage();
-  // @@protoc_insertion_point(field_mutable:Protocol.S_SelectRoomRes.errorMessage)
-  return _s;
-}
-inline const std::string& S_SelectRoomRes::_internal_errormessage() const {
-  return _impl_.errormessage_.Get();
-}
-inline void S_SelectRoomRes::_internal_set_errormessage(const std::string& value) {
-  
-  _impl_.errormessage_.Set(value, GetArenaForAllocation());
-}
-inline std::string* S_SelectRoomRes::_internal_mutable_errormessage() {
-  
-  return _impl_.errormessage_.Mutable(GetArenaForAllocation());
-}
-inline std::string* S_SelectRoomRes::release_errormessage() {
-  // @@protoc_insertion_point(field_release:Protocol.S_SelectRoomRes.errorMessage)
-  return _impl_.errormessage_.Release();
-}
-inline void S_SelectRoomRes::set_allocated_errormessage(std::string* errormessage) {
-  if (errormessage != nullptr) {
-    
-  } else {
-    
-  }
-  _impl_.errormessage_.SetAllocated(errormessage, GetArenaForAllocation());
-#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  if (_impl_.errormessage_.IsDefault()) {
-    _impl_.errormessage_.Set("", GetArenaForAllocation());
-  }
-#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  // @@protoc_insertion_point(field_set_allocated:Protocol.S_SelectRoomRes.errorMessage)
-}
-
 // -------------------------------------------------------------------
 
 // C_CreateRoomReq
@@ -6423,56 +6309,6 @@ inline void S_CreateRoomRes::set_allocated_room(::Protocol::RoomDetailInfo* room
   // @@protoc_insertion_point(field_set_allocated:Protocol.S_CreateRoomRes.room)
 }
 
-// string errorMessage = 3;
-inline void S_CreateRoomRes::clear_errormessage() {
-  _impl_.errormessage_.ClearToEmpty();
-}
-inline const std::string& S_CreateRoomRes::errormessage() const {
-  // @@protoc_insertion_point(field_get:Protocol.S_CreateRoomRes.errorMessage)
-  return _internal_errormessage();
-}
-template <typename ArgT0, typename... ArgT>
-inline PROTOBUF_ALWAYS_INLINE
-void S_CreateRoomRes::set_errormessage(ArgT0&& arg0, ArgT... args) {
- 
- _impl_.errormessage_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
-  // @@protoc_insertion_point(field_set:Protocol.S_CreateRoomRes.errorMessage)
-}
-inline std::string* S_CreateRoomRes::mutable_errormessage() {
-  std::string* _s = _internal_mutable_errormessage();
-  // @@protoc_insertion_point(field_mutable:Protocol.S_CreateRoomRes.errorMessage)
-  return _s;
-}
-inline const std::string& S_CreateRoomRes::_internal_errormessage() const {
-  return _impl_.errormessage_.Get();
-}
-inline void S_CreateRoomRes::_internal_set_errormessage(const std::string& value) {
-  
-  _impl_.errormessage_.Set(value, GetArenaForAllocation());
-}
-inline std::string* S_CreateRoomRes::_internal_mutable_errormessage() {
-  
-  return _impl_.errormessage_.Mutable(GetArenaForAllocation());
-}
-inline std::string* S_CreateRoomRes::release_errormessage() {
-  // @@protoc_insertion_point(field_release:Protocol.S_CreateRoomRes.errorMessage)
-  return _impl_.errormessage_.Release();
-}
-inline void S_CreateRoomRes::set_allocated_errormessage(std::string* errormessage) {
-  if (errormessage != nullptr) {
-    
-  } else {
-    
-  }
-  _impl_.errormessage_.SetAllocated(errormessage, GetArenaForAllocation());
-#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  if (_impl_.errormessage_.IsDefault()) {
-    _impl_.errormessage_.Set("", GetArenaForAllocation());
-  }
-#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  // @@protoc_insertion_point(field_set_allocated:Protocol.S_CreateRoomRes.errorMessage)
-}
-
 // -------------------------------------------------------------------
 
 // C_JoinRoomReq
@@ -6604,56 +6440,6 @@ inline void S_JoinRoomRes::set_allocated_room(::Protocol::RoomDetailInfo* room) 
   }
   _impl_.room_ = room;
   // @@protoc_insertion_point(field_set_allocated:Protocol.S_JoinRoomRes.room)
-}
-
-// string errorMessage = 3;
-inline void S_JoinRoomRes::clear_errormessage() {
-  _impl_.errormessage_.ClearToEmpty();
-}
-inline const std::string& S_JoinRoomRes::errormessage() const {
-  // @@protoc_insertion_point(field_get:Protocol.S_JoinRoomRes.errorMessage)
-  return _internal_errormessage();
-}
-template <typename ArgT0, typename... ArgT>
-inline PROTOBUF_ALWAYS_INLINE
-void S_JoinRoomRes::set_errormessage(ArgT0&& arg0, ArgT... args) {
- 
- _impl_.errormessage_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
-  // @@protoc_insertion_point(field_set:Protocol.S_JoinRoomRes.errorMessage)
-}
-inline std::string* S_JoinRoomRes::mutable_errormessage() {
-  std::string* _s = _internal_mutable_errormessage();
-  // @@protoc_insertion_point(field_mutable:Protocol.S_JoinRoomRes.errorMessage)
-  return _s;
-}
-inline const std::string& S_JoinRoomRes::_internal_errormessage() const {
-  return _impl_.errormessage_.Get();
-}
-inline void S_JoinRoomRes::_internal_set_errormessage(const std::string& value) {
-  
-  _impl_.errormessage_.Set(value, GetArenaForAllocation());
-}
-inline std::string* S_JoinRoomRes::_internal_mutable_errormessage() {
-  
-  return _impl_.errormessage_.Mutable(GetArenaForAllocation());
-}
-inline std::string* S_JoinRoomRes::release_errormessage() {
-  // @@protoc_insertion_point(field_release:Protocol.S_JoinRoomRes.errorMessage)
-  return _impl_.errormessage_.Release();
-}
-inline void S_JoinRoomRes::set_allocated_errormessage(std::string* errormessage) {
-  if (errormessage != nullptr) {
-    
-  } else {
-    
-  }
-  _impl_.errormessage_.SetAllocated(errormessage, GetArenaForAllocation());
-#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  if (_impl_.errormessage_.IsDefault()) {
-    _impl_.errormessage_.Set("", GetArenaForAllocation());
-  }
-#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  // @@protoc_insertion_point(field_set_allocated:Protocol.S_JoinRoomRes.errorMessage)
 }
 
 // -------------------------------------------------------------------
@@ -7196,56 +6982,6 @@ inline const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Protocol::PlayerInfo >
 S_StartGameRes::players() const {
   // @@protoc_insertion_point(field_list:Protocol.S_StartGameRes.players)
   return _impl_.players_;
-}
-
-// string errorMessage = 3;
-inline void S_StartGameRes::clear_errormessage() {
-  _impl_.errormessage_.ClearToEmpty();
-}
-inline const std::string& S_StartGameRes::errormessage() const {
-  // @@protoc_insertion_point(field_get:Protocol.S_StartGameRes.errorMessage)
-  return _internal_errormessage();
-}
-template <typename ArgT0, typename... ArgT>
-inline PROTOBUF_ALWAYS_INLINE
-void S_StartGameRes::set_errormessage(ArgT0&& arg0, ArgT... args) {
- 
- _impl_.errormessage_.Set(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
-  // @@protoc_insertion_point(field_set:Protocol.S_StartGameRes.errorMessage)
-}
-inline std::string* S_StartGameRes::mutable_errormessage() {
-  std::string* _s = _internal_mutable_errormessage();
-  // @@protoc_insertion_point(field_mutable:Protocol.S_StartGameRes.errorMessage)
-  return _s;
-}
-inline const std::string& S_StartGameRes::_internal_errormessage() const {
-  return _impl_.errormessage_.Get();
-}
-inline void S_StartGameRes::_internal_set_errormessage(const std::string& value) {
-  
-  _impl_.errormessage_.Set(value, GetArenaForAllocation());
-}
-inline std::string* S_StartGameRes::_internal_mutable_errormessage() {
-  
-  return _impl_.errormessage_.Mutable(GetArenaForAllocation());
-}
-inline std::string* S_StartGameRes::release_errormessage() {
-  // @@protoc_insertion_point(field_release:Protocol.S_StartGameRes.errorMessage)
-  return _impl_.errormessage_.Release();
-}
-inline void S_StartGameRes::set_allocated_errormessage(std::string* errormessage) {
-  if (errormessage != nullptr) {
-    
-  } else {
-    
-  }
-  _impl_.errormessage_.SetAllocated(errormessage, GetArenaForAllocation());
-#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  if (_impl_.errormessage_.IsDefault()) {
-    _impl_.errormessage_.Set("", GetArenaForAllocation());
-  }
-#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  // @@protoc_insertion_point(field_set_allocated:Protocol.S_StartGameRes.errorMessage)
 }
 
 // -------------------------------------------------------------------

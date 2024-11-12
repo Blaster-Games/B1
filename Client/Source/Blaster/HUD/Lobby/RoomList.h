@@ -6,6 +6,9 @@
 #include "RoomItem.h"
 #include "RoomList.generated.h"
 
+// 델리게이트 선언
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnRoomSelectedDelegate, int32, RoomId);
+
 class URoomItem;
 
 UCLASS()
@@ -27,11 +30,13 @@ private:
 	UPROPERTY(meta = (BindWidget))
 	class UScrollBox* RoomListScrollBox;
 
-	// RoomItem 배열
+	UPROPERTY(EditDefaultsOnly, Category = "UI")
+	TSubclassOf<URoomItem> RoomItemClass;
+
 	UPROPERTY()
 	TArray<URoomItem*> RoomItems;
 
-	// 방 생성 버튼 클릭 이벤트
+	// 이벤트 핸들러
 	UFUNCTION()
 	void OnCreateRoomClicked();
 
@@ -41,9 +46,16 @@ private:
 	UFUNCTION()
 	void HandleRoomListResponse(const TArray<FRoomListItemInfo>& Rooms);
 
+	UFUNCTION()
+	void HandleRoomItemDoubleClicked(int32 RoomId);
+
 public:
 	// 방 목록 관리 함수들
 	void UpdateRoomList(const TArray<FRoomListItemInfo>& Rooms);
 	URoomItem* AddRoom(const FRoomListItemInfo& RoomInfo);
 	void ClearRoomList();
+
+	// Room 선택 이벤트 델리게이트
+	UPROPERTY(BlueprintAssignable, Category = "Room Events")
+	FOnRoomSelectedDelegate OnRoomSelected;
 };

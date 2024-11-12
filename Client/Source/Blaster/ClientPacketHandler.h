@@ -138,13 +138,7 @@ public:
     {
         PacketHeader* header = reinterpret_cast<PacketHeader*>(buffer);
 
-        UE_LOG(LogTemp, Log, TEXT("[PacketHandler] Handling Packet - ID: %d, Length: %d"),
-            header->id, len);
-
         bool result = GPacketHandler[header->id](session, buffer, len);
-
-        UE_LOG(LogTemp, Log, TEXT("[PacketHandler] Packet handling %s - ID: %d"),
-            result ? TEXT("succeeded") : TEXT("failed"), header->id);
 
         return result;
     }
@@ -168,16 +162,11 @@ private:
     template<typename PacketType, typename ProcessFunc>
     static bool HandlePacket(ProcessFunc func, PacketSessionRef& session, BYTE* buffer, int32 len)
     {
-        UE_LOG(LogTemp, Log, TEXT("[PacketHandler] Attempting to parse packet"));
-
         PacketType pkt;
         if (pkt.ParseFromArray(buffer + sizeof(PacketHeader), len - sizeof(PacketHeader)) == false)
         {
-            UE_LOG(LogTemp, Warning, TEXT("[PacketHandler] Failed to parse packet"));
             return false;
         }
-
-        UE_LOG(LogTemp, Log, TEXT("[PacketHandler] Calling handler function for packet"));
         return func(session, pkt);  // Cpp 핸들 메서드 호출
     }
 

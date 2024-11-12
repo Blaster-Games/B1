@@ -149,8 +149,7 @@ struct C_SelectRoomReqDefaultTypeInternal {
 PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 C_SelectRoomReqDefaultTypeInternal _C_SelectRoomReq_default_instance_;
 PROTOBUF_CONSTEXPR S_SelectRoomRes::S_SelectRoomRes(
     ::_pbi::ConstantInitialized): _impl_{
-    /*decltype(_impl_.errormessage_)*/{&::_pbi::fixed_address_empty_string, ::_pbi::ConstantInitialized{}}
-  , /*decltype(_impl_.room_)*/nullptr
+    /*decltype(_impl_.room_)*/nullptr
   , /*decltype(_impl_.success_)*/false
   , /*decltype(_impl_._cached_size_)*/{}} {}
 struct S_SelectRoomResDefaultTypeInternal {
@@ -180,8 +179,7 @@ struct C_CreateRoomReqDefaultTypeInternal {
 PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 C_CreateRoomReqDefaultTypeInternal _C_CreateRoomReq_default_instance_;
 PROTOBUF_CONSTEXPR S_CreateRoomRes::S_CreateRoomRes(
     ::_pbi::ConstantInitialized): _impl_{
-    /*decltype(_impl_.errormessage_)*/{&::_pbi::fixed_address_empty_string, ::_pbi::ConstantInitialized{}}
-  , /*decltype(_impl_.room_)*/nullptr
+    /*decltype(_impl_.room_)*/nullptr
   , /*decltype(_impl_.success_)*/false
   , /*decltype(_impl_._cached_size_)*/{}} {}
 struct S_CreateRoomResDefaultTypeInternal {
@@ -208,8 +206,7 @@ struct C_JoinRoomReqDefaultTypeInternal {
 PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 C_JoinRoomReqDefaultTypeInternal _C_JoinRoomReq_default_instance_;
 PROTOBUF_CONSTEXPR S_JoinRoomRes::S_JoinRoomRes(
     ::_pbi::ConstantInitialized): _impl_{
-    /*decltype(_impl_.errormessage_)*/{&::_pbi::fixed_address_empty_string, ::_pbi::ConstantInitialized{}}
-  , /*decltype(_impl_.room_)*/nullptr
+    /*decltype(_impl_.room_)*/nullptr
   , /*decltype(_impl_.success_)*/false
   , /*decltype(_impl_._cached_size_)*/{}} {}
 struct S_JoinRoomResDefaultTypeInternal {
@@ -344,7 +341,6 @@ PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORIT
 PROTOBUF_CONSTEXPR S_StartGameRes::S_StartGameRes(
     ::_pbi::ConstantInitialized): _impl_{
     /*decltype(_impl_.players_)*/{}
-  , /*decltype(_impl_.errormessage_)*/{&::_pbi::fixed_address_empty_string, ::_pbi::ConstantInitialized{}}
   , /*decltype(_impl_.success_)*/false
   , /*decltype(_impl_._cached_size_)*/{}} {}
 struct S_StartGameResDefaultTypeInternal {
@@ -571,7 +567,6 @@ const uint32_t TableStruct_Protocol_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE
   ~0u,  // no _inlined_string_donated_
   PROTOBUF_FIELD_OFFSET(::Protocol::S_SelectRoomRes, _impl_.success_),
   PROTOBUF_FIELD_OFFSET(::Protocol::S_SelectRoomRes, _impl_.room_),
-  PROTOBUF_FIELD_OFFSET(::Protocol::S_SelectRoomRes, _impl_.errormessage_),
   ~0u,  // no _has_bits_
   PROTOBUF_FIELD_OFFSET(::Protocol::C_CreateRoomReq, _internal_metadata_),
   ~0u,  // no _extensions_
@@ -590,7 +585,6 @@ const uint32_t TableStruct_Protocol_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE
   ~0u,  // no _inlined_string_donated_
   PROTOBUF_FIELD_OFFSET(::Protocol::S_CreateRoomRes, _impl_.success_),
   PROTOBUF_FIELD_OFFSET(::Protocol::S_CreateRoomRes, _impl_.room_),
-  PROTOBUF_FIELD_OFFSET(::Protocol::S_CreateRoomRes, _impl_.errormessage_),
   ~0u,  // no _has_bits_
   PROTOBUF_FIELD_OFFSET(::Protocol::C_JoinRoomReq, _internal_metadata_),
   ~0u,  // no _extensions_
@@ -606,7 +600,6 @@ const uint32_t TableStruct_Protocol_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE
   ~0u,  // no _inlined_string_donated_
   PROTOBUF_FIELD_OFFSET(::Protocol::S_JoinRoomRes, _impl_.success_),
   PROTOBUF_FIELD_OFFSET(::Protocol::S_JoinRoomRes, _impl_.room_),
-  PROTOBUF_FIELD_OFFSET(::Protocol::S_JoinRoomRes, _impl_.errormessage_),
   ~0u,  // no _has_bits_
   PROTOBUF_FIELD_OFFSET(::Protocol::S_BroadcastJoinRoom, _internal_metadata_),
   ~0u,  // no _extensions_
@@ -682,7 +675,6 @@ const uint32_t TableStruct_Protocol_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE
   ~0u,  // no _inlined_string_donated_
   PROTOBUF_FIELD_OFFSET(::Protocol::S_StartGameRes, _impl_.success_),
   PROTOBUF_FIELD_OFFSET(::Protocol::S_StartGameRes, _impl_.players_),
-  PROTOBUF_FIELD_OFFSET(::Protocol::S_StartGameRes, _impl_.errormessage_),
   ~0u,  // no _has_bits_
   PROTOBUF_FIELD_OFFSET(::Protocol::S_BroadcastStartGame, _internal_metadata_),
   ~0u,  // no _extensions_
@@ -769,30 +761,30 @@ static const ::_pbi::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protode
   { 56, -1, -1, sizeof(::Protocol::S_RoomListRes)},
   { 63, -1, -1, sizeof(::Protocol::C_SelectRoomReq)},
   { 70, -1, -1, sizeof(::Protocol::S_SelectRoomRes)},
-  { 79, -1, -1, sizeof(::Protocol::C_CreateRoomReq)},
-  { 89, -1, -1, sizeof(::Protocol::S_CreateRoomRes)},
-  { 98, -1, -1, sizeof(::Protocol::C_JoinRoomReq)},
-  { 105, -1, -1, sizeof(::Protocol::S_JoinRoomRes)},
-  { 114, -1, -1, sizeof(::Protocol::S_BroadcastJoinRoom)},
-  { 121, -1, -1, sizeof(::Protocol::C_LeaveRoomReq)},
-  { 127, -1, -1, sizeof(::Protocol::S_LeaveRoomRes)},
-  { 134, -1, -1, sizeof(::Protocol::S_BroadcastLeaveRoom)},
-  { 142, -1, -1, sizeof(::Protocol::C_RoomChat)},
-  { 149, -1, -1, sizeof(::Protocol::S_BroadcastRoomChat)},
-  { 158, -1, -1, sizeof(::Protocol::C_ReadyGameReq)},
-  { 165, -1, -1, sizeof(::Protocol::S_BroadcastReadyGame)},
-  { 173, -1, -1, sizeof(::Protocol::C_StartGameReq)},
-  { 181, -1, -1, sizeof(::Protocol::S_StartGameRes)},
-  { 190, -1, -1, sizeof(::Protocol::S_BroadcastStartGame)},
-  { 199, -1, -1, sizeof(::Protocol::C_EndGameReq)},
-  { 206, -1, -1, sizeof(::Protocol::S_EndGameRes)},
-  { 213, -1, -1, sizeof(::Protocol::S_BroadcastEndGame)},
-  { 221, -1, -1, sizeof(::Protocol::S_BroadcastChangeHost)},
-  { 229, -1, -1, sizeof(::Protocol::S_BroadcastRoomState)},
-  { 237, -1, -1, sizeof(::Protocol::S_ErrorMessage)},
-  { 244, -1, -1, sizeof(::Protocol::S_KickPlayer)},
-  { 251, -1, -1, sizeof(::Protocol::S_Ping)},
-  { 257, -1, -1, sizeof(::Protocol::C_Pong)},
+  { 78, -1, -1, sizeof(::Protocol::C_CreateRoomReq)},
+  { 88, -1, -1, sizeof(::Protocol::S_CreateRoomRes)},
+  { 96, -1, -1, sizeof(::Protocol::C_JoinRoomReq)},
+  { 103, -1, -1, sizeof(::Protocol::S_JoinRoomRes)},
+  { 111, -1, -1, sizeof(::Protocol::S_BroadcastJoinRoom)},
+  { 118, -1, -1, sizeof(::Protocol::C_LeaveRoomReq)},
+  { 124, -1, -1, sizeof(::Protocol::S_LeaveRoomRes)},
+  { 131, -1, -1, sizeof(::Protocol::S_BroadcastLeaveRoom)},
+  { 139, -1, -1, sizeof(::Protocol::C_RoomChat)},
+  { 146, -1, -1, sizeof(::Protocol::S_BroadcastRoomChat)},
+  { 155, -1, -1, sizeof(::Protocol::C_ReadyGameReq)},
+  { 162, -1, -1, sizeof(::Protocol::S_BroadcastReadyGame)},
+  { 170, -1, -1, sizeof(::Protocol::C_StartGameReq)},
+  { 178, -1, -1, sizeof(::Protocol::S_StartGameRes)},
+  { 186, -1, -1, sizeof(::Protocol::S_BroadcastStartGame)},
+  { 195, -1, -1, sizeof(::Protocol::C_EndGameReq)},
+  { 202, -1, -1, sizeof(::Protocol::S_EndGameRes)},
+  { 209, -1, -1, sizeof(::Protocol::S_BroadcastEndGame)},
+  { 217, -1, -1, sizeof(::Protocol::S_BroadcastChangeHost)},
+  { 225, -1, -1, sizeof(::Protocol::S_BroadcastRoomState)},
+  { 233, -1, -1, sizeof(::Protocol::S_ErrorMessage)},
+  { 240, -1, -1, sizeof(::Protocol::S_KickPlayer)},
+  { 247, -1, -1, sizeof(::Protocol::S_Ping)},
+  { 253, -1, -1, sizeof(::Protocol::C_Pong)},
 };
 
 static const ::_pb::Message* const file_default_instances[] = {
@@ -844,43 +836,41 @@ const char descriptor_table_protodef_Protocol_2eproto[] PROTOBUF_SECTION_VARIABL
   "ayerName\030\002 \001(\t\022\017\n\007message\030\003 \001(\t\"\017\n\rC_Roo"
   "mListReq\":\n\rS_RoomListRes\022)\n\005rooms\030\001 \003(\013"
   "2\032.Protocol.RoomListItemInfo\"!\n\017C_Select"
-  "RoomReq\022\016\n\006roomId\030\001 \001(\005\"b\n\017S_SelectRoomR"
+  "RoomReq\022\016\n\006roomId\030\001 \001(\005\"L\n\017S_SelectRoomR"
   "es\022\017\n\007success\030\001 \001(\010\022(\n\004room\030\002 \001(\0132\032.Prot"
-  "ocol.RoomListItemInfo\022\024\n\014errorMessage\030\003 "
-  "\001(\t\"h\n\017C_CreateRoomReq\022\r\n\005title\030\001 \001(\t\022!\n"
-  "\004mode\030\002 \001(\0162\023.Protocol.EGameMode\022\022\n\nmaxP"
-  "layers\030\003 \001(\005\022\017\n\007mapName\030\004 \001(\t\"`\n\017S_Creat"
-  "eRoomRes\022\017\n\007success\030\001 \001(\010\022&\n\004room\030\002 \001(\0132"
-  "\030.Protocol.RoomDetailInfo\022\024\n\014errorMessag"
-  "e\030\003 \001(\t\"\037\n\rC_JoinRoomReq\022\016\n\006roomId\030\001 \001(\005"
-  "\"^\n\rS_JoinRoomRes\022\017\n\007success\030\001 \001(\010\022&\n\004ro"
-  "om\030\002 \001(\0132\030.Protocol.RoomDetailInfo\022\024\n\014er"
-  "rorMessage\030\003 \001(\t\">\n\023S_BroadcastJoinRoom\022"
-  "\'\n\tnewPlayer\030\001 \001(\0132\024.Protocol.PlayerInfo"
-  "\"\020\n\016C_LeaveRoomReq\"!\n\016S_LeaveRoomRes\022\017\n\007"
-  "success\030\001 \001(\010\"8\n\024S_BroadcastLeaveRoom\022\020\n"
-  "\010playerId\030\001 \001(\005\022\016\n\006isHost\030\002 \001(\010\"\035\n\nC_Roo"
-  "mChat\022\017\n\007message\030\001 \001(\t\"L\n\023S_BroadcastRoo"
-  "mChat\022\020\n\010playerId\030\001 \001(\005\022\022\n\nplayerName\030\002 "
-  "\001(\t\022\017\n\007message\030\003 \001(\t\"\037\n\016C_ReadyGameReq\022\r"
-  "\n\005ready\030\001 \001(\010\"7\n\024S_BroadcastReadyGame\022\020\n"
-  "\010playerId\030\001 \001(\005\022\r\n\005ready\030\002 \001(\010\"3\n\016C_Star"
-  "tGameReq\022\023\n\013hostAddress\030\001 \001(\t\022\014\n\004port\030\002 "
-  "\001(\005\"^\n\016S_StartGameRes\022\017\n\007success\030\001 \001(\010\022%"
-  "\n\007players\030\002 \003(\0132\024.Protocol.PlayerInfo\022\024\n"
-  "\014errorMessage\030\003 \001(\t\"L\n\024S_BroadcastStartG"
-  "ame\022\023\n\013hostAddress\030\001 \001(\t\022\014\n\004port\030\002 \001(\005\022\021"
-  "\n\tsessionId\030\003 \001(\005\"\036\n\014C_EndGameReq\022\016\n\006rea"
-  "son\030\001 \001(\t\"\037\n\014S_EndGameRes\022\017\n\007success\030\001 \001"
-  "(\010\"7\n\022S_BroadcastEndGame\022\016\n\006reason\030\001 \001(\t"
-  "\022\021\n\tnewHostId\030\002 \001(\003\"D\n\025S_BroadcastChange"
-  "Host\022\027\n\017newHostPlayerId\030\001 \001(\005\022\022\n\nplayerN"
-  "ame\030\002 \001(\t\"K\n\024S_BroadcastRoomState\022\016\n\006roo"
-  "mId\030\001 \001(\005\022#\n\005state\030\002 \001(\0162\024.Protocol.ERoo"
-  "mState\"!\n\016S_ErrorMessage\022\017\n\007message\030\001 \001("
-  "\t\"\036\n\014S_KickPlayer\022\016\n\006reason\030\001 \001(\t\"\010\n\006S_P"
-  "ing\"\010\n\006C_PongB\033\252\002\030Google.Protobuf.Protoc"
-  "olP\000P\001b\006proto3"
+  "ocol.RoomListItemInfo\"h\n\017C_CreateRoomReq"
+  "\022\r\n\005title\030\001 \001(\t\022!\n\004mode\030\002 \001(\0162\023.Protocol"
+  ".EGameMode\022\022\n\nmaxPlayers\030\003 \001(\005\022\017\n\007mapNam"
+  "e\030\004 \001(\t\"J\n\017S_CreateRoomRes\022\017\n\007success\030\001 "
+  "\001(\010\022&\n\004room\030\002 \001(\0132\030.Protocol.RoomDetailI"
+  "nfo\"\037\n\rC_JoinRoomReq\022\016\n\006roomId\030\001 \001(\005\"H\n\r"
+  "S_JoinRoomRes\022\017\n\007success\030\001 \001(\010\022&\n\004room\030\002"
+  " \001(\0132\030.Protocol.RoomDetailInfo\">\n\023S_Broa"
+  "dcastJoinRoom\022\'\n\tnewPlayer\030\001 \001(\0132\024.Proto"
+  "col.PlayerInfo\"\020\n\016C_LeaveRoomReq\"!\n\016S_Le"
+  "aveRoomRes\022\017\n\007success\030\001 \001(\010\"8\n\024S_Broadca"
+  "stLeaveRoom\022\020\n\010playerId\030\001 \001(\005\022\016\n\006isHost\030"
+  "\002 \001(\010\"\035\n\nC_RoomChat\022\017\n\007message\030\001 \001(\t\"L\n\023"
+  "S_BroadcastRoomChat\022\020\n\010playerId\030\001 \001(\005\022\022\n"
+  "\nplayerName\030\002 \001(\t\022\017\n\007message\030\003 \001(\t\"\037\n\016C_"
+  "ReadyGameReq\022\r\n\005ready\030\001 \001(\010\"7\n\024S_Broadca"
+  "stReadyGame\022\020\n\010playerId\030\001 \001(\005\022\r\n\005ready\030\002"
+  " \001(\010\"3\n\016C_StartGameReq\022\023\n\013hostAddress\030\001 "
+  "\001(\t\022\014\n\004port\030\002 \001(\005\"H\n\016S_StartGameRes\022\017\n\007s"
+  "uccess\030\001 \001(\010\022%\n\007players\030\002 \003(\0132\024.Protocol"
+  ".PlayerInfo\"L\n\024S_BroadcastStartGame\022\023\n\013h"
+  "ostAddress\030\001 \001(\t\022\014\n\004port\030\002 \001(\005\022\021\n\tsessio"
+  "nId\030\003 \001(\005\"\036\n\014C_EndGameReq\022\016\n\006reason\030\001 \001("
+  "\t\"\037\n\014S_EndGameRes\022\017\n\007success\030\001 \001(\010\"7\n\022S_"
+  "BroadcastEndGame\022\016\n\006reason\030\001 \001(\t\022\021\n\tnewH"
+  "ostId\030\002 \001(\003\"D\n\025S_BroadcastChangeHost\022\027\n\017"
+  "newHostPlayerId\030\001 \001(\005\022\022\n\nplayerName\030\002 \001("
+  "\t\"K\n\024S_BroadcastRoomState\022\016\n\006roomId\030\001 \001("
+  "\005\022#\n\005state\030\002 \001(\0162\024.Protocol.ERoomState\"!"
+  "\n\016S_ErrorMessage\022\017\n\007message\030\001 \001(\t\"\036\n\014S_K"
+  "ickPlayer\022\016\n\006reason\030\001 \001(\t\"\010\n\006S_Ping\"\010\n\006C"
+  "_PongB\033\252\002\030Google.Protobuf.ProtocolP\000P\001b\006"
+  "proto3"
   ;
 static const ::_pbi::DescriptorTable* const descriptor_table_Protocol_2eproto_deps[2] = {
   &::descriptor_table_Enum_2eproto,
@@ -888,7 +878,7 @@ static const ::_pbi::DescriptorTable* const descriptor_table_Protocol_2eproto_de
 };
 static ::_pbi::once_flag descriptor_table_Protocol_2eproto_once;
 const ::_pbi::DescriptorTable descriptor_table_Protocol_2eproto = {
-    false, false, 1854, descriptor_table_protodef_Protocol_2eproto,
+    false, false, 1766, descriptor_table_protodef_Protocol_2eproto,
     "Protocol.proto",
     &descriptor_table_Protocol_2eproto_once, descriptor_table_Protocol_2eproto_deps, 2, 35,
     schemas, file_default_instances, TableStruct_Protocol_2eproto::offsets,
@@ -2397,20 +2387,11 @@ S_SelectRoomRes::S_SelectRoomRes(const S_SelectRoomRes& from)
   : ::PROTOBUF_NAMESPACE_ID::Message() {
   S_SelectRoomRes* const _this = this; (void)_this;
   new (&_impl_) Impl_{
-      decltype(_impl_.errormessage_){}
-    , decltype(_impl_.room_){nullptr}
+      decltype(_impl_.room_){nullptr}
     , decltype(_impl_.success_){}
     , /*decltype(_impl_._cached_size_)*/{}};
 
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
-  _impl_.errormessage_.InitDefault();
-  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-    _impl_.errormessage_.Set("", GetArenaForAllocation());
-  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  if (!from._internal_errormessage().empty()) {
-    _this->_impl_.errormessage_.Set(from._internal_errormessage(), 
-      _this->GetArenaForAllocation());
-  }
   if (from._internal_has_room()) {
     _this->_impl_.room_ = new ::Protocol::RoomListItemInfo(*from._impl_.room_);
   }
@@ -2423,15 +2404,10 @@ inline void S_SelectRoomRes::SharedCtor(
   (void)arena;
   (void)is_message_owned;
   new (&_impl_) Impl_{
-      decltype(_impl_.errormessage_){}
-    , decltype(_impl_.room_){nullptr}
+      decltype(_impl_.room_){nullptr}
     , decltype(_impl_.success_){false}
     , /*decltype(_impl_._cached_size_)*/{}
   };
-  _impl_.errormessage_.InitDefault();
-  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-    _impl_.errormessage_.Set("", GetArenaForAllocation());
-  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
 }
 
 S_SelectRoomRes::~S_SelectRoomRes() {
@@ -2445,7 +2421,6 @@ S_SelectRoomRes::~S_SelectRoomRes() {
 
 inline void S_SelectRoomRes::SharedDtor() {
   GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
-  _impl_.errormessage_.Destroy();
   if (this != internal_default_instance()) delete _impl_.room_;
 }
 
@@ -2459,7 +2434,6 @@ void S_SelectRoomRes::Clear() {
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
-  _impl_.errormessage_.ClearToEmpty();
   if (GetArenaForAllocation() == nullptr && _impl_.room_ != nullptr) {
     delete _impl_.room_;
   }
@@ -2487,16 +2461,6 @@ const char* S_SelectRoomRes::_InternalParse(const char* ptr, ::_pbi::ParseContex
         if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 18)) {
           ptr = ctx->ParseMessage(_internal_mutable_room(), ptr);
           CHK_(ptr);
-        } else
-          goto handle_unusual;
-        continue;
-      // string errorMessage = 3;
-      case 3:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 26)) {
-          auto str = _internal_mutable_errormessage();
-          ptr = ::_pbi::InlineGreedyStringParser(str, ptr, ctx);
-          CHK_(ptr);
-          CHK_(::_pbi::VerifyUTF8(str, "Protocol.S_SelectRoomRes.errorMessage"));
         } else
           goto handle_unusual;
         continue;
@@ -2542,16 +2506,6 @@ uint8_t* S_SelectRoomRes::_InternalSerialize(
         _Internal::room(this).GetCachedSize(), target, stream);
   }
 
-  // string errorMessage = 3;
-  if (!this->_internal_errormessage().empty()) {
-    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
-      this->_internal_errormessage().data(), static_cast<int>(this->_internal_errormessage().length()),
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
-      "Protocol.S_SelectRoomRes.errorMessage");
-    target = stream->WriteStringMaybeAliased(
-        3, this->_internal_errormessage(), target);
-  }
-
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
     target = ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
         _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
@@ -2567,13 +2521,6 @@ size_t S_SelectRoomRes::ByteSizeLong() const {
   uint32_t cached_has_bits = 0;
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
-
-  // string errorMessage = 3;
-  if (!this->_internal_errormessage().empty()) {
-    total_size += 1 +
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
-        this->_internal_errormessage());
-  }
 
   // .Protocol.RoomListItemInfo room = 2;
   if (this->_internal_has_room()) {
@@ -2605,9 +2552,6 @@ void S_SelectRoomRes::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const 
   uint32_t cached_has_bits = 0;
   (void) cached_has_bits;
 
-  if (!from._internal_errormessage().empty()) {
-    _this->_internal_set_errormessage(from._internal_errormessage());
-  }
   if (from._internal_has_room()) {
     _this->_internal_mutable_room()->::Protocol::RoomListItemInfo::MergeFrom(
         from._internal_room());
@@ -2631,13 +2575,7 @@ bool S_SelectRoomRes::IsInitialized() const {
 
 void S_SelectRoomRes::InternalSwap(S_SelectRoomRes* other) {
   using std::swap;
-  auto* lhs_arena = GetArenaForAllocation();
-  auto* rhs_arena = other->GetArenaForAllocation();
   _internal_metadata_.InternalSwap(&other->_internal_metadata_);
-  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::InternalSwap(
-      &_impl_.errormessage_, lhs_arena,
-      &other->_impl_.errormessage_, rhs_arena
-  );
   ::PROTOBUF_NAMESPACE_ID::internal::memswap<
       PROTOBUF_FIELD_OFFSET(S_SelectRoomRes, _impl_.success_)
       + sizeof(S_SelectRoomRes::_impl_.success_)
@@ -2995,20 +2933,11 @@ S_CreateRoomRes::S_CreateRoomRes(const S_CreateRoomRes& from)
   : ::PROTOBUF_NAMESPACE_ID::Message() {
   S_CreateRoomRes* const _this = this; (void)_this;
   new (&_impl_) Impl_{
-      decltype(_impl_.errormessage_){}
-    , decltype(_impl_.room_){nullptr}
+      decltype(_impl_.room_){nullptr}
     , decltype(_impl_.success_){}
     , /*decltype(_impl_._cached_size_)*/{}};
 
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
-  _impl_.errormessage_.InitDefault();
-  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-    _impl_.errormessage_.Set("", GetArenaForAllocation());
-  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  if (!from._internal_errormessage().empty()) {
-    _this->_impl_.errormessage_.Set(from._internal_errormessage(), 
-      _this->GetArenaForAllocation());
-  }
   if (from._internal_has_room()) {
     _this->_impl_.room_ = new ::Protocol::RoomDetailInfo(*from._impl_.room_);
   }
@@ -3021,15 +2950,10 @@ inline void S_CreateRoomRes::SharedCtor(
   (void)arena;
   (void)is_message_owned;
   new (&_impl_) Impl_{
-      decltype(_impl_.errormessage_){}
-    , decltype(_impl_.room_){nullptr}
+      decltype(_impl_.room_){nullptr}
     , decltype(_impl_.success_){false}
     , /*decltype(_impl_._cached_size_)*/{}
   };
-  _impl_.errormessage_.InitDefault();
-  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-    _impl_.errormessage_.Set("", GetArenaForAllocation());
-  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
 }
 
 S_CreateRoomRes::~S_CreateRoomRes() {
@@ -3043,7 +2967,6 @@ S_CreateRoomRes::~S_CreateRoomRes() {
 
 inline void S_CreateRoomRes::SharedDtor() {
   GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
-  _impl_.errormessage_.Destroy();
   if (this != internal_default_instance()) delete _impl_.room_;
 }
 
@@ -3057,7 +2980,6 @@ void S_CreateRoomRes::Clear() {
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
-  _impl_.errormessage_.ClearToEmpty();
   if (GetArenaForAllocation() == nullptr && _impl_.room_ != nullptr) {
     delete _impl_.room_;
   }
@@ -3085,16 +3007,6 @@ const char* S_CreateRoomRes::_InternalParse(const char* ptr, ::_pbi::ParseContex
         if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 18)) {
           ptr = ctx->ParseMessage(_internal_mutable_room(), ptr);
           CHK_(ptr);
-        } else
-          goto handle_unusual;
-        continue;
-      // string errorMessage = 3;
-      case 3:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 26)) {
-          auto str = _internal_mutable_errormessage();
-          ptr = ::_pbi::InlineGreedyStringParser(str, ptr, ctx);
-          CHK_(ptr);
-          CHK_(::_pbi::VerifyUTF8(str, "Protocol.S_CreateRoomRes.errorMessage"));
         } else
           goto handle_unusual;
         continue;
@@ -3140,16 +3052,6 @@ uint8_t* S_CreateRoomRes::_InternalSerialize(
         _Internal::room(this).GetCachedSize(), target, stream);
   }
 
-  // string errorMessage = 3;
-  if (!this->_internal_errormessage().empty()) {
-    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
-      this->_internal_errormessage().data(), static_cast<int>(this->_internal_errormessage().length()),
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
-      "Protocol.S_CreateRoomRes.errorMessage");
-    target = stream->WriteStringMaybeAliased(
-        3, this->_internal_errormessage(), target);
-  }
-
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
     target = ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
         _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
@@ -3165,13 +3067,6 @@ size_t S_CreateRoomRes::ByteSizeLong() const {
   uint32_t cached_has_bits = 0;
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
-
-  // string errorMessage = 3;
-  if (!this->_internal_errormessage().empty()) {
-    total_size += 1 +
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
-        this->_internal_errormessage());
-  }
 
   // .Protocol.RoomDetailInfo room = 2;
   if (this->_internal_has_room()) {
@@ -3203,9 +3098,6 @@ void S_CreateRoomRes::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const 
   uint32_t cached_has_bits = 0;
   (void) cached_has_bits;
 
-  if (!from._internal_errormessage().empty()) {
-    _this->_internal_set_errormessage(from._internal_errormessage());
-  }
   if (from._internal_has_room()) {
     _this->_internal_mutable_room()->::Protocol::RoomDetailInfo::MergeFrom(
         from._internal_room());
@@ -3229,13 +3121,7 @@ bool S_CreateRoomRes::IsInitialized() const {
 
 void S_CreateRoomRes::InternalSwap(S_CreateRoomRes* other) {
   using std::swap;
-  auto* lhs_arena = GetArenaForAllocation();
-  auto* rhs_arena = other->GetArenaForAllocation();
   _internal_metadata_.InternalSwap(&other->_internal_metadata_);
-  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::InternalSwap(
-      &_impl_.errormessage_, lhs_arena,
-      &other->_impl_.errormessage_, rhs_arena
-  );
   ::PROTOBUF_NAMESPACE_ID::internal::memswap<
       PROTOBUF_FIELD_OFFSET(S_CreateRoomRes, _impl_.success_)
       + sizeof(S_CreateRoomRes::_impl_.success_)
@@ -3455,20 +3341,11 @@ S_JoinRoomRes::S_JoinRoomRes(const S_JoinRoomRes& from)
   : ::PROTOBUF_NAMESPACE_ID::Message() {
   S_JoinRoomRes* const _this = this; (void)_this;
   new (&_impl_) Impl_{
-      decltype(_impl_.errormessage_){}
-    , decltype(_impl_.room_){nullptr}
+      decltype(_impl_.room_){nullptr}
     , decltype(_impl_.success_){}
     , /*decltype(_impl_._cached_size_)*/{}};
 
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
-  _impl_.errormessage_.InitDefault();
-  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-    _impl_.errormessage_.Set("", GetArenaForAllocation());
-  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  if (!from._internal_errormessage().empty()) {
-    _this->_impl_.errormessage_.Set(from._internal_errormessage(), 
-      _this->GetArenaForAllocation());
-  }
   if (from._internal_has_room()) {
     _this->_impl_.room_ = new ::Protocol::RoomDetailInfo(*from._impl_.room_);
   }
@@ -3481,15 +3358,10 @@ inline void S_JoinRoomRes::SharedCtor(
   (void)arena;
   (void)is_message_owned;
   new (&_impl_) Impl_{
-      decltype(_impl_.errormessage_){}
-    , decltype(_impl_.room_){nullptr}
+      decltype(_impl_.room_){nullptr}
     , decltype(_impl_.success_){false}
     , /*decltype(_impl_._cached_size_)*/{}
   };
-  _impl_.errormessage_.InitDefault();
-  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-    _impl_.errormessage_.Set("", GetArenaForAllocation());
-  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
 }
 
 S_JoinRoomRes::~S_JoinRoomRes() {
@@ -3503,7 +3375,6 @@ S_JoinRoomRes::~S_JoinRoomRes() {
 
 inline void S_JoinRoomRes::SharedDtor() {
   GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
-  _impl_.errormessage_.Destroy();
   if (this != internal_default_instance()) delete _impl_.room_;
 }
 
@@ -3517,7 +3388,6 @@ void S_JoinRoomRes::Clear() {
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
-  _impl_.errormessage_.ClearToEmpty();
   if (GetArenaForAllocation() == nullptr && _impl_.room_ != nullptr) {
     delete _impl_.room_;
   }
@@ -3545,16 +3415,6 @@ const char* S_JoinRoomRes::_InternalParse(const char* ptr, ::_pbi::ParseContext*
         if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 18)) {
           ptr = ctx->ParseMessage(_internal_mutable_room(), ptr);
           CHK_(ptr);
-        } else
-          goto handle_unusual;
-        continue;
-      // string errorMessage = 3;
-      case 3:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 26)) {
-          auto str = _internal_mutable_errormessage();
-          ptr = ::_pbi::InlineGreedyStringParser(str, ptr, ctx);
-          CHK_(ptr);
-          CHK_(::_pbi::VerifyUTF8(str, "Protocol.S_JoinRoomRes.errorMessage"));
         } else
           goto handle_unusual;
         continue;
@@ -3600,16 +3460,6 @@ uint8_t* S_JoinRoomRes::_InternalSerialize(
         _Internal::room(this).GetCachedSize(), target, stream);
   }
 
-  // string errorMessage = 3;
-  if (!this->_internal_errormessage().empty()) {
-    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
-      this->_internal_errormessage().data(), static_cast<int>(this->_internal_errormessage().length()),
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
-      "Protocol.S_JoinRoomRes.errorMessage");
-    target = stream->WriteStringMaybeAliased(
-        3, this->_internal_errormessage(), target);
-  }
-
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
     target = ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
         _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
@@ -3625,13 +3475,6 @@ size_t S_JoinRoomRes::ByteSizeLong() const {
   uint32_t cached_has_bits = 0;
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
-
-  // string errorMessage = 3;
-  if (!this->_internal_errormessage().empty()) {
-    total_size += 1 +
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
-        this->_internal_errormessage());
-  }
 
   // .Protocol.RoomDetailInfo room = 2;
   if (this->_internal_has_room()) {
@@ -3663,9 +3506,6 @@ void S_JoinRoomRes::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::
   uint32_t cached_has_bits = 0;
   (void) cached_has_bits;
 
-  if (!from._internal_errormessage().empty()) {
-    _this->_internal_set_errormessage(from._internal_errormessage());
-  }
   if (from._internal_has_room()) {
     _this->_internal_mutable_room()->::Protocol::RoomDetailInfo::MergeFrom(
         from._internal_room());
@@ -3689,13 +3529,7 @@ bool S_JoinRoomRes::IsInitialized() const {
 
 void S_JoinRoomRes::InternalSwap(S_JoinRoomRes* other) {
   using std::swap;
-  auto* lhs_arena = GetArenaForAllocation();
-  auto* rhs_arena = other->GetArenaForAllocation();
   _internal_metadata_.InternalSwap(&other->_internal_metadata_);
-  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::InternalSwap(
-      &_impl_.errormessage_, lhs_arena,
-      &other->_impl_.errormessage_, rhs_arena
-  );
   ::PROTOBUF_NAMESPACE_ID::internal::memswap<
       PROTOBUF_FIELD_OFFSET(S_JoinRoomRes, _impl_.success_)
       + sizeof(S_JoinRoomRes::_impl_.success_)
@@ -5460,19 +5294,10 @@ S_StartGameRes::S_StartGameRes(const S_StartGameRes& from)
   S_StartGameRes* const _this = this; (void)_this;
   new (&_impl_) Impl_{
       decltype(_impl_.players_){from._impl_.players_}
-    , decltype(_impl_.errormessage_){}
     , decltype(_impl_.success_){}
     , /*decltype(_impl_._cached_size_)*/{}};
 
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
-  _impl_.errormessage_.InitDefault();
-  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-    _impl_.errormessage_.Set("", GetArenaForAllocation());
-  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  if (!from._internal_errormessage().empty()) {
-    _this->_impl_.errormessage_.Set(from._internal_errormessage(), 
-      _this->GetArenaForAllocation());
-  }
   _this->_impl_.success_ = from._impl_.success_;
   // @@protoc_insertion_point(copy_constructor:Protocol.S_StartGameRes)
 }
@@ -5483,14 +5308,9 @@ inline void S_StartGameRes::SharedCtor(
   (void)is_message_owned;
   new (&_impl_) Impl_{
       decltype(_impl_.players_){arena}
-    , decltype(_impl_.errormessage_){}
     , decltype(_impl_.success_){false}
     , /*decltype(_impl_._cached_size_)*/{}
   };
-  _impl_.errormessage_.InitDefault();
-  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-    _impl_.errormessage_.Set("", GetArenaForAllocation());
-  #endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
 }
 
 S_StartGameRes::~S_StartGameRes() {
@@ -5505,7 +5325,6 @@ S_StartGameRes::~S_StartGameRes() {
 inline void S_StartGameRes::SharedDtor() {
   GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
   _impl_.players_.~RepeatedPtrField();
-  _impl_.errormessage_.Destroy();
 }
 
 void S_StartGameRes::SetCachedSize(int size) const {
@@ -5519,7 +5338,6 @@ void S_StartGameRes::Clear() {
   (void) cached_has_bits;
 
   _impl_.players_.Clear();
-  _impl_.errormessage_.ClearToEmpty();
   _impl_.success_ = false;
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
@@ -5548,16 +5366,6 @@ const char* S_StartGameRes::_InternalParse(const char* ptr, ::_pbi::ParseContext
             CHK_(ptr);
             if (!ctx->DataAvailable(ptr)) break;
           } while (::PROTOBUF_NAMESPACE_ID::internal::ExpectTag<18>(ptr));
-        } else
-          goto handle_unusual;
-        continue;
-      // string errorMessage = 3;
-      case 3:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 26)) {
-          auto str = _internal_mutable_errormessage();
-          ptr = ::_pbi::InlineGreedyStringParser(str, ptr, ctx);
-          CHK_(ptr);
-          CHK_(::_pbi::VerifyUTF8(str, "Protocol.S_StartGameRes.errorMessage"));
         } else
           goto handle_unusual;
         continue;
@@ -5604,16 +5412,6 @@ uint8_t* S_StartGameRes::_InternalSerialize(
         InternalWriteMessage(2, repfield, repfield.GetCachedSize(), target, stream);
   }
 
-  // string errorMessage = 3;
-  if (!this->_internal_errormessage().empty()) {
-    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
-      this->_internal_errormessage().data(), static_cast<int>(this->_internal_errormessage().length()),
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
-      "Protocol.S_StartGameRes.errorMessage");
-    target = stream->WriteStringMaybeAliased(
-        3, this->_internal_errormessage(), target);
-  }
-
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
     target = ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
         _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
@@ -5635,13 +5433,6 @@ size_t S_StartGameRes::ByteSizeLong() const {
   for (const auto& msg : this->_impl_.players_) {
     total_size +=
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(msg);
-  }
-
-  // string errorMessage = 3;
-  if (!this->_internal_errormessage().empty()) {
-    total_size += 1 +
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
-        this->_internal_errormessage());
   }
 
   // bool success = 1;
@@ -5668,9 +5459,6 @@ void S_StartGameRes::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const :
   (void) cached_has_bits;
 
   _this->_impl_.players_.MergeFrom(from._impl_.players_);
-  if (!from._internal_errormessage().empty()) {
-    _this->_internal_set_errormessage(from._internal_errormessage());
-  }
   if (from._internal_success() != 0) {
     _this->_internal_set_success(from._internal_success());
   }
@@ -5690,14 +5478,8 @@ bool S_StartGameRes::IsInitialized() const {
 
 void S_StartGameRes::InternalSwap(S_StartGameRes* other) {
   using std::swap;
-  auto* lhs_arena = GetArenaForAllocation();
-  auto* rhs_arena = other->GetArenaForAllocation();
   _internal_metadata_.InternalSwap(&other->_internal_metadata_);
   _impl_.players_.InternalSwap(&other->_impl_.players_);
-  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::InternalSwap(
-      &_impl_.errormessage_, lhs_arena,
-      &other->_impl_.errormessage_, rhs_arena
-  );
   swap(_impl_.success_, other->_impl_.success_);
 }
 

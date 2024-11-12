@@ -109,9 +109,13 @@ void UBlasterNetworkSubsystem::SendAuthReq()
         AuthReq.set_accountdbid(GameInst->UserId);
         AuthReq.set_nickname(TCHAR_TO_UTF8(*GameInst->Nickname));
 
-        // 로그 출력
-        UE_LOG(LogTemp, Log, TEXT("[NetworkSubsystem] SendAuthReq - JWT: %s, AccountDbId: %d"),
-            *GameInst->AccessToken, GameInst->UserId);
+        // 패킷 데이터 검증 로그 추가
+        UE_LOG(LogTemp, Log, TEXT("[NetworkSubsystem] SendAuthReq - JWT: %s, AccountDbId: %d, Nickname: %s"),
+            *GameInst->AccessToken, GameInst->UserId, *GameInst->Nickname);
+
+        // Protocol Buffer 객체 검증
+        UE_LOG(LogTemp, Log, TEXT("[NetworkSubsystem] Protocol Buffer - Nickname set: %s"),
+            UTF8_TO_TCHAR(AuthReq.nickname().c_str()));
 
         // 화면에도 디버그 메시지 표시 (선택사항)
         GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green,
@@ -169,13 +173,15 @@ void UBlasterNetworkSubsystem::SendRoomListReq()
 
 void UBlasterNetworkSubsystem::HandleRoomListRes(Protocol::S_RoomListRes& packet)
 {
+    // 패킷으로 받은 전체 방 개수 로깅
+    UE_LOG(LogTemp, Log, TEXT("[NetworkSubsystem] Received room list - Total rooms: %d"), packet.rooms_size());
+
     TArray<FRoomListItemInfo> Rooms;
 
     // Protocol의 room 목록을 순회하면서 FRoomListItemInfo로 변환
     for (const auto& protoRoom : packet.rooms())
     {
         FRoomListItemInfo RoomInfo;
-
         // Protocol 데이터를 FRoomListItemInfo에 복사
         RoomInfo.RoomId = protoRoom.roomid();
         RoomInfo.RoomName = FString(UTF8_TO_TCHAR(protoRoom.roomname().c_str()));
@@ -185,11 +191,76 @@ void UBlasterNetworkSubsystem::HandleRoomListRes(Protocol::S_RoomListRes& packet
         RoomInfo.State = static_cast<ERoomState>(protoRoom.state());
         RoomInfo.MapName = FString(UTF8_TO_TCHAR(protoRoom.mapname().c_str()));
 
+        // 각 방의 상세 정보 로깅
+        UE_LOG(LogTemp, Log, TEXT("[NetworkSubsystem] Room Detail:"
+            "\n\tRoom ID: %d"
+            "\n\tName: %s"
+            "\n\tType: %d"
+            "\n\tPlayers: %d/%d"
+            "\n\tState: %d"
+            "\n\tMap: %s"),
+            RoomInfo.RoomId,
+            *RoomInfo.RoomName,
+            static_cast<int32>(RoomInfo.RoomType),
+            RoomInfo.CurrentPlayers,
+            RoomInfo.MaxPlayers,
+            static_cast<int32>(RoomInfo.State),
+            *RoomInfo.MapName);
+
         Rooms.Add(RoomInfo);
     }
 
+    // 변환 완료된 방 배열의 크기 로깅
+    UE_LOG(LogTemp, Log, TEXT("[NetworkSubsystem] Converted room list - Final room count: %d"), Rooms.Num());
+
+    // 게임 화면에도 디버그 메시지 표시 (선택사항)
+    GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green,
+        FString::Printf(TEXT("Received Rooms: %d"), Rooms.Num()));
+
     // 델리게이트를 통해 변환된 데이터 전달
     OnRoomListResponse.Broadcast(Rooms);
+}
+void UBlasterNetworkSubsystem::SendJoinRoomReq(int roomId)
+{
+    Protocol::C_JoinRoomReq JoinRoomPacket;
+    SendBufferRef SendBuffer = ClientPacketHandler::MakeSendBuffer(JoinRoomPacket);
+    SendPacket(SendBuffer);
+}
+
+void UBlasterNetworkSubsystem::HandleJoinRoomRes(Protocol::S_JoinRoomRes& packet)
+{
+    // 성공 여부 저장
+    bool Success = packet.success();
+
+    // RoomDetailInfo 변환
+    FRoomDetailInfo RoomInfo;
+    if (Success && packet.has_room())
+    {
+        const auto& protoRoom = packet.room();
+        // 기본 정보 복사
+        RoomInfo.RoomId = protoRoom.roomid();
+        RoomInfo.RoomName = UTF8_TO_TCHAR(protoRoom.roomname().c_str());
+        RoomInfo.RoomType = static_cast<EGameMode>(protoRoom.roomtype());
+        RoomInfo.MaxPlayers = protoRoom.maxplayers();
+        RoomInfo.State = static_cast<ERoomState>(protoRoom.state());
+        RoomInfo.MapName = UTF8_TO_TCHAR(protoRoom.mapname().c_str());
+        RoomInfo.HostPlayerId = protoRoom.hostplayerid();
+
+        // 플레이어 정보 복사
+        for (const auto& protoPlayer : protoRoom.players())
+        {
+            FPlayerInfo PlayerInfo;
+            PlayerInfo.PlayerId = protoPlayer.playerid();
+            PlayerInfo.PlayerName = UTF8_TO_TCHAR(protoPlayer.playername().c_str());
+            PlayerInfo.IsHost = protoPlayer.ishost();
+            PlayerInfo.Team = static_cast<ETeamType>(protoPlayer.team());
+
+            RoomInfo.Players.Add(PlayerInfo);
+        }
+    }
+
+    // 델리게이트를 통해 결과 전달
+    OnJoinRoomResponse.Broadcast(Success, RoomInfo);
 }
 
 void UBlasterNetworkSubsystem::HandlePing()

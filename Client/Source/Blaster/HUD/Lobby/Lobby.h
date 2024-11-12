@@ -1,7 +1,7 @@
 #pragma once
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
-#include "RoomList.h"
+#include "Room.h"
 #include "Lobby.generated.h"
 
 UCLASS()
@@ -14,9 +14,20 @@ protected:
 
 private:
     UPROPERTY(meta = (BindWidget))
-    class URoomList* RoomList;
+    class URoomList* RoomListWidget;
+
+    UPROPERTY(EditDefaultsOnly, Category = "UI")
+    TSubclassOf<URoom> RoomWidgetClass;
+
+    UFUNCTION()
+    void HandleRoomItemDoubleClicked(int32 RoomId);
+
+    UFUNCTION()
+    void HandleJoinRoomResponse(bool Success, const FRoomDetailInfo& RoomInfo);
+
+    void ShowRoomWidget(const FRoomDetailInfo& RoomInfo);
 
 public:
 
-    URoomList* GetRoomList() const { return RoomList; }
+    URoomList* GetRoomList() const { return RoomListWidget; }
 };
