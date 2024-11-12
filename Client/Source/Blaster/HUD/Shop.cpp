@@ -16,16 +16,16 @@
 // 위젯이 생성되고 처음으로 초기화될 때 호출되는 함수
 void UShop::NativeConstruct()
 {
-	Super::NativeConstruct();
-	CreateWeaponItems();
+    Super::NativeConstruct();
+    CreateWeaponItems();
     CreateThrowItems();
     CreateBuffItems();
 
-    if (AMyBlasterCharacter* Character = Cast<AMyBlasterCharacter>(GetOwningPlayerPawn()))
+    PlayerController = GetOwningPlayer();
+    if (PlayerController)
     {
-        if (ABlasterPlayerState* PS = Cast<ABlasterPlayerState>(Character->GetPlayerState()))
+        if (ABlasterPlayerState* PS = Cast<ABlasterPlayerState>(PlayerController->PlayerState))
         {
-
             PlayerState = PS;
             PS->OnWeaponSlotsUpdated.AddDynamic(this, &UShop::UpdateSlotImages);
             UpdateMoneyText(PS->GetMoney());
@@ -39,10 +39,7 @@ void UShop::InitializeShop()
     AddToViewport();
     bIsFocusable = true;
 
-    if (UWorld* World = GetWorld())
-    {
-        PlayerController = PlayerController == nullptr ? World->GetFirstPlayerController() : PlayerController;
-    }
+    PlayerController = PlayerController == nullptr ? GetOwningPlayer() : PlayerController;
 }
 
 void UShop::ShowShop()

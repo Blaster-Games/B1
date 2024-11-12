@@ -114,38 +114,6 @@ void ABlasterGameMode::OnMatchStateSet()
 
 void ABlasterGameMode::ResetAllPlayers()
 {
-	//// 현재 레벨의 모든 플레이어 컨트롤러를 가져옴
-	//for (FConstPlayerControllerIterator It = GetWorld()->GetPlayerControllerIterator(); It; ++It)
-	//{
-	//	ABlasterPlayerController* BlasterPlayer = Cast<ABlasterPlayerController>(*It);
-	//	if (BlasterPlayer && BlasterPlayer->GetPawn())
-	//	{
-	//		// 플레이어의 캐릭터를 가져옴
-	//		AMyBlasterCharacter* PlayerCharacter = Cast<AMyBlasterCharacter>(BlasterPlayer->GetPawn());
-	//		if (PlayerCharacter)
-	//		{
-	//			// 캐릭터 상태 초기화
-	//			PlayerCharacter->Reset(); // 캐릭터의 상태를 초기화합니다.
-
-	//			// 모든 APlayerStart를 가져옵니다.
-	//			TArray<AActor*> PlayerStarts;
-	//			UGameplayStatics::GetAllActorsOfClass(this, APlayerStart::StaticClass(), PlayerStarts);
-
-	//			if (PlayerStarts.Num() > 0)
-	//			{
-	//				// 랜덤한 플레이어 시작 위치를 선택합니다.
-	//				int32 Selection = FMath::RandRange(0, PlayerStarts.Num() - 1);
-
-	//				// 플레이어를 리스폰합니다.
-	//				RestartPlayerAtPlayerStart(BlasterPlayer, PlayerStarts[Selection]);
-
-	//				// 이제 이전 캐릭터를 파괴합니다.
-	//				PlayerCharacter->Destroy();
-	//			}
-	//		}
-	//	}
-	//}
-
 	for (FConstPlayerControllerIterator It = GetWorld()->GetPlayerControllerIterator(); It; ++It)
 	{
 		ABlasterPlayerController* BlasterPlayer = Cast<ABlasterPlayerController>(*It);
@@ -153,8 +121,8 @@ void ABlasterGameMode::ResetAllPlayers()
 
 		if (AMyBlasterCharacter* PlayerCharacter = Cast<AMyBlasterCharacter>(BlasterPlayer->GetPawn()))
 		{
-			PlayerCharacter->Reset();
-			PlayerCharacter->Destroy();
+			PlayerCharacter->Reset(); //  영혼 추출
+			PlayerCharacter->Destroy(); // 기존 캐릭터의 육체 제거
 		}
 
 		// 리스폰
@@ -163,9 +131,11 @@ void ABlasterGameMode::ResetAllPlayers()
 		if (PlayerStarts.Num() > 0)
 		{
 			int32 Selection = FMath::RandRange(0, PlayerStarts.Num() - 1);
-			RestartPlayerAtPlayerStart(BlasterPlayer, PlayerStarts[Selection]);
+			RestartPlayerAtPlayerStart(BlasterPlayer, PlayerStarts[Selection]); // 새로운 육체 생성 + 영혼 이전.
 		}
 	}
+
+	// 여기서 컴포넌트 초기화도 해줘야 된다???
 }
 
 void ABlasterGameMode::StartNewRound()
@@ -179,29 +149,8 @@ void ABlasterGameMode::StartNewRound()
 
 	LevelStartingTime = GetWorld()->GetTimeSeconds();
 	ResetAllPlayers();
-
-	if (BlasterGS)
-	{
-		for (APlayerState* PS : BlasterGS->PlayerArray)
-		{
-			if (ABlasterPlayerState* BPS = Cast<ABlasterPlayerState>(PS))
-			{
-				// 구매한 버프들 적용
-				if (AMyBlasterCharacter* Character = Cast<AMyBlasterCharacter>(BPS->GetPawn()))
-				{
-					if (UBuffComponent* BuffComp = Character->GetBuff())
-					{
-						TArray<EBuffType> ActiveBuffs = BPS->GetActiveBuffs();
-						for (EBuffType Buff : ActiveBuffs)
-						{
-							BuffComp->ApplyBuff(Buff);
-						}
-					}
-				}
-			}
-		}
-	}
-
+	AllPlayerApplyBuffs();
+	
 	SetMatchState(MatchState::InProgress);
 }
 
@@ -223,6 +172,32 @@ void ABlasterGameMode::EndRound()
 	
 
 	SetMatchState(MatchState::Cooldown);
+}
+
+void ABlasterGameMode::AllPlayerApplyBuffs()
+{
+	ABlasterGameState* BlasterGS = GetGameState<ABlasterGameState>();
+	if (BlasterGS)
+	{
+		for (APlayerState* PS : BlasterGS->PlayerArray)
+		{
+			if (ABlasterPlayerState* BPS = Cast<ABlasterPlayerState>(PS))
+			{
+				// 구매한 버프들 적용
+				if (AMyBlasterCharacter* Character = Cast<AMyBlasterCharacter>(BPS->GetPawn()))
+				{
+					if (UBuffComponent* BuffComp = Character->GetBuff())
+					{
+						TArray<EBuffType> ActiveBuffs = BPS->GetActiveBuffs();
+						for (EBuffType Buff : ActiveBuffs)
+						{
+							BuffComp->ApplyBuff(Buff);
+						}
+					}
+				}
+			}
+		}
+	}
 }
 
 

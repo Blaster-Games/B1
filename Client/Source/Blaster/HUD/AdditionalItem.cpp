@@ -5,9 +5,9 @@
 #include "Components/Image.h"
 #include "Components/TextBlock.h"
 #include "Components/Button.h"
-#include "Blaster/Character/MyBlasterCharacter.h"
 #include "Blaster/PlayerState/BlasterPlayerState.h"
 #include "Blaster/BlasterComponents/ShopComponent.h"
+#include "Blaster/PlayerController/BlasterPlayerController.h"
 
 void UAdditionalItem::NativeConstruct()
 {
@@ -17,19 +17,16 @@ void UAdditionalItem::NativeConstruct()
 
     if (BuyButton) BuyButton->OnClicked.AddDynamic(this, &UAdditionalItem::OnBuyClicked);
 
-    // ShopComponent 참조 얻기
-    if (AMyBlasterCharacter* Character = Cast<AMyBlasterCharacter>(GetOwningPlayerPawn()))
+    if (ABlasterPlayerController* PC = Cast<ABlasterPlayerController>(GetOwningPlayer()))
     {
-        ShopComponent = Character->GetShop();
-    }
+        ShopComponent = PC->GetShop();
 
-
-    // PlayerState의 델리게이트에 바인딩
-    if (AMyBlasterCharacter* Character = Cast<AMyBlasterCharacter>(GetOwningPlayerPawn()))
-    {
-        if (ABlasterPlayerState* PS = Cast<ABlasterPlayerState>(Character->GetPlayerState()))
+        if (ABlasterPlayerState* PS = Cast<ABlasterPlayerState>(PC->PlayerState))
         {
-            PS->OnBuffStateChanged.AddDynamic(this, &UAdditionalItem::OnBuffStateChanged);
+            if (!PS->OnBuffStateChanged.IsAlreadyBound(this, &UAdditionalItem::OnBuffStateChanged))
+            {
+                PS->OnBuffStateChanged.AddDynamic(this, &UAdditionalItem::OnBuffStateChanged);
+            }
         }
     }
 }

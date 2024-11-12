@@ -18,6 +18,8 @@
 #include "Blaster/HUD/ReturnToMainMenu.h"
 #include "Blaster/BlasterTypes/Announcement.h"
 #include "Blaster/HUD/Shop.h"
+#include "Blaster/BlasterComponents/ShopComponent.h"
+
 
 void ABlasterPlayerController::BroadcastElim(APlayerState* Attacker, APlayerState* Victim)
 {
@@ -356,6 +358,23 @@ void ABlasterPlayerController::SetupInputComponent()
 	if (InputComponent == nullptr) return;
 
 	InputComponent->BindAction("Quit", IE_Pressed, this, &ABlasterPlayerController::ShowReturnToMainMenu);
+}
+
+ABlasterPlayerController::ABlasterPlayerController()
+{
+	Shop = CreateDefaultSubobject<UShopComponent>(TEXT("ShopComponent"));
+	Shop->SetIsReplicated(true);
+}
+
+void ABlasterPlayerController::PostInitializeComponents()
+{
+	Super::PostInitializeComponents();
+
+	if (Shop)
+	{
+		Shop->Controller = this;
+		Shop->PlayerState = GetPlayerState<ABlasterPlayerState>();
+	}
 }
 
 void ABlasterPlayerController::SetHUDHealth(float Health, float MaxHealth)

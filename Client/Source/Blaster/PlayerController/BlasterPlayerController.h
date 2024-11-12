@@ -18,6 +18,9 @@ class BLASTER_API ABlasterPlayerController : public APlayerController
 	GENERATED_BODY()
 
 public:
+	ABlasterPlayerController();
+	virtual void PostInitializeComponents() override;
+
 	void SetHUDHealth(float Health, float MaxHealth);
 	void SetHUDShield(float Shield, float MaxShield);
 	void SetHUDScore(float Score);
@@ -108,6 +111,12 @@ private:
 	UPROPERTY()
 	class ABlasterHUD* BlasterHUD;
 
+	// 상점 관련 데이터는 캐릭터 생명주기와 독립적이고
+	// PlayerState와 함께 사용하기도 더 자연스러우므로 일로 옮김
+	UPROPERTY(VisibleAnywhere)
+	class UShopComponent* Shop;
+
+	
 	/**
 	* Return to main menu
 	*/
@@ -178,4 +187,10 @@ private:
 	int32 CachedRedScore = 0;
 
 	void ApplyCachedScores();
+
+
+public:
+	FORCEINLINE UShopComponent* GetShop() const { return Shop; }
+
+
 };

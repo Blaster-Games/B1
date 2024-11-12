@@ -50,6 +50,9 @@ protected:
 	virtual void StartNewRound();
 	virtual void EndRound();
 
+	void AllPlayerApplyBuffs();
+
+
 	UPROPERTY(EditDefaultsOnly, Category = "Game Rules")
 	bool bIsRoundBased = false;
 
