@@ -10,6 +10,7 @@
 class UImage;
 class UTextBlock;
 class UButton;
+class UHorizontalBox;
 
 /**
  * 
@@ -48,6 +49,12 @@ private:
     FThrowData ThrowData;
     FBuffData BuffData;
 
+    UPROPERTY(meta = (BindWidget))
+    UHorizontalBox* GrenadeNumInfo;
+    
+    UPROPERTY(meta = (BindWidget))
+    UTextBlock* GrenadeNums;
+
     UPROPERTY()
     class UShopComponent* ShopComponent;
 
@@ -56,5 +63,8 @@ private:
 
     UFUNCTION()
     void OnBuffStateChanged(EBuffType BuffType, bool bActive);
+
+    UFUNCTION()
+    void OnThrowableCountChanged(EThrowType ThrowType, int32 NewCount);
     
 };

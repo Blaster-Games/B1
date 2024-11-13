@@ -9,6 +9,7 @@
 #include "Blaster/PlayerState/BlasterPlayerState.h"
 #include "Blaster/GameState/BlasterGameState.h"
 #include "Blaster/BlasterComponents/BuffComponent.h"
+#include "Blaster/BlasterComponents/CombatComponent.h"
 #include "GameFramework/GameState.h" 
 
 
@@ -165,12 +166,19 @@ void ABlasterGameMode::EndRound()
 			if (ABlasterPlayerState* BPS = Cast<ABlasterPlayerState>(PS))
 			{
 				BPS->ClearBuff();
+
+				// 해당 플레이어의 캐릭터를 찾아서 수류탄 개수 저장
+				if (AMyBlasterCharacter* Character = Cast<AMyBlasterCharacter>(BPS->GetPawn()))
+				{
+					if (UCombatComponent* Combat = Character->GetCombat())
+					{
+						Combat->SaveGrenadeCount();
+					}
+				}
 			}
 		}
 	}
-
 	
-
 	SetMatchState(MatchState::Cooldown);
 }
 
@@ -198,6 +206,16 @@ void ABlasterGameMode::AllPlayerApplyBuffs()
 			}
 		}
 	}
+}
+
+bool ABlasterGameMode::ShouldRespawnPlayer() const
+{
+	// 라운드 기반 게임 이고 매치가 진행 중이면 리스폰하지 않음
+	if (ABlasterGameState* BlasterGS = GetGameState<ABlasterGameState>())
+	{
+		return !(bIsRoundBased && MatchState == MatchState::InProgress);
+	}
+	return true;
 }
 
 
@@ -273,6 +291,11 @@ void ABlasterGameMode::PlayerEliminated(AMyBlasterCharacter* ElimmedCharacter, A
 
 void ABlasterGameMode::RequestRespawn(ACharacter* ElimmedCharacter, AController* ElimmedController)
 {
+	if (!ShouldRespawnPlayer())
+	{
+		return;
+	}
+
 	if (ElimmedCharacter)
 	{
 		ElimmedCharacter->Reset(); // 컨트롤러에서 캐릭터를 분리하고 컨트롤러에 대한 소유권을 호출 

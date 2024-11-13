@@ -18,6 +18,7 @@
 #include "Blaster/Weapon/Projectile.h"
 #include "Components/BoxComponent.h"
 #include "Blaster/Weapon/Shotgun.h"
+#include "Blaster/PlayerState/BlasterPlayerState.h"
 
 
 UCombatComponent::UCombatComponent()
@@ -59,6 +60,36 @@ void UCombatComponent::PickupAmmo(EWeaponType WeaponType, int32 AmmoAmount)
 	}
 }
 
+void UCombatComponent::SaveGrenadeCount()
+{
+	if (Character)
+	{
+		if (Character->HasAuthority())
+		{
+			if (ABlasterPlayerState* PS = Character->GetPlayerState<ABlasterPlayerState>())
+			{
+				PS->SetThrowableCount(EThrowType::ETT_Grenade, Grenades);
+			}
+		}
+		else
+		{
+			ServerSaveGrenadeCount();
+		}
+	}
+}
+
+
+void UCombatComponent::ServerSaveGrenadeCount_Implementation()
+{
+	if (Character)
+	{
+		if (ABlasterPlayerState* PS = Character->GetPlayerState<ABlasterPlayerState>())
+		{
+			PS->SetThrowableCount(EThrowType::ETT_Grenade, Grenades);
+		}
+	}
+}
+
 void UCombatComponent::BeginPlay()
 {
 	Super::BeginPlay();
@@ -77,7 +108,9 @@ void UCombatComponent::BeginPlay()
 			InitializeCarriedAmmo();
 		}
 	}
-	
+
+	InitializeGrenades();
+
 }
 
 void UCombatComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
@@ -829,6 +862,55 @@ void UCombatComponent::UpdateHUDGrenades()
 	if (Controller)
 	{
 		Controller->SetHUDGrenades(Grenades);
+	}
+}
+
+// 서버에서 해당 플레이어의 투척 무기 수를 가져오는 함수.
+void UCombatComponent::InitializeGrenades()
+{
+	if (Character && Character->HasAuthority())
+	{
+		// 약간의 딜레이 후 초기화
+		FTimerHandle TimerHandle;
+		GetWorld()->GetTimerManager().SetTimer(
+			TimerHandle,
+			[this]()
+			{
+				if (ABlasterPlayerState* PS = Cast<ABlasterPlayerState>(Character->GetPlayerState()))
+				{
+					Grenades = PS->GetThrowableCount(EThrowType::ETT_Grenade);
+					UpdateHUDGrenades();  // Grenades 설정 후 HUD 업데이트
+				}
+			},
+			0.1f,
+			false
+		);
+	}
+	else if (Character && !Character->HasAuthority())
+	{
+		ServerInitializeGrenades();
+	}
+}
+
+void UCombatComponent::ServerInitializeGrenades_Implementation()
+{
+
+	if (ABlasterPlayerState* PS = Character->GetPlayerState<ABlasterPlayerState>())
+	{
+		Grenades = PS->GetThrowableCount(EThrowType::ETT_Grenade);
+		UpdateHUDGrenades();
+
+	}
+}
+
+void UCombatComponent::SaveGrenadesToPlayerState()
+{
+	if (Character && Character->HasAuthority())
+	{
+		if (ABlasterPlayerState* PS = Cast<ABlasterPlayerState>(Character->GetPlayerState()))
+		{
+			PS->SetThrowableCount(EThrowType::ETT_Grenade, Grenades);
+		}
 	}
 }
 

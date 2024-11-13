@@ -25,8 +25,6 @@ void UShopComponent::BeginPlay()
 }
 
 
-
-
 void UShopComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);

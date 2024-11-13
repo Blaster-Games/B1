@@ -61,6 +61,9 @@ protected:
 
 	float CountdownTime = 0.f;
 
+private:
+	bool ShouldRespawnPlayer() const;
+
 public:
 	FORCEINLINE float GetCountdownTime() const { return CountdownTime; }
 	FORCEINLINE bool IsRoundBased() const { return bIsRoundBased; }

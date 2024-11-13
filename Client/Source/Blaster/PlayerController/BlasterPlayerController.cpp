@@ -348,6 +348,7 @@ void ABlasterPlayerController::OnPossess(APawn* InPawn)
 		SetHUDHealth(BlasterCharacter->GetHealth(), BlasterCharacter->GetMaxHealth());
 		// 커뮤 - 죽고 태어났을 때 초기화 안되는 문제 해결법
 		SetHUDShield(BlasterCharacter->GetShield(), BlasterCharacter->GetMaxShield());
+		SetHUDGrenades(BlasterCharacter->GetCombat()->GetGrenades());
 	}
 }
 

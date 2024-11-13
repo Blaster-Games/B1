@@ -15,6 +15,8 @@
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnWeaponPurchasedDelegate, EWeaponType, WeaponType);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnWeaponSlotsUpdated);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnBuffStateChanged, EBuffType, BuffType, bool, bActive);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnThrowableCountChanged, EThrowType, ThrowType, int32, NewCount);
+
 
 USTRUCT()
 struct FThrowableInfo
@@ -55,6 +57,7 @@ public:
 	FOnWeaponPurchasedDelegate OnWeaponPurchased;
 	FOnWeaponSlotsUpdated OnWeaponSlotsUpdated;
 	FOnBuffStateChanged OnBuffStateChanged;
+	FOnThrowableCountChanged OnThrowableCountChanged;
 
 	/**
 	* Replication notifies

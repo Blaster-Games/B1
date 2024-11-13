@@ -31,6 +31,9 @@ void ABlasterPlayerState::BeginPlay()
 		// 권총 기본 지급
 		AddWeapon(EWeaponType::EWT_Pistol);
 		SetWeaponToSlot(EWeaponType::EWT_Pistol, 1);
+
+		// 수류탄 기본 2개 지급
+		AddToThrowableCount(EThrowType::ETT_Grenade, 2);
 	}
 
 }
@@ -197,8 +200,11 @@ void ABlasterPlayerState::ClearBuff()
 }
 void ABlasterPlayerState::OnRep_ThrowableCounts()
 {
+	for (const FThrowableInfo& ThrowInfo : ThrowableCounts)
+	{
+		OnThrowableCountChanged.Broadcast(ThrowInfo.ThrowType, ThrowInfo.Count);
+	}
 }
-
 
 int32 ABlasterPlayerState::GetThrowableCount(EThrowType ThrowType) const
 {
@@ -222,6 +228,7 @@ void ABlasterPlayerState::SetThrowableCount(EThrowType ThrowType, int32 Count)
 		{
 			ThrowInfo.Count = Count;
 			bFound = true;
+			OnThrowableCountChanged.Broadcast(ThrowType, Count);
 			break;
 		}
 	}
@@ -233,6 +240,7 @@ void ABlasterPlayerState::SetThrowableCount(EThrowType ThrowType, int32 Count)
 		NewInfo.ThrowType = ThrowType;
 		NewInfo.Count = Count;
 		ThrowableCounts.Add(NewInfo);
+		OnThrowableCountChanged.Broadcast(ThrowType, Count);
 	}
 
 }

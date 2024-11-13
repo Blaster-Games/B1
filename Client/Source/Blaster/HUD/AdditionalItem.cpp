@@ -5,6 +5,7 @@
 #include "Components/Image.h"
 #include "Components/TextBlock.h"
 #include "Components/Button.h"
+#include "Components/HorizontalBox.h"
 #include "Blaster/PlayerState/BlasterPlayerState.h"
 #include "Blaster/BlasterComponents/ShopComponent.h"
 #include "Blaster/PlayerController/BlasterPlayerController.h"
@@ -26,6 +27,11 @@ void UAdditionalItem::NativeConstruct()
             if (!PS->OnBuffStateChanged.IsAlreadyBound(this, &UAdditionalItem::OnBuffStateChanged))
             {
                 PS->OnBuffStateChanged.AddDynamic(this, &UAdditionalItem::OnBuffStateChanged);
+            }
+
+            if (!PS->OnThrowableCountChanged.IsAlreadyBound(this, &UAdditionalItem::OnThrowableCountChanged))
+            {
+                PS->OnThrowableCountChanged.AddDynamic(this, &UAdditionalItem::OnThrowableCountChanged);
             }
         }
     }
@@ -55,6 +61,25 @@ void UAdditionalItem::SetThrowData(const FThrowData& InThrowData)
             ItemImage->SetBrushFromTexture(Texture);
         }
     }
+
+    // 수류탄 개수 정보 보이기
+    if (GrenadeNumInfo)
+    {
+        GrenadeNumInfo->SetVisibility(ESlateVisibility::Visible);
+    }
+
+    // 초기 설정
+    if (ABlasterPlayerController* PC = Cast<ABlasterPlayerController>(GetOwningPlayer()))
+    {
+        if (ABlasterPlayerState* PS = Cast<ABlasterPlayerState>(PC->PlayerState))
+        {
+            int32 Count = PS->GetThrowableCount(ThrowData.ThrowType);
+            if (GrenadeNums)
+            {
+                GrenadeNums->SetText(FText::FromString(FString::Printf(TEXT("%d"), Count)));
+            }
+        }
+    }
 }
 
 void UAdditionalItem::SetBuffData(const FBuffData& InBuffData)
@@ -81,6 +106,12 @@ void UAdditionalItem::SetBuffData(const FBuffData& InBuffData)
             ItemImage->SetBrushFromTexture(Texture);
         }
     }
+
+    // 수류탄 개수 정보를 숨기기
+    if (GrenadeNumInfo)
+    {
+        GrenadeNumInfo->SetVisibility(ESlateVisibility::Collapsed);
+    }
 }
 
 void UAdditionalItem::OnBuyClicked()
@@ -106,6 +137,16 @@ void UAdditionalItem::OnBuffStateChanged(EBuffType BuffType, bool bActive)
     }
 }
 
+void UAdditionalItem::OnThrowableCountChanged(EThrowType ThrowType, int32 NewCount)
+{
+    if (bIsThrowable && ThrowType == ThrowData.ThrowType)
+    {
+        if (GrenadeNums)
+        {
+            GrenadeNums->SetText(FText::FromString(FString::Printf(TEXT("%d"), NewCount)));
+        }
+    }
+}
 
 
 void UAdditionalItem::UpdatePurchaseState(bool bIsPurchased)
