@@ -14,10 +14,6 @@
 void ABlasterHUD::BeginPlay()
 {
 	Super::BeginPlay();
-
-	// 이걸 호출하고 플레이를 시작하는 대신 경기가 진행중으로 전환되면 그때 호출하자!
-	// 컨트롤러 쪽에서 matchstate를 확인하고 호출할 것임.
-	//AddCharacterOverlay(); 
 }
 
 void ABlasterHUD::AddCharacterOverlay()

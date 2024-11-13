@@ -15,7 +15,7 @@ class BLASTER_API UShopComponent : public UActorComponent
 
 public:	
 	UShopComponent();
-	friend class AMyBlasterCharacter;
+	friend class ABlasterPlayerController;
 	// 이건 프레임 단위로 할 때 쓰는거라 불필요하다고 느끼면 지워버리기!
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
@@ -56,14 +56,13 @@ protected:
 
 private:	
 	UPROPERTY()
-	class AMyBlasterCharacter* Character;
-
-	UPROPERTY()
 	class ABlasterPlayerController* Controller;
 		
 	UPROPERTY()
 	class ABlasterPlayerState* PlayerState;
 
 public:
+	// Character는 필요할 때마다 GetPawn()으로 가져오도록 변경
+	class AMyBlasterCharacter* GetCharacter() const;
 	FORCEINLINE ABlasterPlayerState* GetPlayerState() const { return PlayerState; }
 };

@@ -2,8 +2,8 @@
 
 
 #include "ShopComponent.h"
-#include "Blaster/Character/MyBlasterCharacter.h"
 #include "Blaster/PlayerController/BlasterPlayerController.h"
+#include "Blaster/Character/MyBlasterCharacter.h"
 #include "Blaster/PlayerState/BlasterPlayerState.h"
 
 UShopComponent::UShopComponent()
@@ -17,17 +17,12 @@ void UShopComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-    Character = Character == nullptr ? Cast<AMyBlasterCharacter>(GetOwner()) : Character;
-
-    if (Character)
+    Controller = Controller == nullptr ? Cast<ABlasterPlayerController>(GetOwner()) : Controller;
+    if (Controller)
     {
-        Controller = Controller == nullptr ? Cast<ABlasterPlayerController>(Character->Controller) : Controller;
-        PlayerState = PlayerState == nullptr ? Cast<ABlasterPlayerState>(Character->GetPlayerState<ABlasterPlayerState>()) : PlayerState;
+        PlayerState = PlayerState == nullptr ? Cast<ABlasterPlayerState>(Controller->PlayerState) : PlayerState;
     }
-
 }
-
-
 
 
 void UShopComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
@@ -62,12 +57,12 @@ void UShopComponent::RequestWeaponSlot2(const FWeaponData& WeaponData)
 
 void UShopComponent::ServerWeaponPurchase_Implementation(const FWeaponData& WeaponData)
 {
-    if (Character)
+    if (Controller)
     {
-        PlayerState = PlayerState == nullptr ? Cast<ABlasterPlayerState>(Character->GetPlayerState<ABlasterPlayerState>()) : PlayerState;
+        PlayerState = PlayerState == nullptr ? Cast<ABlasterPlayerState>(Controller->PlayerState) : PlayerState;
     }
 
-    if (!PlayerState || !Character) return;
+    if (!PlayerState) return;
 
     // 이미 가지고 있는 무기인지 확인
     if (PlayerState->HasWeapon(WeaponData.WeaponType))
@@ -80,19 +75,17 @@ void UShopComponent::ServerWeaponPurchase_Implementation(const FWeaponData& Weap
     {
         // 돈 차감
         PlayerState->SetMoney(PlayerState->GetMoney() - WeaponData.Price);
-
         // 무기 추가
         PlayerState->AddWeapon(WeaponData.WeaponType);
-
     }
    
 }
 
 void UShopComponent::ServerWeaponSlot1_Implementation(const FWeaponData& WeaponData)
 {
-    if (Character)
+    if (Controller)
     {
-        PlayerState = PlayerState == nullptr ? Cast<ABlasterPlayerState>(Character->GetPlayerState<ABlasterPlayerState>()) : PlayerState;
+        PlayerState = PlayerState == nullptr ? Cast<ABlasterPlayerState>(Controller->PlayerState) : PlayerState;
     }
 
     if (PlayerState)
@@ -103,9 +96,9 @@ void UShopComponent::ServerWeaponSlot1_Implementation(const FWeaponData& WeaponD
 
 void UShopComponent::ServerWeaponSlot2_Implementation(const FWeaponData& WeaponData)
 {
-    if (Character)
+    if (Controller)
     {
-        PlayerState = PlayerState == nullptr ? Cast<ABlasterPlayerState>(Character->GetPlayerState<ABlasterPlayerState>()) : PlayerState;
+        PlayerState = PlayerState == nullptr ? Cast<ABlasterPlayerState>(Controller->PlayerState) : PlayerState;
     }
 
     if (PlayerState)
@@ -116,20 +109,19 @@ void UShopComponent::ServerWeaponSlot2_Implementation(const FWeaponData& WeaponD
 
 void UShopComponent::ServerThrowablePurchase_Implementation(const FThrowData& ThrowData)
 {
-    if (Character)
+    if (Controller)
     {
-        PlayerState = PlayerState == nullptr ? Cast<ABlasterPlayerState>(Character->GetPlayerState<ABlasterPlayerState>()) : PlayerState;
+        PlayerState = PlayerState == nullptr ? Cast<ABlasterPlayerState>(Controller->PlayerState) : PlayerState;
     }
 
-    if (!PlayerState || !Character) return;
+    if (!PlayerState) return;
 
     // 돈이 충분한지 확인
     if (PlayerState->GetMoney() >= ThrowData.Price)
     {
         // 돈 차감
         PlayerState->SetMoney(PlayerState->GetMoney() - ThrowData.Price);
-
-        // 수류탄 추가 (기본 1개 구매로 가정)
+        // 수류탄 추가
         PlayerState->AddToThrowableCount(ThrowData.ThrowType, 1);
     }
    
@@ -138,13 +130,12 @@ void UShopComponent::ServerThrowablePurchase_Implementation(const FThrowData& Th
 void UShopComponent::ServerBuffPurchase_Implementation(const FBuffData& BuffData)
 {
 
-    if (Character)
+    if (Controller)
     {
-        PlayerState = PlayerState == nullptr ? Cast<ABlasterPlayerState>(Character->GetPlayerState<ABlasterPlayerState>()) : PlayerState;
-
+        PlayerState = PlayerState == nullptr ? Cast<ABlasterPlayerState>(Controller->PlayerState) : PlayerState;
     }
 
-    if (!PlayerState || !Character) return;
+    if (!PlayerState) return;
 
     // 이미 해당 버프를 가지고 있는지 확인
     if (PlayerState->HasBuff(BuffData.BuffType))
@@ -157,8 +148,13 @@ void UShopComponent::ServerBuffPurchase_Implementation(const FBuffData& BuffData
     {
         // 돈 차감
         PlayerState->SetMoney(PlayerState->GetMoney() - BuffData.Price);
-
         // 버프 추가
         PlayerState->AddBuff(BuffData.BuffType);
     }
+}
+
+
+AMyBlasterCharacter* UShopComponent::GetCharacter() const
+{
+    return Controller ? Cast<AMyBlasterCharacter>(Controller->GetPawn()) : nullptr;
 }

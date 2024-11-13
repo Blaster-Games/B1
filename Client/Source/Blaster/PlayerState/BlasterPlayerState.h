@@ -10,9 +10,13 @@
 #include "Blaster/BlasterTypes/ThrowTypes.h"
 #include "BlasterPlayerState.generated.h"
 
-// 델리게이트도 한번 써보고 싶어서 써봄.
+// 객체 관련된 것은 playerController 방식으로 하면 일일이 찾아줘야 되므로 델리게이트 방식으로 함.
+// 아니면 map으로 해서 상점에만 delegate를 할까?
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnWeaponPurchasedDelegate, EWeaponType, WeaponType);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnWeaponSlotsUpdated);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnBuffStateChanged, EBuffType, BuffType, bool, bActive);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnThrowableCountChanged, EThrowType, ThrowType, int32, NewCount);
+
 
 USTRUCT()
 struct FThrowableInfo
@@ -52,6 +56,8 @@ public:
 	// 델리게이트 관련
 	FOnWeaponPurchasedDelegate OnWeaponPurchased;
 	FOnWeaponSlotsUpdated OnWeaponSlotsUpdated;
+	FOnBuffStateChanged OnBuffStateChanged;
+	FOnThrowableCountChanged OnThrowableCountChanged;
 
 	/**
 	* Replication notifies
@@ -153,6 +159,7 @@ public:
 	void SetTeam(ETeam TeamToSet);
 	FORCEINLINE int32 GetMoney() const { return Money; }
 	void SetMoney(int32 NewMoney);
+	FORCEINLINE const TArray<EBuffType>& GetActiveBuffs() const { return ActiveBuffs; }
 
 
 };

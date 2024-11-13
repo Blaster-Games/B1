@@ -5,19 +5,35 @@
 #include "Components/Image.h"
 #include "Components/TextBlock.h"
 #include "Components/Button.h"
-#include "Blaster/Character/MyBlasterCharacter.h"
+#include "Components/HorizontalBox.h"
+#include "Blaster/PlayerState/BlasterPlayerState.h"
 #include "Blaster/BlasterComponents/ShopComponent.h"
+#include "Blaster/PlayerController/BlasterPlayerController.h"
 
 void UAdditionalItem::NativeConstruct()
 {
     Super::NativeConstruct();
 
+    if (OwnedText) OwnedText->SetVisibility(ESlateVisibility::Collapsed);
+
     if (BuyButton) BuyButton->OnClicked.AddDynamic(this, &UAdditionalItem::OnBuyClicked);
 
-    // ShopComponent 참조 얻기
-    if (AMyBlasterCharacter* Character = Cast<AMyBlasterCharacter>(GetOwningPlayerPawn()))
+    if (ABlasterPlayerController* PC = Cast<ABlasterPlayerController>(GetOwningPlayer()))
     {
-        ShopComponent = Character->GetShop();
+        ShopComponent = PC->GetShop();
+
+        if (ABlasterPlayerState* PS = Cast<ABlasterPlayerState>(PC->PlayerState))
+        {
+            if (!PS->OnBuffStateChanged.IsAlreadyBound(this, &UAdditionalItem::OnBuffStateChanged))
+            {
+                PS->OnBuffStateChanged.AddDynamic(this, &UAdditionalItem::OnBuffStateChanged);
+            }
+
+            if (!PS->OnThrowableCountChanged.IsAlreadyBound(this, &UAdditionalItem::OnThrowableCountChanged))
+            {
+                PS->OnThrowableCountChanged.AddDynamic(this, &UAdditionalItem::OnThrowableCountChanged);
+            }
+        }
     }
 }
 
@@ -43,6 +59,25 @@ void UAdditionalItem::SetThrowData(const FThrowData& InThrowData)
         if (UTexture2D* Texture = ThrowData.ThrowImage.LoadSynchronous())
         {
             ItemImage->SetBrushFromTexture(Texture);
+        }
+    }
+
+    // 수류탄 개수 정보 보이기
+    if (GrenadeNumInfo)
+    {
+        GrenadeNumInfo->SetVisibility(ESlateVisibility::Visible);
+    }
+
+    // 초기 설정
+    if (ABlasterPlayerController* PC = Cast<ABlasterPlayerController>(GetOwningPlayer()))
+    {
+        if (ABlasterPlayerState* PS = Cast<ABlasterPlayerState>(PC->PlayerState))
+        {
+            int32 Count = PS->GetThrowableCount(ThrowData.ThrowType);
+            if (GrenadeNums)
+            {
+                GrenadeNums->SetText(FText::FromString(FString::Printf(TEXT("%d"), Count)));
+            }
         }
     }
 }
@@ -71,6 +106,12 @@ void UAdditionalItem::SetBuffData(const FBuffData& InBuffData)
             ItemImage->SetBrushFromTexture(Texture);
         }
     }
+
+    // 수류탄 개수 정보를 숨기기
+    if (GrenadeNumInfo)
+    {
+        GrenadeNumInfo->SetVisibility(ESlateVisibility::Collapsed);
+    }
 }
 
 void UAdditionalItem::OnBuyClicked()
@@ -85,5 +126,44 @@ void UAdditionalItem::OnBuyClicked()
         {
             ShopComponent->RequestBuffPurchase(BuffData);
         }
+    }
+}
+
+void UAdditionalItem::OnBuffStateChanged(EBuffType BuffType, bool bActive)
+{
+    if (!bIsThrowable && BuffData.BuffType == BuffType)
+    {
+        UpdatePurchaseState(bActive);
+    }
+}
+
+void UAdditionalItem::OnThrowableCountChanged(EThrowType ThrowType, int32 NewCount)
+{
+    if (bIsThrowable && ThrowType == ThrowData.ThrowType)
+    {
+        if (GrenadeNums)
+        {
+            GrenadeNums->SetText(FText::FromString(FString::Printf(TEXT("%d"), NewCount)));
+        }
+    }
+}
+
+
+void UAdditionalItem::UpdatePurchaseState(bool bIsPurchased)
+{
+    // Owned 텍스트 처리
+    if (OwnedText)
+    {
+        OwnedText->SetVisibility(bIsPurchased ? ESlateVisibility::Visible : ESlateVisibility::Collapsed);
+    }
+
+    // 구매 버튼과 가격 정보 처리
+    if (BuyButton)
+    {
+        BuyButton->SetVisibility(bIsPurchased ? ESlateVisibility::Collapsed : ESlateVisibility::Visible);
+    }
+    if (PriceText)
+    {
+        PriceText->SetVisibility(bIsPurchased ? ESlateVisibility::Collapsed : ESlateVisibility::Visible);
     }
 }

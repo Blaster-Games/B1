@@ -23,7 +23,6 @@
 #include "Blaster/Weapon/WeaponTypes.h"
 #include "Components/BoxComponent.h"
 #include "Blaster/BlasterComponents/LagCompensationComponent.h"
-#include "Blaster/BlasterComponents/ShopComponent.h"
 #include "NiagaraComponent.h"
 #include "NiagaraFunctionLibrary.h"
 #include "Blaster/GameState/BlasterGameState.h"
@@ -60,9 +59,6 @@ AMyBlasterCharacter::AMyBlasterCharacter()
 
 	// 이건 서버에서만 사용할 것이므로 복제할 필요 x
 	LagCompensation = CreateDefaultSubobject<ULagCompensationComponent>(TEXT("LagCompensation"));
-
-	Shop = CreateDefaultSubobject<UShopComponent>(TEXT("ShopComponent"));
-	Shop->SetIsReplicated(true);
 
 	GetCharacterMovement()->NavAgentProps.bCanCrouch = true;
 	// 캡슐이 카메라를 가리지 않도록
@@ -568,15 +564,6 @@ void AMyBlasterCharacter::PostInitializeComponents()
 		if (Controller)
 		{
 			LagCompensation->Controller = Cast<ABlasterPlayerController>(Controller);
-		}
-	}
-	if (Shop)
-	{
-		Shop->Character = this;
-		if (Controller)
-		{
-			Shop->Controller = Cast<ABlasterPlayerController>(Controller);
-			Shop->PlayerState = Controller->GetPlayerState<ABlasterPlayerState>();
 		}
 	}
 }

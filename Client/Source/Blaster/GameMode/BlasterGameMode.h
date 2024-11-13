@@ -50,6 +50,9 @@ protected:
 	virtual void StartNewRound();
 	virtual void EndRound();
 
+	void AllPlayerApplyBuffs();
+
+
 	UPROPERTY(EditDefaultsOnly, Category = "Game Rules")
 	bool bIsRoundBased = false;
 
@@ -57,6 +60,9 @@ protected:
 	int32 MaxRounds = 5;
 
 	float CountdownTime = 0.f;
+
+private:
+	bool ShouldRespawnPlayer() const;
 
 public:
 	FORCEINLINE float GetCountdownTime() const { return CountdownTime; }

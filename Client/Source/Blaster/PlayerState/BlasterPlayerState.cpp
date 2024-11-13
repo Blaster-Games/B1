@@ -31,6 +31,9 @@ void ABlasterPlayerState::BeginPlay()
 		// 권총 기본 지급
 		AddWeapon(EWeaponType::EWT_Pistol);
 		SetWeaponToSlot(EWeaponType::EWT_Pistol, 1);
+
+		// 수류탄 기본 2개 지급
+		AddToThrowableCount(EThrowType::ETT_Grenade, 2);
 	}
 
 }
@@ -151,15 +154,30 @@ void ABlasterPlayerState::OnRep_PurchasedWeapons()
 	}
 }
 
-void ABlasterPlayerState::OnRep_ActiveBuffs()
-{
-}
+
 
 void ABlasterPlayerState::AddBuff(EBuffType BuffType)
 {
 	if (!ActiveBuffs.Contains(BuffType))
 	{
 		ActiveBuffs.Add(BuffType);
+		OnBuffStateChanged.Broadcast(BuffType, true);
+	}
+}
+
+void ABlasterPlayerState::OnRep_ActiveBuffs()
+{
+	if (ActiveBuffs.IsEmpty())
+	{
+		// 모든 버프 타입에 대해 비활성화 상태 알림
+		for (uint8 i = 0; i < static_cast<uint8>(EBuffType::EBT_MAX); ++i)
+		{
+			OnBuffStateChanged.Broadcast(static_cast<EBuffType>(i), false);
+		}
+	}
+	else
+	{
+		OnBuffStateChanged.Broadcast(ActiveBuffs.Last(), true);
 	}
 }
 
@@ -170,12 +188,23 @@ bool ABlasterPlayerState::HasBuff(EBuffType BuffType) const
 
 void ABlasterPlayerState::ClearBuff()
 {
-	ActiveBuffs.Empty();
+	if (HasAuthority())
+	{
+		// 초기화 전에 현재 가지고 있는 모든 버프에 대해 비활성화 알림
+		for (EBuffType Buff : ActiveBuffs)
+		{
+			OnBuffStateChanged.Broadcast(Buff, false);
+		}
+		ActiveBuffs.Empty();
+	}
 }
 void ABlasterPlayerState::OnRep_ThrowableCounts()
 {
+	for (const FThrowableInfo& ThrowInfo : ThrowableCounts)
+	{
+		OnThrowableCountChanged.Broadcast(ThrowInfo.ThrowType, ThrowInfo.Count);
+	}
 }
-
 
 int32 ABlasterPlayerState::GetThrowableCount(EThrowType ThrowType) const
 {
@@ -199,6 +228,7 @@ void ABlasterPlayerState::SetThrowableCount(EThrowType ThrowType, int32 Count)
 		{
 			ThrowInfo.Count = Count;
 			bFound = true;
+			OnThrowableCountChanged.Broadcast(ThrowType, Count);
 			break;
 		}
 	}
@@ -210,6 +240,7 @@ void ABlasterPlayerState::SetThrowableCount(EThrowType ThrowType, int32 Count)
 		NewInfo.ThrowType = ThrowType;
 		NewInfo.Count = Count;
 		ThrowableCounts.Add(NewInfo);
+		OnThrowableCountChanged.Broadcast(ThrowType, Count);
 	}
 
 }

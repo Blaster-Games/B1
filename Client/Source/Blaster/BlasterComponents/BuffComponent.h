@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "Blaster/BlasterTypes/BuffTypes.h"
 #include "BuffComponent.generated.h"
 
 
@@ -21,6 +22,15 @@ public:
 	void BuffJump(float BuffJumpVelocity, float BuffTime);
 	void SetInitialSpeeds(float BaseSpeed, float CrouchSpeed);
 	void SetInitialJumpVelocity(float Velocity);
+
+
+	/**
+	* buff (shop)
+	*/
+
+	void ApplyBuff(EBuffType BuffType);
+
+
 protected:
 	virtual void BeginPlay() override;
 	void HealRampUp(float DeltaTime);
@@ -77,6 +87,7 @@ private:
 
 	UFUNCTION(NetMulticast, Reliable)
 	void MulticastJumpBuff(float JumpVelocity);
+
 
 public:	
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;

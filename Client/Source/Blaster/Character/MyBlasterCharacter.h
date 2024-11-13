@@ -203,9 +203,6 @@ private:
 	UPROPERTY(VisibleAnywhere)
 	class ULagCompensationComponent* LagCompensation;
 
-	UPROPERTY(VisibleAnywhere)
-	class UShopComponent* Shop;
-
 	// RPC -> Server : 클라가 서버를 호출하는 느낌.
 	// Client : 서버가 클라이언트에게 할 것 토스하는 느낌.
 	UFUNCTION(Server, Reliable)
@@ -436,8 +433,6 @@ public:
 	FORCEINLINE UBuffComponent* GetBuff() const { return Buff; }
 	bool IsLocallyReloading();
 	FORCEINLINE ULagCompensationComponent* GetLagCompensation() const { return LagCompensation; }
-	FORCEINLINE UShopComponent* GetShop() const { return Shop; }
-
 	FORCEINLINE bool IsHoldingTheFlag() const;
 	ETeam GetTeam();
 	void SetHoldingTheFlag(bool bHolding);

@@ -58,6 +58,12 @@ public:
 
 	void PickupAmmo(EWeaponType WeaponType, int32 AmmoAmount);
 	bool bLocallyReloading = false;
+
+	void SaveGrenadeCount(); // 매라운드 종료 시에 playerState에 남은 수류탄 수를 알려줄 함수.
+
+	UFUNCTION(Server, Reliable)
+	void ServerSaveGrenadeCount();
+
 protected:
 	virtual void BeginPlay() override;
 	void SetAiming(bool bIsAiming);
@@ -264,16 +270,25 @@ private:
 	void UpdateAmmoValues();
 	void UpdateShotgunAmmoValues();
 
+	// 나중에 수류탄 종류가 많아진다면 확장성 있게 수정 예정. (ex 맵 방식)
 	UPROPERTY(ReplicatedUsing = OnRep_Grenades)
-	int32 Grenades = 4;
+	int32 Grenades = 1;
 
 	UFUNCTION()
 	void OnRep_Grenades();
 
 	UPROPERTY(EditAnywhere)
-	int32 MaxGrenades = 4;
+	int32 MaxGrenades = 10;
 
 	void UpdateHUDGrenades();
+
+	void InitializeGrenades();
+
+	UFUNCTION(Server, Reliable)
+	void ServerInitializeGrenades();
+	void SaveGrenadesToPlayerState();
+
+
 
 	UPROPERTY(ReplicatedUsing = OnRep_HoldingTheFlag)
 	bool bHoldingTheFlag = false;

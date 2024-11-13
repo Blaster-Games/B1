@@ -6,9 +6,9 @@
 #include "Components/TextBlock.h"
 #include "Components/Button.h"
 #include "Components/HorizontalBox.h"
-#include "Blaster/Character/MyBlasterCharacter.h"
 #include "Blaster/BlasterComponents/ShopComponent.h"
 #include "Blaster/PlayerState/BlasterPlayerState.h"
+#include "Blaster/PlayerController/BlasterPlayerController.h"
 
 void UWeaponItem::NativeConstruct()
 {
@@ -25,19 +25,16 @@ void UWeaponItem::NativeConstruct()
     if (Slot1Button) Slot1Button->SetVisibility(ESlateVisibility::Collapsed);
     if (Slot2Button) Slot2Button->SetVisibility(ESlateVisibility::Collapsed);
 
-    // ShopComponent 참조 얻기
-    if (AMyBlasterCharacter* Character = Cast<AMyBlasterCharacter>(GetOwningPlayerPawn()))
+    if (ABlasterPlayerController* PC = Cast<ABlasterPlayerController>(GetOwningPlayer()))
     {
-        ShopComponent = Character->GetShop();
-    }
+        ShopComponent = PC->GetShop();
 
-    if (AMyBlasterCharacter* Character = Cast<AMyBlasterCharacter>(GetOwningPlayerPawn()))
-    {
-        if (ABlasterPlayerState* PS = Cast<ABlasterPlayerState>(Character->GetPlayerState()))
+        if (ABlasterPlayerState* PS = Cast<ABlasterPlayerState>(PC->PlayerState))
         {
-            PS->OnWeaponPurchased.AddDynamic(this, &UWeaponItem::OnWeaponPurchaseStateChanged);
-
-            // 초기 상태 설정
+            if (!PS->OnWeaponPurchased.IsAlreadyBound(this, &UWeaponItem::OnWeaponPurchaseStateChanged))
+            {
+                PS->OnWeaponPurchased.AddDynamic(this, &UWeaponItem::OnWeaponPurchaseStateChanged);
+            }
             bool bIsPurchased = PS->HasWeapon(WeaponData.WeaponType);
             UpdatePurchaseState(bIsPurchased);
         }
