@@ -74,22 +74,51 @@ namespace GameServer
 
         public void HandleJoinRoomReq(C_JoinRoomReq reqPacket)
         {
+            Console.WriteLine($"[HandleJoinRoomReq] Received request for RoomId: {reqPacket.RoomId}");
+
             GameLogic.Instance.TryEnterRoom(this, reqPacket.RoomId, (result) =>
             {
+                Console.WriteLine($"[HandleJoinRoomReq] TryEnterRoom result: {result}");
+
                 S_JoinRoomRes resPacket = new S_JoinRoomRes();
                 resPacket.Success = result;
+
                 if (result)
                 {
                     GameRoom room = GameLogic.Instance.FindRoom(reqPacket.RoomId);
+                    Console.WriteLine($"[HandleJoinRoomReq] Found room: {(room != null ? "Yes" : "No")}");
+
                     if (room != null)
                     {
                         resPacket.Room = room.ToRoomDetail();
+                        Console.WriteLine($"[HandleJoinRoomReq] Room Details:" +
+                            $"\n\tRoom ID: {resPacket.Room.RoomId}" +
+                            $"\n\tRoom Name: {resPacket.Room.RoomName}" +
+                            $"\n\tGame Mode: {resPacket.Room.RoomType}" +
+                            $"\n\tMax Players: {resPacket.Room.MaxPlayers}" +
+                            $"\n\tRoom State: {resPacket.Room.State}" +
+                            $"\n\tMap Name: {resPacket.Room.MapName}" +
+                            $"\n\tHost Player ID: {resPacket.Room.HostPlayerId}" +
+                            $"\n\tPlayers Count: {resPacket.Room.Players.Count}");
+
+                        // Players 정보도 출력
+                        foreach (var player in resPacket.Room.Players)
+                        {
+                            Console.WriteLine($"\tPlayer Info:" +
+                                $"\n\t\tPlayer ID: {player.PlayerId}" +
+                                $"\n\t\tPlayer Name: {player.PlayerName}" +
+                                $"\n\t\tIs Host: {player.IsHost}" +
+                                $"\n\t\tTeam: {player.Team}");
+                        }
                     }
                     else
                     {
                         resPacket.Success = false;
+                        Console.WriteLine("[HandleJoinRoomReq] Room was found but is null - Setting Success to false");
                     }
                 }
+
+                Console.WriteLine($"[HandleJoinRoomReq] Sending response packet - Success: {resPacket.Success}");
                 Send(resPacket);
             });
         }

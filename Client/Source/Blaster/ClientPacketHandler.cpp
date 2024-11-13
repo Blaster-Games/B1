@@ -82,7 +82,12 @@ bool Handle_S_CreateRoomRes(PacketSessionRef& session, Protocol::S_CreateRoomRes
 
 bool Handle_S_JoinRoomRes(PacketSessionRef& session, Protocol::S_JoinRoomRes& pkt)
 {
-    return true;
+    if (auto NetworkSystem = GetNetworkSystem(session))
+    {
+        NetworkSystem->HandleJoinRoomRes(pkt);
+        return true;
+    }
+    return false;
 }
 
 bool Handle_S_BroadcastJoinRoom(PacketSessionRef& session, Protocol::S_BroadcastJoinRoom& pkt)

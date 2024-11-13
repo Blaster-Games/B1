@@ -55,7 +55,6 @@ public:
 	URoomItem* AddRoom(const FRoomListItemInfo& RoomInfo);
 	void ClearRoomList();
 
-	// Room 선택 이벤트 델리게이트
 	UPROPERTY(BlueprintAssignable, Category = "Room Events")
 	FOnRoomSelectedDelegate OnRoomSelected;
 };

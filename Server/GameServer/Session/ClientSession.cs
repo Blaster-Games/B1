@@ -28,9 +28,11 @@ namespace GameServer
             if (_pingpongTick > 0)
             {
                 long delta = (System.Environment.TickCount64 - _pingpongTick);
-                if (delta > 60 * 1000)
+                Console.WriteLine($"Ping check - Last pong: {delta}ms ago");
+
+                if (delta > 30 * 1000)  // 30초
                 {
-                    Console.WriteLine("Disconnected by PingCheck");
+                    Console.WriteLine($"Disconnected by PingCheck - No response for {delta}ms");
                     Disconnect();
                     return;
                 }
@@ -38,8 +40,9 @@ namespace GameServer
 
             S_Ping pingPacket = new S_Ping();
             Send(pingPacket);
+            Console.WriteLine("Sent Ping packet");
 
-            GameLogic.Instance.PushAfter(5000, Ping);
+            GameLogic.Instance.PushAfter(5000, Ping);  // 10초
         }
 
         public void HandlePong()

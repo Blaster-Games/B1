@@ -1,7 +1,7 @@
 #pragma once
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
-#include "Room.h"
+#include "RoomDetail.h"
 #include "Lobby.generated.h"
 
 UCLASS()
@@ -17,7 +17,7 @@ private:
     class URoomList* RoomListWidget;
 
     UPROPERTY(EditDefaultsOnly, Category = "UI")
-    TSubclassOf<URoom> RoomWidgetClass;
+    TSubclassOf<URoomDetail> RoomWidgetClass;
 
     UFUNCTION()
     void HandleRoomItemDoubleClicked(int32 RoomId);

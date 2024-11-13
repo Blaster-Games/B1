@@ -68,6 +68,8 @@ void UBlasterNetworkSubsystem::ConnectToGameServer()
 
 void UBlasterNetworkSubsystem::DisconnectFromGameServer()
 {
+    UE_LOG(LogTemp, Warning, TEXT("Disconnected from server"));
+
     if (Socket)
     {
         ISocketSubsystem* SocketSubsystem = ISocketSubsystem::Get();
@@ -223,20 +225,26 @@ void UBlasterNetworkSubsystem::HandleRoomListRes(Protocol::S_RoomListRes& packet
 void UBlasterNetworkSubsystem::SendJoinRoomReq(int roomId)
 {
     Protocol::C_JoinRoomReq JoinRoomPacket;
+    JoinRoomPacket.set_roomid(roomId);
     SendBufferRef SendBuffer = ClientPacketHandler::MakeSendBuffer(JoinRoomPacket);
     SendPacket(SendBuffer);
 }
 
 void UBlasterNetworkSubsystem::HandleJoinRoomRes(Protocol::S_JoinRoomRes& packet)
 {
+    UE_LOG(LogTemp, Log, TEXT("[HandleJoinRoomRes] Started processing packet"));
+
     // 성공 여부 저장
     bool Success = packet.success();
+    UE_LOG(LogTemp, Log, TEXT("[HandleJoinRoomRes] Success: %s"), Success ? TEXT("true") : TEXT("false"));
 
     // RoomDetailInfo 변환
     FRoomDetailInfo RoomInfo;
     if (Success && packet.has_room())
     {
+        UE_LOG(LogTemp, Log, TEXT("[HandleJoinRoomRes] Packet has room info"));
         const auto& protoRoom = packet.room();
+
         // 기본 정보 복사
         RoomInfo.RoomId = protoRoom.roomid();
         RoomInfo.RoomName = UTF8_TO_TCHAR(protoRoom.roomname().c_str());
@@ -246,6 +254,12 @@ void UBlasterNetworkSubsystem::HandleJoinRoomRes(Protocol::S_JoinRoomRes& packet
         RoomInfo.MapName = UTF8_TO_TCHAR(protoRoom.mapname().c_str());
         RoomInfo.HostPlayerId = protoRoom.hostplayerid();
 
+        UE_LOG(LogTemp, Log, TEXT("[HandleJoinRoomRes] Room Details:"));
+        UE_LOG(LogTemp, Log, TEXT("\tRoom ID: %d"), RoomInfo.RoomId);
+        UE_LOG(LogTemp, Log, TEXT("\tRoom Name: %s"), *RoomInfo.RoomName);
+        UE_LOG(LogTemp, Log, TEXT("\tMax Players: %d"), RoomInfo.MaxPlayers);
+        UE_LOG(LogTemp, Log, TEXT("\tHost Player ID: %d"), RoomInfo.HostPlayerId);
+
         // 플레이어 정보 복사
         for (const auto& protoPlayer : protoRoom.players())
         {
@@ -254,13 +268,27 @@ void UBlasterNetworkSubsystem::HandleJoinRoomRes(Protocol::S_JoinRoomRes& packet
             PlayerInfo.PlayerName = UTF8_TO_TCHAR(protoPlayer.playername().c_str());
             PlayerInfo.IsHost = protoPlayer.ishost();
             PlayerInfo.Team = static_cast<ETeamType>(protoPlayer.team());
-
             RoomInfo.Players.Add(PlayerInfo);
+
+            UE_LOG(LogTemp, Log, TEXT("\tPlayer: ID=%d, Name=%s, IsHost=%s"),
+                PlayerInfo.PlayerId,
+                *PlayerInfo.PlayerName,
+                PlayerInfo.IsHost ? TEXT("true") : TEXT("false"));
         }
     }
+    else
+    {
+        UE_LOG(LogTemp, Warning, TEXT("[HandleJoinRoomRes] No room info in packet"));
+    }
+
+    // 델리게이트 호출 전 바인딩 확인
+    bool bIsBound = OnJoinRoomResponse.IsBound();
+    UE_LOG(LogTemp, Log, TEXT("[HandleJoinRoomRes] Delegate is bound: %s"), bIsBound ? TEXT("true") : TEXT("false"));
 
     // 델리게이트를 통해 결과 전달
+    UE_LOG(LogTemp, Log, TEXT("[HandleJoinRoomRes] Broadcasting response"));
     OnJoinRoomResponse.Broadcast(Success, RoomInfo);
+    UE_LOG(LogTemp, Log, TEXT("[HandleJoinRoomRes] Broadcast completed"));
 }
 
 void UBlasterNetworkSubsystem::HandlePing()

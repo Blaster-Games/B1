@@ -1,17 +1,14 @@
-
 #include "Room.h"
+#include "Components/PanelWidget.h"
 
 void URoom::NativeConstruct()
 {
-	Super::NativeConstruct();
+    Super::NativeConstruct();
+    UE_LOG(LogTemp, Log, TEXT("Room: Basic NativeConstruct called"));
+    SetVisibility(ESlateVisibility::Visible);
 }
 
 void URoom::UpdateRoom(const FRoomDetailInfo& RoomInfo)
 {
-	CurrentRoomInfo = RoomInfo;
-
-	if (RoomPlayers)
-	{
-		RoomPlayers->UpdatePlayers(RoomInfo.Players);
-	}
+    UE_LOG(LogTemp, Log, TEXT("Room: Basic UpdateRoom called"));
 }
