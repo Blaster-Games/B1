@@ -5,7 +5,7 @@
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
 #include "Components/TextBlock.h"
-#include "RoomTypes.h"
+#include "../RoomTypes.h"
 #include "RoomPlayers.generated.h"
 
 /**

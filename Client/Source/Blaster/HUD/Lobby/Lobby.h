@@ -1,7 +1,7 @@
 #pragma once
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
-#include "RoomDetail.h"
+#include "Room/RoomDetail.h"
 #include "Lobby.generated.h"
 
 UCLASS()

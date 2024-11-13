@@ -3,7 +3,7 @@
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
 #include "RoomPlayers.h"
-#include "RoomTypes.h"
+#include "../RoomTypes.h"
 #include "Components/TextBlock.h"
 #include "RoomDetail.generated.h"
 
