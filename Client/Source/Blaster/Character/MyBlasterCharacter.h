@@ -188,7 +188,6 @@ private:
 	UFUNCTION()
 	void OnRep_OverlappingWeapon(AWeapon* LastWeapon);
 
-
 	/**
 	* Blaster components
 	*/
@@ -406,6 +405,22 @@ private:
 	class ABlasterGameMode* BlasterGameMode;
 
 	FTimerHandle SpawnWeaponTimer;
+
+	/**
+	* 관전
+	*/
+	
+	void InitializeTeamSpectating();
+	// 관전 대상이 죽을 시를 대비해서
+	void UpdateSpectatorsOnDeath();
+	ABlasterPlayerController* GetSpectatingPlayerController(APlayerState* PS);
+	AMyBlasterCharacter* FindNewSpectatingTarget(ABlasterPlayerController* SpectatingPC);
+	void ViewPreviousTeammate();
+	void ViewNextTeammate();
+	void UpdateSpectatingTarget(bool bNext);
+	UFUNCTION(Server, Reliable)
+	void ServerUpdateSpectatingTarget(bool bNext);
+	void HandleSpectatingTargetChange(bool bNext);
 
 public:	
 	void SetOverlappingWeapon(AWeapon* Weapon);

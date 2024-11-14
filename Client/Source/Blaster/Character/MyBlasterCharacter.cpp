@@ -240,6 +240,16 @@ void AMyBlasterCharacter::MulticastElim_Implementation(bool bPlayerLeftGame)
 	GetMesh()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	AttachedGrenade->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
+	// 캐릭터가 죽었을 때, 같은 팀 플레이어를 관전하도록 설정
+	if (!bPlayerLeftGame)
+	{
+		if (BlasterPlayerController && HasAuthority())
+		{
+			InitializeTeamSpectating();
+		}
+		UpdateSpectatorsOnDeath();  // 이 캐릭터를 보고 있던 관전자들 업데이트
+	}
+
 	// Spawn elim bot
 	if (ElimBotEffect)
 	{
@@ -280,6 +290,189 @@ void AMyBlasterCharacter::MulticastElim_Implementation(bool bPlayerLeftGame)
 	);
 
 }
+
+void AMyBlasterCharacter::InitializeTeamSpectating()
+{
+	if (!BlasterPlayerController) return;
+
+	ABlasterGameState* BlasterGS = GetWorld()->GetGameState<ABlasterGameState>();
+	ABlasterPlayerState* MyPlayerState = GetPlayerState<ABlasterPlayerState>();
+
+	if (!BlasterGS || !MyPlayerState) return;
+
+	for (APlayerState* PS : BlasterGS->PlayerArray)
+	{
+		if (ABlasterPlayerState* BPS = Cast<ABlasterPlayerState>(PS))
+		{
+			if (BPS->GetTeam() == MyPlayerState->GetTeam())
+			{
+				if (AMyBlasterCharacter* TeamCharacter = Cast<AMyBlasterCharacter>(BPS->GetPawn()))
+				{
+					if (!TeamCharacter->IsElimmed())
+					{
+						BlasterPlayerController->SetViewTarget(TeamCharacter);
+						break;
+					}
+				}
+			}
+		}
+	}
+}
+
+void AMyBlasterCharacter::UpdateSpectatorsOnDeath()
+{
+	ABlasterGameState* BlasterGS = GetWorld()->GetGameState<ABlasterGameState>();
+	if (!BlasterGS) return;
+
+	for (APlayerState* PS : BlasterGS->PlayerArray)
+	{
+		ABlasterPlayerController* SpectatingPC = GetSpectatingPlayerController(PS);
+		if (!SpectatingPC || SpectatingPC->GetViewTarget() != this) continue;
+
+		// 이 캐릭터를 보고 있던 관전자를 발견했다면, 다른 살아있는 팀원으로 변경
+		AMyBlasterCharacter* NewTargetToSpectate = FindNewSpectatingTarget(SpectatingPC);
+		if (NewTargetToSpectate)
+		{
+			SpectatingPC->SetViewTarget(NewTargetToSpectate);
+		}
+	}
+}
+
+ABlasterPlayerController* AMyBlasterCharacter::GetSpectatingPlayerController(APlayerState* PS)
+{
+	if (ABlasterPlayerState* BPS = Cast<ABlasterPlayerState>(PS))
+	{
+		if (AMyBlasterCharacter* Character = Cast<AMyBlasterCharacter>(BPS->GetPawn()))
+		{
+			if (Character->IsElimmed())
+			{
+				return Cast<ABlasterPlayerController>(Character->GetController());
+			}
+		}
+	}
+	return nullptr;
+}
+
+AMyBlasterCharacter* AMyBlasterCharacter::FindNewSpectatingTarget(ABlasterPlayerController* SpectatingPC)
+{
+	ABlasterGameState* BlasterGS = GetWorld()->GetGameState<ABlasterGameState>();
+	if (!BlasterGS) return nullptr;
+
+	ABlasterPlayerState* SpectatorPS = SpectatingPC->GetPlayerState<ABlasterPlayerState>();
+	if (!SpectatorPS) return nullptr;
+
+	for (APlayerState* PS : BlasterGS->PlayerArray)
+	{
+		if (ABlasterPlayerState* BPS = Cast<ABlasterPlayerState>(PS))
+		{
+			if (BPS->GetTeam() != SpectatorPS->GetTeam()) continue;
+
+			AMyBlasterCharacter* TeamCharacter = Cast<AMyBlasterCharacter>(BPS->GetPawn());
+			if (TeamCharacter && !TeamCharacter->IsElimmed() && TeamCharacter != this)
+			{
+				return TeamCharacter;
+			}
+		}
+	}
+	return nullptr;
+}
+
+void AMyBlasterCharacter::ViewNextTeammate()
+{
+	if (IsElimmed())
+	{
+		if (HasAuthority())
+		{
+			UpdateSpectatingTarget(true);
+		}
+		else
+		{
+			ServerUpdateSpectatingTarget(true);
+		}
+	}
+}
+
+void AMyBlasterCharacter::ViewPreviousTeammate()
+{
+	if (IsElimmed())
+	{
+		if (HasAuthority())
+		{
+			UpdateSpectatingTarget(false);
+		}
+		else
+		{
+			ServerUpdateSpectatingTarget(false);
+		}
+	}
+}
+
+void AMyBlasterCharacter::UpdateSpectatingTarget(bool bNext)
+{
+	HandleSpectatingTargetChange(bNext);
+}
+
+void AMyBlasterCharacter::ServerUpdateSpectatingTarget_Implementation(bool bNext)
+{
+	HandleSpectatingTargetChange(bNext);
+}
+
+void AMyBlasterCharacter::HandleSpectatingTargetChange(bool bNext)
+{
+	if (!BlasterPlayerController) return;
+
+	// 현재 관전 중인 캐릭터
+	AMyBlasterCharacter* CurrentTarget = Cast<AMyBlasterCharacter>(BlasterPlayerController->GetViewTarget());
+
+	// 살아있는 팀원들 목록 만들기
+	TArray<AMyBlasterCharacter*> AliveTeammates;
+	ABlasterGameState* BlasterGS = GetWorld()->GetGameState<ABlasterGameState>();
+	ABlasterPlayerState* MyPlayerState = GetPlayerState<ABlasterPlayerState>();
+
+	if (!BlasterGS || !MyPlayerState) return;
+
+	for (APlayerState* PS : BlasterGS->PlayerArray)
+	{
+		if (ABlasterPlayerState* BPS = Cast<ABlasterPlayerState>(PS))
+		{
+			if (BPS->GetTeam() == MyPlayerState->GetTeam())
+			{
+				if (AMyBlasterCharacter* TeamCharacter = Cast<AMyBlasterCharacter>(BPS->GetPawn()))
+				{
+					if (!TeamCharacter->IsElimmed())
+					{
+						AliveTeammates.Add(TeamCharacter);
+					}
+				}
+			}
+		}
+	}
+
+	if (AliveTeammates.Num() > 0)
+	{
+		int32 CurrentIndex = AliveTeammates.Find(CurrentTarget);
+		int32 NextIndex;
+
+		if (CurrentIndex == INDEX_NONE)
+		{
+			NextIndex = 0;
+		}
+		else
+		{
+			if (bNext)
+			{
+				NextIndex = (CurrentIndex + 1) % AliveTeammates.Num();
+			}
+			else
+			{
+				NextIndex = (CurrentIndex - 1 + AliveTeammates.Num()) % AliveTeammates.Num();
+			}
+		}
+
+		BlasterPlayerController->SetViewTarget(AliveTeammates[NextIndex]);
+	}
+}
+
 
 void AMyBlasterCharacter::ElimTimerFinished()
 {
@@ -535,7 +728,8 @@ void AMyBlasterCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInput
 	PlayerInputComponent->BindAction("ThrowGrenade", IE_Pressed, this, &AMyBlasterCharacter::GrenadeButtonPressed);
 	PlayerInputComponent->BindAction("WeaponSlot1", IE_Pressed, this, &AMyBlasterCharacter::WeaponSlot1ButtonPressed);
 	PlayerInputComponent->BindAction("WeaponSlot2", IE_Pressed, this, &AMyBlasterCharacter::WeaponSlot2ButtonPressed);
-
+	PlayerInputComponent->BindAction("ViewPreviousPlayer", IE_Pressed, this, &AMyBlasterCharacter::ViewPreviousTeammate);
+	PlayerInputComponent->BindAction("ViewNextPlayer", IE_Pressed, this, &AMyBlasterCharacter::ViewNextTeammate);
 }
 
 // 액터에 연결된 컴포넌트가 초기화된 후 추가 설정이나 초기화가 필요할 때 PostInitializeComponents에서 처리
