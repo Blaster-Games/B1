@@ -116,8 +116,12 @@ namespace GameServer
                     callback.Invoke(false);
                     return;
                 }
-                room.EnterRoom(session, callback);
             }
+
+            room.Push(() =>
+            {
+                room.EnterRoom(session, callback);
+            });
         }
 
         #endregion

@@ -37,32 +37,36 @@ namespace GameServer
 
         public void EnterRoom(ClientSession session, Action<bool> callback)
         {
-            Push(() =>
+            if (_players.Count >= MaxPlayers)
             {
-                if (_players.Count >= MaxPlayers)
-                {
-                    callback.Invoke(false);
-                    return;
-                }
+                callback.Invoke(false);
+                return;
+            }
 
-                Player player = session.Player;
-                if (player == null)
-                {
-                    callback.Invoke(false);
-                    return;
-                }
+            Player player = session.Player;
+            if (player == null)
+            {
+                callback.Invoke(false);
+                return;
+            }
 
-                if (_players.Count == 0)
-                {
-                    _host = player;
-                    player.IsHost = true;
-                }
+            if (_players.Count == 0)
+            {
+                _host = player;
+                player.IsHost = true;
+                player.GameRoom = this;
+                player.RoomId = GameRoomId;
+            }
 
-                _players.Add(player);
-                //BroadcastEnterGame(player);
+            _players.Add(player);
+            //BroadcastEnterGame(player);
 
-                callback.Invoke(true);
-            });
+            callback.Invoke(true);
+        }
+
+        public void LeaveRoom(ClientSession session, Action<bool> callback)
+        {
+            // TODO
         }
 
         public void LeaveGame(ClientSession session)
@@ -106,6 +110,22 @@ namespace GameServer
                 p.Session?.Send(enterPacket);
             }
         }
+
+        public void BroadcastChat(Player sender, string message)
+        {
+            S_BroadcastRoomChat packet = new S_BroadcastRoomChat()
+            {
+                PlayerId = sender.PlayerId,
+                PlayerName = sender.PlayerName,
+                Message = message
+            };
+
+            foreach (Player p in _players)
+            {
+                p.Session?.Send(packet);
+            }
+        }
+
         #endregion
 
         #region Room Info

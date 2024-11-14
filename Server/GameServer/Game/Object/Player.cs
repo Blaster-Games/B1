@@ -7,6 +7,7 @@ using Google.Protobuf.Protocol;
 
 namespace GameServer
 {
+
     public class Player
     {
         public ClientSession Session { get; set; }
@@ -14,5 +15,9 @@ namespace GameServer
         public string PlayerName { get; set; }
         public bool IsHost { get; set; }
         public ETeamType Team { get; set; }
+
+        // 현재 있는 방 정보 (방에 있을 경우)
+        public int RoomId { get; set; }
+        public GameRoom GameRoom { get; set; }
     }
 }

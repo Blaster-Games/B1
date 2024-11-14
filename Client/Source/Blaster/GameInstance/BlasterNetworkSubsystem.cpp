@@ -291,6 +291,24 @@ void UBlasterNetworkSubsystem::HandleJoinRoomRes(Protocol::S_JoinRoomRes& packet
     UE_LOG(LogTemp, Log, TEXT("[HandleJoinRoomRes] Broadcast completed"));
 }
 
+void UBlasterNetworkSubsystem::SendRoomChat(const FString& Message)
+{
+    Protocol::C_RoomChat chatPacket;
+    chatPacket.set_message(TCHAR_TO_UTF8(*Message));
+
+    SendBufferRef SendBuffer = ClientPacketHandler::MakeSendBuffer(chatPacket);
+    SendPacket(SendBuffer);
+}
+
+void UBlasterNetworkSubsystem::HandleBroadcastRoomChat(Protocol::S_BroadcastRoomChat& packet)
+{
+    int32 PlayerId = packet.playerid();
+    FString PlayerName = UTF8_TO_TCHAR(packet.playername().c_str());
+    FString Message = UTF8_TO_TCHAR(packet.message().c_str());
+
+    OnRoomChatMessage.Broadcast(PlayerId, PlayerName, Message);
+}
+
 void UBlasterNetworkSubsystem::HandlePing()
 {
     UE_LOG(LogTemp, Log, TEXT("[NetworkSubsystem] Handling Ping"));

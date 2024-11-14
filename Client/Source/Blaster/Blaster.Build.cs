@@ -18,7 +18,8 @@ public class Blaster : ModuleRules
             "Networking",
             "HTTP",
             "Json",
-            "JsonUtilities"
+            "JsonUtilities",
+            "SlateCore"
         });
         
         PrivateDependencyModuleNames.AddRange(new string[] { "ProtobufCore" });

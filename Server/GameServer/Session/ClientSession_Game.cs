@@ -122,5 +122,18 @@ namespace GameServer
                 Send(resPacket);
             });
         }
+
+        public void HandleRoomChat(C_RoomChat reqPacket)
+        {
+            GameRoom currentGameRoom = Player.GameRoom;
+
+            if (currentGameRoom == null)
+                return;
+
+            currentGameRoom.Push(() =>
+            {
+                currentGameRoom.BroadcastChat(Player, reqPacket.Message);
+            });
+        }
     }
 }
