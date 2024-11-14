@@ -28,6 +28,9 @@ public:
 	UFUNCTION()
 	void OnChatMessageCommitted(const FText& Text, ETextCommit::Type CommitMethod);
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Chat")
+	TSubclassOf<URoomChatMessage> ChatMessageWidgetClass;
+
 
 private:
 	UPROPERTY(meta = (BindWidget))
@@ -35,9 +38,6 @@ private:
 
 	UPROPERTY(meta = (BindWidget))
 	class UEditableTextBox* RoomChatInputBox;
-
-	UPROPERTY()
-	TSubclassOf<class URoomChatMessage> ChatMessageWidgetClass;
 
 	UPROPERTY()
 	class UBlasterNetworkSubsystem* NetworkSubsystem;

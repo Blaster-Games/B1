@@ -306,6 +306,9 @@ void UBlasterNetworkSubsystem::HandleBroadcastRoomChat(Protocol::S_BroadcastRoom
     FString PlayerName = UTF8_TO_TCHAR(packet.playername().c_str());
     FString Message = UTF8_TO_TCHAR(packet.message().c_str());
 
+    UE_LOG(LogTemp, Log, TEXT("[HandleBroadcastRoomChat] Received message - PlayerID: %d, Name: %s"), PlayerId, *PlayerName);
+    UE_LOG(LogTemp, Log, TEXT("[HandleBroadcastRoomChat] Message content: %s"), *Message);
+
     OnRoomChatMessage.Broadcast(PlayerId, PlayerName, Message);
 }
 

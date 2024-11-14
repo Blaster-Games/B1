@@ -113,6 +113,10 @@ namespace GameServer
 
         public void BroadcastChat(Player sender, string message)
         {
+            // 로그: 브로드캐스트 시작
+            Console.WriteLine($"[BroadcastChat] Starting broadcast from Player {sender.PlayerId} ({sender.PlayerName})");
+            Console.WriteLine($"[BroadcastChat] Message to broadcast: {message}");
+
             S_BroadcastRoomChat packet = new S_BroadcastRoomChat()
             {
                 PlayerId = sender.PlayerId,
@@ -120,10 +124,24 @@ namespace GameServer
                 Message = message
             };
 
+            // 로그: 현재 방 인원 수
+            Console.WriteLine($"[BroadcastChat] Broadcasting to {_players.Count} players");
+
             foreach (Player p in _players)
             {
-                p.Session?.Send(packet);
+                if (p.Session != null)
+                {
+                    p.Session.Send(packet);
+                    Console.WriteLine($"[BroadcastChat] Sent to Player {p.PlayerId} ({p.PlayerName})");
+                }
+                else
+                {
+                    Console.WriteLine($"[BroadcastChat] Skipped Player {p.PlayerId} - null session");
+                }
             }
+
+            // 로그: 브로드캐스트 완료
+            Console.WriteLine($"[BroadcastChat] Broadcast complete");
         }
 
         #endregion

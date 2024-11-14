@@ -107,6 +107,12 @@ bool Handle_S_BroadcastLeaveRoom(PacketSessionRef& session, Protocol::S_Broadcas
 
 bool Handle_S_BroadcastRoomChat(PacketSessionRef& session, Protocol::S_BroadcastRoomChat& pkt)
 {
+    if (auto NetworkSystem = GetNetworkSystem(session))
+    {
+        NetworkSystem->HandleBroadcastRoomChat(pkt);
+        return true;
+    }
+
     return false;
 }
 

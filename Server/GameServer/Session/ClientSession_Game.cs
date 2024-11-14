@@ -127,11 +127,22 @@ namespace GameServer
         {
             GameRoom currentGameRoom = Player.GameRoom;
 
+            // 로그: 채팅 요청 받음
+            Console.WriteLine($"[HandleRoomChat] Received chat request from Player {Player.PlayerId} ({Player.PlayerName})");
+            Console.WriteLine($"[HandleRoomChat] Message: {reqPacket.Message}");
+
             if (currentGameRoom == null)
+            {
+                Console.WriteLine($"[HandleRoomChat] Error: Player {Player.PlayerId} is not in any room");
                 return;
+            }
+
+            // 로그: 게임룸 정보
+            Console.WriteLine($"[HandleRoomChat] GameRoom ID: {currentGameRoom.GameRoomId}");
 
             currentGameRoom.Push(() =>
             {
+                Console.WriteLine($"[HandleRoomChat] Pushing broadcast task to room {currentGameRoom.GameRoomId}");
                 currentGameRoom.BroadcastChat(Player, reqPacket.Message);
             });
         }

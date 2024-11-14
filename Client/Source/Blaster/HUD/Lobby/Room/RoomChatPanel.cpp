@@ -35,14 +35,31 @@ void URoomChatPanel::NativeDestruct()
 
 void URoomChatPanel::AddNewChatMessage(int32 PlayerId, const FString& PlayerName, const FString& Message)
 {
-    if (!RoomChatScrollBox || !ChatMessageWidgetClass) return;
+    UE_LOG(LogTemp, Log, TEXT("[AddNewChatMessage] Adding message from Player %d (%s)"), PlayerId, *PlayerName);
+
+    if (!RoomChatScrollBox)
+    {
+        UE_LOG(LogTemp, Warning, TEXT("[AddNewChatMessage] Failed - ScrollBox is null"));
+        return;
+    }
+
+    if (!ChatMessageWidgetClass)
+    {
+        UE_LOG(LogTemp, Warning, TEXT("[AddNewChatMessage] Failed - ChatMessageWidgetClass is null"));
+        return;
+    }
 
     URoomChatMessage* NewMessage = CreateWidget<URoomChatMessage>(this, ChatMessageWidgetClass);
     if (NewMessage)
     {
+        UE_LOG(LogTemp, Log, TEXT("[AddNewChatMessage] Widget created successfully"));
         NewMessage->SetChatMessage(PlayerName, Message);
         RoomChatScrollBox->AddChild(NewMessage);
         RoomChatScrollBox->ScrollToEnd();
+    }
+    else
+    {
+        UE_LOG(LogTemp, Error, TEXT("[AddNewChatMessage] Failed to create message widget"));
     }
 }
 

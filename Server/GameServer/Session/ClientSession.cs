@@ -20,7 +20,7 @@ namespace GameServer
 
         public ClientSession() 
         { 
-            Player = new Player();
+            Player = new Player(this);
         }
 
         public void Ping()
