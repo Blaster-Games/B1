@@ -35,6 +35,8 @@ void ABlasterGameMode::BeginPlay()
 		}
 	}
 
+	KillReward = CalculateKillReward();
+
 }
 
 
@@ -166,10 +168,12 @@ void ABlasterGameMode::EndRound()
 		{
 			if (ABlasterPlayerState* BPS = Cast<ABlasterPlayerState>(PS))
 			{
+				// 라운드 종료 보상 지급
+				BPS->SetMoney(BPS->GetMoney() + RoundReward);
+
 				// 버프 초기화
 				BPS->ClearBuff();
 
-				// 생존자 수 카운트
 				if (AMyBlasterCharacter* Character = Cast<AMyBlasterCharacter>(BPS->GetPawn()))
 				{
 					// 수류탄 개수 저장
@@ -197,12 +201,10 @@ void ABlasterGameMode::EndRound()
 		// 승자 결정 및 라운드 점수 업데이트
 		if (RedTeamAlive > BlueTeamAlive)
 		{
-			// 레드팀 승리
 			BlasterGS->RedTeamScores();
 		}
 		else if (BlueTeamAlive > RedTeamAlive)
 		{
-			// 블루팀 승리
 			BlasterGS->BlueTeamScores();
 		}
 	}	
@@ -260,6 +262,32 @@ bool ABlasterGameMode::IsTeamEliminated(ETeam Team) const
 }
 
 
+int32 ABlasterGameMode::GetTotalPlayerCount() const
+{
+	ABlasterGameState* BlasterGS = GetGameState<ABlasterGameState>();
+	return BlasterGS ? BlasterGS->PlayerArray.Num() : 0;
+}
+
+
+int32 ABlasterGameMode::CalculateKillReward()
+{
+	int32 TotalPlayers = GetTotalPlayerCount();
+	float RewardMultiplier = 1.0f;
+
+	// 플레이어 수가 적을수록 더 높은 보상
+	if (TotalPlayers <= 4)  // 2v2 이하
+	{
+		RewardMultiplier = 2.0f;  // 2배 보상
+	}
+	else if (TotalPlayers <= 6)  // 3v3
+	{
+		RewardMultiplier = 1.5f;  // 1.5배 보상
+	}
+	// 4v4 이상은 기본 보상
+
+	return FMath::RoundToInt(KillReward * RewardMultiplier);
+}
+
 
 bool ABlasterGameMode::ShouldRespawnPlayer() const
 {
@@ -296,6 +324,8 @@ void ABlasterGameMode::PlayerEliminated(AMyBlasterCharacter* ElimmedCharacter, A
 		}
 
 		AttackerPlayerState->AddToScore(1.f);
+		AttackerPlayerState->SetMoney(AttackerPlayerState->GetMoney() + KillReward);
+
 		BlasterGameState->UpdateTopScore(AttackerPlayerState);
 		if (BlasterGameState->TopScoringPlayers.Contains(AttackerPlayerState))
 		{

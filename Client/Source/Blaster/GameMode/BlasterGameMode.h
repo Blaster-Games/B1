@@ -62,6 +62,12 @@ protected:
 
 	float CountdownTime = 0.f;
 
+	// 돈 관련
+	int32 KillReward = 200;
+	int32 RoundReward = 500;
+	int32 GetTotalPlayerCount() const;
+	int32 CalculateKillReward();
+
 private:
 	bool ShouldRespawnPlayer() const;
 
