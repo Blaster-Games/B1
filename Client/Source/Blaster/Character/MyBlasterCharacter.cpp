@@ -488,7 +488,6 @@ void AMyBlasterCharacter::ElimTimerFinished()
 		// 처리는 ReturnToMainMenu에서 할 것임.
 		OnLeftGame.Broadcast();
 	}
-	
 }
 
 void AMyBlasterCharacter::ServerLeaveGame_Implementation()

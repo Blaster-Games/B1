@@ -134,7 +134,7 @@ private:
 	class ABlasterGameMode* BlasterGameMode;
 
 	UPROPERTY(Replicated)
-	float LevelStartingTime = 0.f;
+	float StateStartTime = 0.f;
 
 	float MatchTime = 0.f;
 	float WarmupTime = 0.f;

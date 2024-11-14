@@ -75,7 +75,7 @@ void ABlasterPlayerController::GetLifetimeReplicatedProps(TArray<FLifetimeProper
 
 	DOREPLIFETIME(ABlasterPlayerController, MatchState);
 	DOREPLIFETIME(ABlasterPlayerController, bShowTeamScores);
-	DOREPLIFETIME(ABlasterPlayerController, LevelStartingTime);
+	DOREPLIFETIME(ABlasterPlayerController, StateStartTime);
 }
 
 void ABlasterPlayerController::HideTeamScores()
@@ -313,9 +313,9 @@ void ABlasterPlayerController::ServerCheckMatchState_Implementation()
 		WarmupTime = GameMode->WarmupTime;
 		MatchTime = GameMode->MatchTime;
 		CooldownTime = GameMode->CooldownTime;
-		LevelStartingTime = GameMode->LevelStartingTime;
+		StateStartTime = GameMode->StateStartTime;
 		MatchState = GameMode->GetMatchState();
-		ClientJoinMidgame(MatchState, WarmupTime, MatchTime, CooldownTime, LevelStartingTime, bShowTeamScores);
+		ClientJoinMidgame(MatchState, WarmupTime, MatchTime, CooldownTime, StateStartTime, bShowTeamScores);
 
 	}
 }
@@ -326,7 +326,7 @@ void ABlasterPlayerController::ClientJoinMidgame_Implementation(FName StateOfMat
 	WarmupTime = Warmup;
 	MatchTime = Match;
 	CooldownTime = Cooldown;
-	LevelStartingTime = StartingTime;
+	StateStartTime = StartingTime;
 	MatchState = StateOfMatch;
 	OnMatchStateSet(MatchState, bIsTeamsMatch);
 
@@ -592,14 +592,14 @@ void ABlasterPlayerController::SetHUDTime()
 		BlasterGameMode = BlasterGameMode == nullptr ? Cast<ABlasterGameMode>(UGameplayStatics::GetGameMode(this)) : BlasterGameMode;
 		if (BlasterGameMode)
 		{
-			LevelStartingTime = BlasterGameMode->LevelStartingTime;
+			StateStartTime = BlasterGameMode->StateStartTime;
 		}
 	}
 
 	float TimeLeft = 0.f;
-	if (MatchState == MatchState::WaitingToStart) TimeLeft = WarmupTime - GetServerTime() + LevelStartingTime;
-	else if (MatchState == MatchState::InProgress) TimeLeft = WarmupTime + MatchTime - GetServerTime() + LevelStartingTime;
-	else if (MatchState == MatchState::Cooldown) TimeLeft = CooldownTime + WarmupTime + MatchTime - GetServerTime() + LevelStartingTime;
+	if (MatchState == MatchState::WaitingToStart) TimeLeft = WarmupTime - GetServerTime() + StateStartTime;
+	else if (MatchState == MatchState::InProgress) TimeLeft = MatchTime - GetServerTime() + StateStartTime;
+	else if (MatchState == MatchState::Cooldown) TimeLeft = CooldownTime - GetServerTime() + StateStartTime;
 	uint32 SecondsLeft = FMath::CeilToInt(TimeLeft);
 
 
@@ -609,7 +609,7 @@ void ABlasterPlayerController::SetHUDTime()
 		BlasterGameMode = BlasterGameMode == nullptr ? Cast<ABlasterGameMode>(UGameplayStatics::GetGameMode(this)) : BlasterGameMode;
 		if (BlasterGameMode)
 		{
-			SecondsLeft = FMath::CeilToInt(BlasterGameMode->GetCountdownTime() + LevelStartingTime);
+			SecondsLeft = FMath::CeilToInt(BlasterGameMode->GetCountdownTime() + StateStartTime);
 		}
 	}
 
@@ -696,7 +696,7 @@ void ABlasterPlayerController::OnMatchStateSet(FName State, bool bTeamsMatch)
 	ABlasterGameMode* GameMode = Cast<ABlasterGameMode>(UGameplayStatics::GetGameMode(this));
 	if (GameMode)
 	{
-		LevelStartingTime = GameMode->LevelStartingTime;
+		StateStartTime = GameMode->StateStartTime;
 	}
 
 	if (MatchState == MatchState::InProgress)
@@ -833,7 +833,16 @@ void ABlasterPlayerController::HandleCooldown()
 				BlasterHUD->AddShop();
 			}
 			BlasterHUD->Shop->ShowShop();
-			ApplyCachedScores();
+
+			// 일부러 유저들 숫자 바뀌는 것 보라고 딜레이를 줌.
+			FTimerHandle ScoreUpdateTimer;
+			GetWorldTimerManager().SetTimer(
+				ScoreUpdateTimer,
+				this,
+				&ABlasterPlayerController::ApplyCachedScores,
+				0.5f,
+				false
+			);
 		}
 
 	}

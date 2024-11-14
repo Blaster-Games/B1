@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameMode.h"
+#include "Blaster/BlasterTypes/Team.h"
 #include "BlasterGameMode.generated.h"
 
 // 사용자 지정 만들기
@@ -37,7 +38,7 @@ public:
 	UPROPERTY(EditDefaultsOnly)
 	float CooldownTime = 10.f;
 
-	float LevelStartingTime = 0.f;
+	float StateStartTime = 0.f;
 
 	bool bTeamsMatch = false;
 
@@ -51,7 +52,7 @@ protected:
 	virtual void EndRound();
 
 	void AllPlayerApplyBuffs();
-
+	bool IsTeamEliminated(ETeam Team) const;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Game Rules")
 	bool bIsRoundBased = false;

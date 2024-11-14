@@ -34,10 +34,6 @@ void ABlasterGameMode::BeginPlay()
 			BlasterGS->SetMaxRounds(MaxRounds);
 		}
 	}
-	// Blaster 게임모드는 게임 시작 맵이 아닌 Blaster 맵에서만 사용됨.
-	// -> 따라서 게임을 시작할 때부터 Blaster 맵에 실제로 들어가기까지 얼마나 많은 시간이 걸렸는지 알 수 있음.
-	LevelStartingTime = GetWorld()->GetTimeSeconds();
-
 
 }
 
@@ -46,9 +42,11 @@ void ABlasterGameMode::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	float CurrentTime = GetWorld()->GetTimeSeconds();
+
 	if (MatchState == MatchState::WaitingToStart)
 	{
-		CountdownTime = WarmupTime - GetWorld()->GetTimeSeconds() + LevelStartingTime;
+		CountdownTime = WarmupTime - (CurrentTime - StateStartTime);
 
 		if (CountdownTime <= 0.f)
 		{
@@ -57,7 +55,7 @@ void ABlasterGameMode::Tick(float DeltaTime)
 	}
 	else if (MatchState == MatchState::InProgress)
 	{
-		CountdownTime = WarmupTime + MatchTime - GetWorld()->GetTimeSeconds() + LevelStartingTime;
+		CountdownTime = MatchTime - (CurrentTime - StateStartTime);
 		if (CountdownTime <= 0.f)
 		{
 			if (bIsRoundBased)
@@ -72,7 +70,7 @@ void ABlasterGameMode::Tick(float DeltaTime)
 	}
 	else if (MatchState == MatchState::Cooldown)
 	{
-		CountdownTime = CooldownTime + WarmupTime + MatchTime - GetWorld()->GetTimeSeconds() + LevelStartingTime;
+		CountdownTime = CooldownTime - (CurrentTime - StateStartTime);
 		if (CountdownTime <= 0.f)
 		{
 			if (bIsRoundBased)
@@ -99,6 +97,8 @@ void ABlasterGameMode::Tick(float DeltaTime)
 void ABlasterGameMode::OnMatchStateSet()
 {
 	Super::OnMatchStateSet();
+
+	StateStartTime = GetWorld()->GetTimeSeconds();
 
 	// 게임에 있는 모든 플레이어 컨트롤러를 가져와서 매치 상태를 알릴 수 있음.
 	// 플레이어 컨트롤러를 모두 모으려면 Iterator를 사용해야됨.
@@ -148,7 +148,6 @@ void ABlasterGameMode::StartNewRound()
 		BlasterGS->SetCurrentRound(NewRound);
 	}
 
-	LevelStartingTime = GetWorld()->GetTimeSeconds();
 	ResetAllPlayers();
 	AllPlayerApplyBuffs();
 	
@@ -157,28 +156,56 @@ void ABlasterGameMode::StartNewRound()
 
 void ABlasterGameMode::EndRound()
 {
-	// 라운드 종료 처리 (승자 결정 등)
 	if (ABlasterGameState* BlasterGS = GetGameState<ABlasterGameState>())
 	{
-		// 모든 플레이어의 버프 초기화
+		// 팀별 생존자 수 카운트
+		int32 RedTeamAlive = 0;
+		int32 BlueTeamAlive = 0;
+
 		for (APlayerState* PS : BlasterGS->PlayerArray)
 		{
 			if (ABlasterPlayerState* BPS = Cast<ABlasterPlayerState>(PS))
 			{
+				// 버프 초기화
 				BPS->ClearBuff();
 
-				// 해당 플레이어의 캐릭터를 찾아서 수류탄 개수 저장
+				// 생존자 수 카운트
 				if (AMyBlasterCharacter* Character = Cast<AMyBlasterCharacter>(BPS->GetPawn()))
 				{
+					// 수류탄 개수 저장
 					if (UCombatComponent* Combat = Character->GetCombat())
 					{
 						Combat->SaveGrenadeCount();
 					}
+
+					// 살아있는 팀원 카운트
+					if (!Character->IsElimmed())
+					{
+						if (BPS->GetTeam() == ETeam::ET_RedTeam)
+						{
+							RedTeamAlive++;
+						}
+						else if (BPS->GetTeam() == ETeam::ET_BlueTeam)
+						{
+							BlueTeamAlive++;
+						}
+					}
 				}
 			}
 		}
-	}
-	
+
+		// 승자 결정 및 라운드 점수 업데이트
+		if (RedTeamAlive > BlueTeamAlive)
+		{
+			// 레드팀 승리
+			BlasterGS->RedTeamScores();
+		}
+		else if (BlueTeamAlive > RedTeamAlive)
+		{
+			// 블루팀 승리
+			BlasterGS->BlueTeamScores();
+		}
+	}	
 	SetMatchState(MatchState::Cooldown);
 }
 
@@ -208,6 +235,32 @@ void ABlasterGameMode::AllPlayerApplyBuffs()
 	}
 }
 
+bool ABlasterGameMode::IsTeamEliminated(ETeam Team) const
+{
+	ABlasterGameState* BlasterGS = GetGameState<ABlasterGameState>();
+	if (!BlasterGS) return false;
+
+	for (APlayerState* PS : BlasterGS->PlayerArray)
+	{
+		if (ABlasterPlayerState* BPS = Cast<ABlasterPlayerState>(PS))
+		{
+			if (BPS->GetTeam() == Team)
+			{
+				if (AMyBlasterCharacter* Character = Cast<AMyBlasterCharacter>(BPS->GetPawn()))
+				{
+					if (!Character->IsElimmed())
+					{
+						return false;
+					}
+				}
+			}
+		}
+	}
+	return true;
+}
+
+
+
 bool ABlasterGameMode::ShouldRespawnPlayer() const
 {
 	// 라운드 기반 게임 이고 매치가 진행 중이면 리스폰하지 않음
@@ -231,7 +284,6 @@ void ABlasterGameMode::PlayerEliminated(AMyBlasterCharacter* ElimmedCharacter, A
 {
 	ABlasterPlayerState* AttackerPlayerState = AttackerController ? Cast<ABlasterPlayerState>(AttackerController->PlayerState) : nullptr;
 	ABlasterPlayerState* VictimPlayerState = VictimController ? Cast<ABlasterPlayerState>(VictimController->PlayerState) : nullptr;
-
 	ABlasterGameState* BlasterGameState = GetGameState<ABlasterGameState>();
 
 	if (AttackerPlayerState && AttackerPlayerState != VictimPlayerState && BlasterGameState)
@@ -285,6 +337,17 @@ void ABlasterGameMode::PlayerEliminated(AMyBlasterCharacter* ElimmedCharacter, A
 		if (BlasterPlayer && AttackerPlayerState && VictimPlayerState)
 		{
 			BlasterPlayer->BroadcastElim(AttackerPlayerState, VictimPlayerState);
+		}
+	}
+
+	if (bIsRoundBased)
+	{
+		bool bRedTeamEliminated = IsTeamEliminated(ETeam::ET_RedTeam);
+		bool bBlueTeamEliminated = IsTeamEliminated(ETeam::ET_BlueTeam);
+
+		if (bRedTeamEliminated || bBlueTeamEliminated)
+		{
+			EndRound();
 		}
 	}
 }
