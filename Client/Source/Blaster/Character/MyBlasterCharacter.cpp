@@ -243,11 +243,17 @@ void AMyBlasterCharacter::MulticastElim_Implementation(bool bPlayerLeftGame)
 	// 캐릭터가 죽었을 때, 같은 팀 플레이어를 관전하도록 설정
 	if (!bPlayerLeftGame)
 	{
-		if (BlasterPlayerController && HasAuthority())
+		if (ABlasterGameMode* BlasterGM = Cast<ABlasterGameMode>(GetWorld()->GetAuthGameMode()))
 		{
-			InitializeTeamSpectating();
+			if (BlasterGM->IsRoundBased())  // 라운드 기반일 때만
+			{
+				if (BlasterPlayerController && HasAuthority())
+				{
+					InitializeTeamSpectating();
+				}
+				UpdateSpectatorsOnDeath();  // 이 캐릭터를 보고 있던 관전자들 업데이트
+			}
 		}
-		UpdateSpectatorsOnDeath();  // 이 캐릭터를 보고 있던 관전자들 업데이트
 	}
 
 	// Spawn elim bot
@@ -560,19 +566,13 @@ void AMyBlasterCharacter::SetSpawnPoint()
 		{
 			ATeamPlayerStart* ChosenPlayerStart = TeamPlayerStarts[FMath::RandRange(0, TeamPlayerStarts.Num() - 1)];
 			UArrowComponent* ArrowComponentStart = ChosenPlayerStart->FindComponentByClass<UArrowComponent>();
-			// 랜덤 방향으로 바라보는 것을 방지
 			if (ArrowComponentStart)
 			{
-				SetActorLocationAndRotation(
-					ChosenPlayerStart->GetActorLocation(),
-					ArrowComponentStart->GetComponentRotation()
-				);
+				SetActorLocationAndRotation(ChosenPlayerStart->GetActorLocation(), ArrowComponentStart->GetComponentRotation());
 			}
 			else
 			{
-				SetActorLocationAndRotation(
-					ChosenPlayerStart->GetActorLocation(),
-					ChosenPlayerStart->GetActorRotation());
+				SetActorLocationAndRotation(ChosenPlayerStart->GetActorLocation(), ChosenPlayerStart->GetActorRotation());
 			}
 		}
 	}

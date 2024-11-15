@@ -45,7 +45,8 @@ public:
 protected:
 	virtual void BeginPlay() override;
 	virtual void OnMatchStateSet() override;
-
+	// 처음 스폰 위치가 맘에 안들어서 해당 함수를 오버라이딩 함.
+	virtual void RestartPlayer(AController* NewPlayer) override;
 	// 라운드 관련
 	virtual void ResetAllPlayers();
 	virtual void StartNewRound();
@@ -68,9 +69,9 @@ protected:
 	int32 GetTotalPlayerCount() const;
 	int32 CalculateKillReward();
 
-private:
 	bool ShouldRespawnPlayer() const;
-
+	AActor* FindSafestSpawnPoint();
+private:
 public:
 	FORCEINLINE float GetCountdownTime() const { return CountdownTime; }
 	FORCEINLINE bool IsRoundBased() const { return bIsRoundBased; }

@@ -93,11 +93,9 @@ void UCombatComponent::ServerSaveGrenadeCount_Implementation()
 void UCombatComponent::BeginPlay()
 {
 	Super::BeginPlay();
-
 	if (Character)
 	{
 		Character->GetCharacterMovement()->MaxWalkSpeed = BaseWalkSpeed;
-
 		if (Character->GetFollowCamera())
 		{
 			DefaultFOV = Character->GetFollowCamera()->FieldOfView;
@@ -107,10 +105,18 @@ void UCombatComponent::BeginPlay()
 		{
 			InitializeCarriedAmmo();
 		}
+
+		// 이거 아니면 캐릭터의 pollInit와 같이 처리를 해주면 좋긴할 듯!!!! 
+		// PlayerState 설정 대기를 위한 딜레이
+		FTimerHandle GrenadesTimer;
+		GetWorld()->GetTimerManager().SetTimer(
+			GrenadesTimer,
+			this,
+			&UCombatComponent::InitializeGrenades,
+			0.1f,
+			false
+		);
 	}
-
-	InitializeGrenades();
-
 }
 
 void UCombatComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
@@ -870,21 +876,11 @@ void UCombatComponent::InitializeGrenades()
 {
 	if (Character && Character->HasAuthority())
 	{
-		// 약간의 딜레이 후 초기화
-		FTimerHandle TimerHandle;
-		GetWorld()->GetTimerManager().SetTimer(
-			TimerHandle,
-			[this]()
-			{
-				if (ABlasterPlayerState* PS = Cast<ABlasterPlayerState>(Character->GetPlayerState()))
-				{
-					Grenades = PS->GetThrowableCount(EThrowType::ETT_Grenade);
-					UpdateHUDGrenades();  // Grenades 설정 후 HUD 업데이트
-				}
-			},
-			0.1f,
-			false
-		);
+		if (ABlasterPlayerState* PS = Cast<ABlasterPlayerState>(Character->GetPlayerState()))
+		{
+			Grenades = PS->GetThrowableCount(EThrowType::ETT_Grenade);
+			UpdateHUDGrenades();
+		}
 	}
 	else if (Character && !Character->HasAuthority())
 	{

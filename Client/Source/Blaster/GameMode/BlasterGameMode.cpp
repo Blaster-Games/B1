@@ -115,6 +115,29 @@ void ABlasterGameMode::OnMatchStateSet()
 	}
 }
 
+
+void ABlasterGameMode::RestartPlayer(AController* NewPlayer)
+{
+	if (NewPlayer == nullptr || NewPlayer->IsPendingKillPending())
+	{
+		return;
+	}
+
+	AActor* SpawnPoint = FindSafestSpawnPoint();
+	if (SpawnPoint == nullptr)
+	{
+		// 안전한 스폰 포인트를 찾지 못했다면 이전 스폰 포인트 사용
+		if (NewPlayer->StartSpot != nullptr)
+		{
+			SpawnPoint = NewPlayer->StartSpot.Get();
+			UE_LOG(LogGameMode, Warning, TEXT("RestartPlayer: Safe spawn point not found, using last start spot"));
+		}
+	}
+
+	RestartPlayerAtPlayerStart(NewPlayer, SpawnPoint);
+}
+
+// 이것도 현재 접속하고 있는 애들만 리스폰을 시키도록 변경 필요.
 void ABlasterGameMode::ResetAllPlayers()
 {
 	for (FConstPlayerControllerIterator It = GetWorld()->GetPlayerControllerIterator(); It; ++It)
@@ -138,7 +161,6 @@ void ABlasterGameMode::ResetAllPlayers()
 		}
 	}
 
-	// 여기서 컴포넌트 초기화도 해줘야 된다???
 }
 
 void ABlasterGameMode::StartNewRound()
@@ -396,12 +418,61 @@ void ABlasterGameMode::RequestRespawn(ACharacter* ElimmedCharacter, AController*
 	}
 	if (ElimmedController)
 	{
-		// 모든 actor를 가져오고 월드의 모든 플레이서 시작에 대한 포인터로 해당 배열을 채울 것임.
-		TArray<AActor*> PlayerStarts;
-		UGameplayStatics::GetAllActorsOfClass(this, APlayerStart::StaticClass(), PlayerStarts);
-		int32 Selection = FMath::RandRange(0, PlayerStarts.Num() - 1);
-		RestartPlayerAtPlayerStart(ElimmedController, PlayerStarts[Selection]);
+		AActor* SpawnPoint = FindSafestSpawnPoint();
+		RestartPlayerAtPlayerStart(ElimmedController, SpawnPoint);
 	}
+}
+
+AActor* ABlasterGameMode::FindSafestSpawnPoint()
+{
+	TArray<AActor*> PlayerStarts;
+	UGameplayStatics::GetAllActorsOfClass(this, APlayerStart::StaticClass(), PlayerStarts);
+
+	if (PlayerStarts.Num() == 0) return nullptr;
+
+	// 안전한 스폰 포인트들을 저장할 배열
+	TArray<AActor*> SafeSpawnPoints;
+	const float SafeRadius = 1000.f;
+
+	// 각 스폰 포인트 검사
+	for (AActor* Start : PlayerStarts)
+	{
+		bool bIsSafe = true;
+
+		// 주변 캐릭터 체크
+		TArray<AActor*> NearbyCharacters;
+		UGameplayStatics::GetAllActorsOfClass(this, AMyBlasterCharacter::StaticClass(), NearbyCharacters);
+
+		for (AActor* Actor : NearbyCharacters)
+		{
+			AMyBlasterCharacter* Character = Cast<AMyBlasterCharacter>(Actor);
+			if (!Character || Character->IsElimmed()) continue;
+
+			// 거리 계산
+			float Distance = FVector::Dist(Start->GetActorLocation(), Character->GetActorLocation());
+			if (Distance < SafeRadius)
+			{
+				bIsSafe = false;
+				break;
+			}
+		}
+
+		if (bIsSafe)
+		{
+			SafeSpawnPoints.Add(Start);
+		}
+	}
+
+	// 안전한 스폰 포인트 중 랜덤 선택
+	if (SafeSpawnPoints.Num() > 0)
+	{
+		int32 Selection = FMath::RandRange(0, SafeSpawnPoints.Num() - 1);
+		return SafeSpawnPoints[Selection];
+	}
+
+	// 안전한 지점이 없다면 기존처럼 랜덤 선택
+	int32 Selection = FMath::RandRange(0, PlayerStarts.Num() - 1);
+	return PlayerStarts[Selection];
 }
 
 // 떠난 플레이어의 상태 정보를 저장하는 객체를 가리키는 포인터
