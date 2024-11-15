@@ -1,0 +1,36 @@
+syntax = "proto3";
+
+package Protocol;
+option csharp_namespace = "Google.Protobuf.Protocol";
+
+import "Enum.proto";
+
+message PlayerInfo {
+    int32 playerId = 1;       // 게임 세션용 임시 ID
+    string playerName = 2;     // 플레이어 이름
+    bool isHost = 3;           // 방장 여부
+    ETeamType team = 4;         // 팀전에서 사용
+}
+
+// 로비에서 방 목록 표시용 (간단한 정보)
+message RoomListItemInfo {
+    int32 roomId = 1;
+    string roomName = 2;
+    EGameMode roomType = 3;
+    int32 currentPlayers = 4;
+    int32 maxPlayers = 5;    // 최대 인원 추가
+    ERoomState state = 6;
+    string mapName = 7;
+}
+
+// 방 내부에서 사용할 상세 정보
+message RoomDetailInfo {
+    int32 roomId = 1;
+    string roomName = 2;
+    EGameMode roomType = 3;
+    int32 maxPlayers = 4;
+    repeated PlayerInfo players = 5;    // 참가자 상세 정보
+    ERoomState state = 6;
+    string mapName = 7;
+    int32 hostPlayerId = 8;   // 방장 ID
+}
