@@ -77,6 +77,11 @@ bool Handle_S_SelectRoomRes(PacketSessionRef& session, Protocol::S_SelectRoomRes
 
 bool Handle_S_CreateRoomRes(PacketSessionRef& session, Protocol::S_CreateRoomRes& pkt)
 {
+    if (auto NetworkSystem = GetNetworkSystem(session))
+    {
+        NetworkSystem->HandleCreateRoomRes(pkt);
+        return true;
+    }
     return false;
 }
 

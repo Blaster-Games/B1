@@ -20,7 +20,9 @@ namespace GameServer
 
         public static void C_CreateRoomReqHandler(PacketSession session, IMessage packet)
         {
-            throw new NotImplementedException();
+            C_CreateRoomReq reqPacket = (C_CreateRoomReq)packet;
+            ClientSession clientSession = (ClientSession)session;
+            clientSession.HandleCreateRoomReq(reqPacket);
         }
 
         public static void C_EndGameReqHandler(PacketSession session, IMessage packet)

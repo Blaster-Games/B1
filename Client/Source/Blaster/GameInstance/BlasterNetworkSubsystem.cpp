@@ -222,6 +222,71 @@ void UBlasterNetworkSubsystem::HandleRoomListRes(Protocol::S_RoomListRes& packet
     // 델리게이트를 통해 변환된 데이터 전달
     OnRoomListResponse.Broadcast(Rooms);
 }
+
+void UBlasterNetworkSubsystem::SendCreateRoomReq(const FString& Title, EGameMode GameMode, int32 MaxPlayers)
+{
+    Protocol::C_CreateRoomReq CreateRoomPacket;
+    CreateRoomPacket.set_mapname("temp map");
+    CreateRoomPacket.set_title(TCHAR_TO_UTF8(*Title));
+    CreateRoomPacket.set_mode(static_cast<Protocol::EGameMode>(GameMode));
+    CreateRoomPacket.set_maxplayers(MaxPlayers);
+
+    SendBufferRef SendBuffer = ClientPacketHandler::MakeSendBuffer(CreateRoomPacket);
+    SendPacket(SendBuffer);
+}
+
+void UBlasterNetworkSubsystem::HandleCreateRoomRes(Protocol::S_CreateRoomRes& packet)
+{
+    UE_LOG(LogTemp, Log, TEXT("[HandleCreateRoomRes] Started processing packet"));
+
+    bool Success = packet.success();
+    UE_LOG(LogTemp, Log, TEXT("[HandleCreateRoomRes] Success: %s"), Success ? TEXT("true") : TEXT("false"));
+
+    FRoomDetailInfo RoomInfo;
+    if (Success && packet.has_room())
+    {
+        UE_LOG(LogTemp, Log, TEXT("[HandleCreateRoomRes] Packet has room info"));
+        const auto& protoRoom = packet.room();
+
+        // 기본 정보 복사
+        RoomInfo.RoomId = protoRoom.roomid();
+        RoomInfo.RoomName = UTF8_TO_TCHAR(protoRoom.roomname().c_str());
+        RoomInfo.RoomType = static_cast<EGameMode>(protoRoom.roomtype());
+        RoomInfo.MaxPlayers = protoRoom.maxplayers();
+        RoomInfo.State = static_cast<ERoomState>(protoRoom.state());
+        RoomInfo.MapName = UTF8_TO_TCHAR(protoRoom.mapname().c_str());
+        RoomInfo.HostPlayerId = protoRoom.hostplayerid();
+
+        UE_LOG(LogTemp, Log, TEXT("[HandleCreateRoomRes] Room Details:"));
+        UE_LOG(LogTemp, Log, TEXT("\tRoom ID: %d"), RoomInfo.RoomId);
+        UE_LOG(LogTemp, Log, TEXT("\tRoom Name: %s"), *RoomInfo.RoomName);
+        UE_LOG(LogTemp, Log, TEXT("\tMax Players: %d"), RoomInfo.MaxPlayers);
+        UE_LOG(LogTemp, Log, TEXT("\tHost Player ID: %d"), RoomInfo.HostPlayerId);
+
+        // 플레이어 정보 복사
+        for (const auto& protoPlayer : protoRoom.players())
+        {
+            FPlayerInfo PlayerInfo;
+            PlayerInfo.PlayerId = protoPlayer.playerid();
+            PlayerInfo.PlayerName = UTF8_TO_TCHAR(protoPlayer.playername().c_str());
+            PlayerInfo.IsHost = protoPlayer.ishost();
+            PlayerInfo.Team = static_cast<ETeamType>(protoPlayer.team());
+            RoomInfo.Players.Add(PlayerInfo);
+
+            UE_LOG(LogTemp, Log, TEXT("\tPlayer: ID=%d, Name=%s, IsHost=%s"),
+                PlayerInfo.PlayerId,
+                *PlayerInfo.PlayerName,
+                PlayerInfo.IsHost ? TEXT("true") : TEXT("false"));
+        }
+    }
+    else
+    {
+        UE_LOG(LogTemp, Warning, TEXT("[HandleCreateRoomRes] No room info in packet"));
+    }
+
+    OnConfirmCreateRoomResponse.Broadcast(Success, RoomInfo);
+}
+
 void UBlasterNetworkSubsystem::SendJoinRoomReq(int roomId)
 {
     Protocol::C_JoinRoomReq JoinRoomPacket;

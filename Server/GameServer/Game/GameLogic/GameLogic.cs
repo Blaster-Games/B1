@@ -37,10 +37,6 @@ namespace GameServer
             Console.WriteLine("일반 생성자 실행 시작");
             _lobbyRoom = new LobbyRoom();
             _lobbyRoom.Init();
-
-            Console.WriteLine($"더미룸 생성 전 Dictionary Count: {_rooms.Count}");
-            CreateDummyRooms();
-            Console.WriteLine($"더미룸 생성 후 Dictionary Count: {_rooms.Count}");
         }
 
         #region 룸 관리
@@ -69,19 +65,16 @@ namespace GameServer
             return roomList;
         }
 
-        public GameRoom AddRoom(GameRoom room)
-        {
-            Console.WriteLine($"룸 생성! 이름: {room.RoomName}, 현재 총 방 개수: {_rooms.Count}");
-            lock (_roomLock)
-            {
-                room.GameRoomId = _roomIdGenerator;
-                _rooms.Add(_roomIdGenerator, room);
-                _roomIdGenerator++;
-                _updateQueue.Enqueue(room);
-                Console.WriteLine($"룸 추가 완료! ID: {room.GameRoomId}, 추가 후 총 방 개수: {_rooms.Count}");
-                return room;
-            }
-        }
+        public GameRoom AddRoom(GameRoom room, Action<GameRoom> callback)
+{
+    room.GameRoomId = _roomIdGenerator;
+    _rooms.Add(_roomIdGenerator, room);
+    _roomIdGenerator++;
+    _updateQueue.Enqueue(room);
+    
+    callback?.Invoke(room);
+    return room;
+}
 
         public void RemoveRoom(int roomId)
         {
@@ -95,7 +88,6 @@ namespace GameServer
             }
         }
 
-        // 락 걸고 써야한다
         public GameRoom FindRoom(int roomId)
         {
             if (_rooms.TryGetValue(roomId, out GameRoom room))
@@ -107,20 +99,19 @@ namespace GameServer
 
         public void TryEnterRoom(ClientSession session, int roomId, Action<bool> callback)
         {
-            GameRoom room;
-            lock (_roomLock)
+            Push(() =>
             {
-                room = FindRoom(roomId);
+                GameRoom room = FindRoom(roomId);
                 if (room == null)
                 {
                     callback.Invoke(false);
                     return;
                 }
-            }
 
-            room.Push(() =>
-            {
-                room.EnterRoom(session, callback);
+                room.Push(() =>
+                {
+                    room.EnterRoom(session, callback);
+                });
             });
         }
 
@@ -193,22 +184,5 @@ namespace GameServer
             }
         }
         #endregion
-
-        private void CreateDummyRooms()
-        {
-            for (int i = 1; i <= 3; i++)
-            {
-                GameRoom room = new GameRoom();
-                room.Init();
-                room.RoomName = $"Test Room {i}";
-                room.GameMode = EGameMode.ModeTeamdeathmatch;
-                room.MaxPlayers = 8;
-                room.MapName = $"Map_{i}";
-                room.State = ERoomState.StateWaiting;
-
-                // 모든 속성 설정 후 AddRoom
-                AddRoom(room);
-            }
-        }
     }
 }

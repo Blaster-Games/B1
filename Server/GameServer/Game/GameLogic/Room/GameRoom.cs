@@ -37,6 +37,12 @@ namespace GameServer
 
         public void EnterRoom(ClientSession session, Action<bool> callback)
         {
+            if (State == ERoomState.StateTerminated)
+            {
+                callback.Invoke(false);
+                return;
+            }
+
             if (_players.Count >= MaxPlayers)
             {
                 callback.Invoke(false);
@@ -186,6 +192,17 @@ namespace GameServer
             }));
 
             return detail;
+        }
+
+        public List<PlayerInfo> GetPlayerInfos()
+        {
+            return _players.Select(p => new PlayerInfo
+            {
+                PlayerId = p.PlayerId,
+                PlayerName = p.PlayerName,
+                IsHost = p.IsHost,
+                Team = p.Team
+            }).ToList();
         }
         #endregion
     }

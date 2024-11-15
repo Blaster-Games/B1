@@ -1,16 +1,16 @@
 #include "RoomList.h"
 #include "GameInstance/BlasterNetworkSubsystem.h"
+#include "CreateRoom.h"
+#include "Room/RoomDetail.h"
 
 void URoomList::NativeConstruct()
 {
     Super::NativeConstruct();
-
     // 버튼 클릭 이벤트 바인딩
     if (CreateRoomButton)
     {
         CreateRoomButton->OnClicked.AddDynamic(this, &URoomList::OnCreateRoomClicked);
     }
-
     if (UpdateRoomItemButton)
     {
         UpdateRoomItemButton->OnClicked.AddDynamic(this, &URoomList::OnUpdateRoomItemClicked);
@@ -28,10 +28,23 @@ void URoomList::NativeConstruct()
 
 void URoomList::OnCreateRoomClicked()
 {
-    // TODO: 방 생성 팝업 창 띄우기
+    UCreateRoom* NewCreateRoomWidget = CreateWidget<UCreateRoom>(GetWorld(), CreateRoomWidgetClass);
+    if (NewCreateRoomWidget)
+    {
+        NewCreateRoomWidget->AddToViewport(100);
+        if (NewCreateRoomWidget)
+        {
+            NewCreateRoomWidget->OnRoomCreated.AddDynamic(this, &URoomList::HandleCreateRoomResponse);
+        }
+    }
 }
 
 void URoomList::OnUpdateRoomItemClicked()
+{
+    RequestUpdateRoomList();
+}
+
+void URoomList::RequestUpdateRoomList()
 {
     if (UGameInstance* GameInstance = GetGameInstance())
     {
@@ -39,6 +52,31 @@ void URoomList::OnUpdateRoomItemClicked()
         {
             NetworkSubsystem->SendRoomListReq();
         }
+    }
+}
+
+void URoomList::HandleCreateRoomResponse(const FRoomDetailInfo& RoomInfo)
+{
+    UE_LOG(LogTemp, Log, TEXT("Lobby: ShowRoomWidget called"));
+    RemoveFromParent();
+
+    if (RoomDetailWidgetClass)
+    {
+        if (URoomDetail* RoomWidget = CreateWidget<URoomDetail>(GetWorld(), RoomDetailWidgetClass))
+        {
+            RoomWidget->UpdateRoomInfo(RoomInfo);
+
+            UE_LOG(LogTemp, Log, TEXT("Lobby: Created RoomWidget and updated room info"));
+            RoomWidget->AddToViewport();
+        }
+        else
+        {
+            UE_LOG(LogTemp, Error, TEXT("Failed to Create RoomWidget"));
+        }
+    }
+    else
+    {
+        UE_LOG(LogTemp, Error, TEXT("RoomWidgetClass is not set!"));
     }
 }
 
@@ -82,17 +120,8 @@ URoomItem* URoomList::AddRoom(const FRoomListItemInfo& RoomInfo)
             RoomInfo.MapName
         );
 
-        // 바인딩 전 로그
-        UE_LOG(LogTemp, Log, TEXT("Attempting to bind double click event for Room ID: %d"), RoomInfo.RoomId);
-
         // 더블클릭 이벤트 바인딩
         NewRoomItem->OnRoomItemClicked.AddDynamic(this, &URoomList::HandleRoomItemDoubleClicked);
-
-        // 바인딩 후 델리게이트 상태 확인
-        bool bIsBound = NewRoomItem->OnRoomItemClicked.IsBound();
-        UE_LOG(LogTemp, Log, TEXT("Room ID: %d - Event Binding Status: %s"),
-            RoomInfo.RoomId,
-            bIsBound ? TEXT("Success") : TEXT("Failed"));
 
         RoomListScrollBox->AddChild(NewRoomItem);
         RoomItems.Add(NewRoomItem);
@@ -110,7 +139,6 @@ URoomItem* URoomList::AddRoom(const FRoomListItemInfo& RoomInfo)
 void URoomList::ClearRoomList()
 {
     if (!RoomListScrollBox) return;
-
     RoomListScrollBox->ClearChildren();
     RoomItems.Empty();
 }

@@ -72,6 +72,61 @@ namespace GameServer
             Send(resPacket);
         }
 
+        public void HandleCreateRoomReq(C_CreateRoomReq reqPacket)
+        {
+            Console.WriteLine($"[HandleCreateRoomReq] 방 생성 요청 받음 - 제목: {reqPacket.Title}, 모드: {reqPacket.Mode}, 최대인원: {reqPacket.MaxPlayers}");
+
+            GameRoom room = new GameRoom();
+            room.Init();
+            room.RoomName = reqPacket.Title;
+            room.GameMode = reqPacket.Mode;
+            room.MaxPlayers = reqPacket.MaxPlayers;
+            room.MapName = reqPacket.MapName;
+            room.State = ERoomState.StateWaiting;
+
+            Console.WriteLine($"[HandleCreateRoomReq] 방 객체 생성 완료 - 이름: {room.RoomName}, 상태: {room.State}");
+
+            GameLogic.Instance.Push(() =>
+            {
+                Console.WriteLine("[HandleCreateRoomReq] GameLogic Push 시작");
+                GameLogic.Instance.AddRoom(room, (createdRoom) =>
+                {
+                    Console.WriteLine($"[HandleCreateRoomReq] 방 추가 완료 - 방 ID: {createdRoom.GameRoomId}");
+
+                    createdRoom.Push(() =>
+                    {
+                        Console.WriteLine($"[HandleCreateRoomReq] 방 입장 처리 시작 - 방 ID: {createdRoom.GameRoomId}");
+                        createdRoom.EnterRoom(this, (success) =>
+                        {
+                            Console.WriteLine($"[HandleCreateRoomReq] 방 입장 결과 - 성공여부: {success}");
+
+                            S_CreateRoomRes resPacket = new S_CreateRoomRes()
+                            {
+                                Success = success,
+                                Room = new RoomDetailInfo()
+                                {
+                                    RoomId = createdRoom.GameRoomId,
+                                    RoomName = createdRoom.RoomName,
+                                    RoomType = createdRoom.GameMode,
+                                    MaxPlayers = createdRoom.MaxPlayers,
+                                    State = createdRoom.State,
+                                    MapName = createdRoom.MapName,
+                                    HostPlayerId = createdRoom.Host?.PlayerId ?? 0,
+                                    Players = { createdRoom.GetPlayerInfos() }
+                                }
+                            };
+
+                            Console.WriteLine($"[HandleCreateRoomReq] 응답 패킷 전송 - 방 ID: {resPacket.Room.RoomId}, " +
+                                $"호스트 ID: {resPacket.Room.HostPlayerId}, " +
+                                $"플레이어 수: {resPacket.Room.Players.Count}");
+
+                            this.Send(resPacket);
+                        });
+                    });
+                });
+            });
+        }
+
         public void HandleJoinRoomReq(C_JoinRoomReq reqPacket)
         {
             Console.WriteLine($"[HandleJoinRoomReq] Received request for RoomId: {reqPacket.RoomId}");
