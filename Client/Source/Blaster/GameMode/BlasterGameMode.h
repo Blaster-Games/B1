@@ -71,7 +71,9 @@ protected:
 
 	bool ShouldRespawnPlayer() const;
 	AActor* FindSafestSpawnPoint();
+
 private:
+	void CheckWeaponSlots();
 public:
 	FORCEINLINE float GetCountdownTime() const { return CountdownTime; }
 	FORCEINLINE bool IsRoundBased() const { return bIsRoundBased; }

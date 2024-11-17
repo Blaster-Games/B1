@@ -5,6 +5,7 @@
 #include "Blaster/PlayerController/BlasterPlayerController.h"
 #include "Blaster/Character/MyBlasterCharacter.h"
 #include "Blaster/PlayerState/BlasterPlayerState.h"
+#include "Blaster/GameState/BlasterGameState.h"
 
 UShopComponent::UShopComponent()
 {
@@ -112,6 +113,7 @@ void UShopComponent::ServerThrowablePurchase_Implementation(const FThrowData& Th
     if (Controller)
     {
         PlayerState = PlayerState == nullptr ? Cast<ABlasterPlayerState>(Controller->PlayerState) : PlayerState;
+        BlasterGameState = BlasterGameState == nullptr ? Cast<ABlasterGameState>(GetWorld()->GetGameState()) : BlasterGameState;
     }
 
     if (!PlayerState) return;
@@ -123,6 +125,8 @@ void UShopComponent::ServerThrowablePurchase_Implementation(const FThrowData& Th
         PlayerState->SetMoney(PlayerState->GetMoney() - ThrowData.Price);
         // 수류탄 추가
         PlayerState->AddToThrowableCount(ThrowData.ThrowType, 1);
+        // 구매 통계 추가
+        BlasterGameState->AddThrowablePurchase(ThrowData.ThrowType, 1);
     }
    
 }
@@ -133,6 +137,7 @@ void UShopComponent::ServerBuffPurchase_Implementation(const FBuffData& BuffData
     if (Controller)
     {
         PlayerState = PlayerState == nullptr ? Cast<ABlasterPlayerState>(Controller->PlayerState) : PlayerState;
+        BlasterGameState = BlasterGameState == nullptr ? Cast<ABlasterGameState>(GetWorld()->GetGameState()) : BlasterGameState;
     }
 
     if (!PlayerState) return;
@@ -150,6 +155,8 @@ void UShopComponent::ServerBuffPurchase_Implementation(const FBuffData& BuffData
         PlayerState->SetMoney(PlayerState->GetMoney() - BuffData.Price);
         // 버프 추가
         PlayerState->AddBuff(BuffData.BuffType);
+        // 구매 통계 추가
+        BlasterGameState->AddBuffPurchase(BuffData.BuffType);
     }
 }
 

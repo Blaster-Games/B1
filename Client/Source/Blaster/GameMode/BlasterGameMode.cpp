@@ -11,6 +11,7 @@
 #include "Blaster/BlasterComponents/BuffComponent.h"
 #include "Blaster/BlasterComponents/CombatComponent.h"
 #include "GameFramework/GameState.h" 
+#include "Blaster/Weapon/WeaponTypes.h"
 
 
 namespace MatchState
@@ -174,7 +175,7 @@ void ABlasterGameMode::StartNewRound()
 
 	ResetAllPlayers();
 	AllPlayerApplyBuffs();
-	
+	CheckWeaponSlots();
 	SetMatchState(MatchState::InProgress);
 }
 
@@ -473,6 +474,33 @@ AActor* ABlasterGameMode::FindSafestSpawnPoint()
 	// 안전한 지점이 없다면 기존처럼 랜덤 선택
 	int32 Selection = FMath::RandRange(0, PlayerStarts.Num() - 1);
 	return PlayerStarts[Selection];
+}
+
+void ABlasterGameMode::CheckWeaponSlots()
+{
+	ABlasterGameState* BlasterGS = GetGameState<ABlasterGameState>();
+	if (!BlasterGS) return;
+
+	// GameState에서 모든 플레이어의 무기 슬롯을 확인
+	for (APlayerState* PS : BlasterGS->PlayerArray)
+	{
+		if (ABlasterPlayerState* BlasterPS = Cast<ABlasterPlayerState>(PS))
+		{
+			FWeaponSlots WeaponSlots = BlasterPS->GetWeaponSlots();
+
+			// 슬롯 1 체크
+			if (WeaponSlots.Slot1Weapon != EWeaponType::EWT_MAX)
+			{
+				BlasterGS->AddWeaponPurchase(WeaponSlots.Slot1Weapon);
+			}
+
+			// 슬롯 2 체크
+			if (WeaponSlots.Slot2Weapon != EWeaponType::EWT_MAX)
+			{
+				BlasterGS->AddWeaponPurchase(WeaponSlots.Slot2Weapon);
+			}
+		}
+	}
 }
 
 // 떠난 플레이어의 상태 정보를 저장하는 객체를 가리키는 포인터

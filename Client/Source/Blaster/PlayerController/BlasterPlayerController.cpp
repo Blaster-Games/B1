@@ -19,6 +19,8 @@
 #include "Blaster/BlasterTypes/Announcement.h"
 #include "Blaster/HUD/Shop.h"
 #include "Blaster/BlasterComponents/ShopComponent.h"
+#include "Blaster/HUD/Board/ScoreBoard.h"
+#include "Blaster/HUD/Board/TeamScoreBoard.h"
 
 
 void ABlasterPlayerController::BroadcastElim(APlayerState* Attacker, APlayerState* Victim)
@@ -359,6 +361,8 @@ void ABlasterPlayerController::SetupInputComponent()
 	if (InputComponent == nullptr) return;
 
 	InputComponent->BindAction("Quit", IE_Pressed, this, &ABlasterPlayerController::ShowReturnToMainMenu);
+	InputComponent->BindAction("ScoreBoard", IE_Pressed, this, &ABlasterPlayerController::HandleShowScoreboard);
+	InputComponent->BindAction("ScoreBoard", IE_Released, this, &ABlasterPlayerController::HandleHideScoreboard);
 }
 
 ABlasterPlayerController::ABlasterPlayerController()
@@ -709,6 +713,99 @@ void ABlasterPlayerController::OnMatchStateSet(FName State, bool bTeamsMatch)
 	}
 }
 
+
+void ABlasterPlayerController::HandleShowScoreboard()
+{
+	if (bShowTeamScores)  // 팀모드
+	{
+		if (!TeamScoreBoardWidget && TeamScoreBoardClass)
+		{
+			TeamScoreBoardWidget = CreateWidget<UTeamScoreBoard>(this, TeamScoreBoardClass);
+		}
+		if (TeamScoreBoardWidget)
+		{
+			TeamScoreBoardWidget->AddToViewport();
+			UpdateTeamScoreboard();
+		}
+	}
+	else  // 데스매치
+	{
+		if (!ScoreBoardWidget && ScoreBoardClass)
+		{
+			ScoreBoardWidget = CreateWidget<UScoreBoard>(this, ScoreBoardClass);
+		}
+		if (ScoreBoardWidget)
+		{
+			ScoreBoardWidget->AddToViewport();
+			UpdateScoreboard();
+		}
+	}
+}
+
+void ABlasterPlayerController::HandleHideScoreboard()
+{
+	if (TeamScoreBoardWidget)
+	{
+		TeamScoreBoardWidget->RemoveFromParent();
+	}
+	if (ScoreBoardWidget)
+	{
+		ScoreBoardWidget->RemoveFromParent();
+	}
+}
+
+void ABlasterPlayerController::UpdateScoreboard()
+{
+	TArray<FPlayerScoreData> ScoreDataArray;
+	if (AGameStateBase* GameState = GetWorld()->GetGameState())
+	{
+		for (APlayerState* CurrentPlayer : GameState->PlayerArray)
+		{
+			if (ABlasterPlayerState* BlasterPS = Cast<ABlasterPlayerState>(CurrentPlayer))
+			{
+				FPlayerScoreData PlayerData;
+				PlayerData.PlayerName = BlasterPS->GetPlayerName();
+				PlayerData.Kill = BlasterPS->GetScore();
+				PlayerData.Death = BlasterPS->GetDefeats();
+				ScoreDataArray.Add(PlayerData);
+			}
+		}
+	}
+	if (ScoreBoardWidget)
+	{
+		ScoreBoardWidget->UpdateScoreboard(ScoreDataArray);
+	}
+}
+
+void ABlasterPlayerController::UpdateTeamScoreboard()
+{
+	TArray<FTeamPlayerScoreData> ScoreDataArray;
+	if (ABlasterGameState* BlasterGS = Cast<ABlasterGameState>(GetWorld()->GetGameState()))
+	{
+		for (APlayerState* CurrentPlayer : BlasterGS->PlayerArray)
+		{
+			if (ABlasterPlayerState* BlasterPS = Cast<ABlasterPlayerState>(CurrentPlayer))
+			{
+				FTeamPlayerScoreData PlayerData;
+				PlayerData.PlayerName = BlasterPS->GetPlayerName();
+				PlayerData.Kill = BlasterPS->GetScore();
+				PlayerData.Death = BlasterPS->GetDefeats();
+				PlayerData.Coin = BlasterPS->GetMoney();
+				PlayerData.Team = BlasterPS->GetTeam();
+				ScoreDataArray.Add(PlayerData);
+			}
+		}
+
+		if (TeamScoreBoardWidget)
+		{
+			TeamScoreBoardWidget->UpdateTeamScoreboard(
+				ScoreDataArray,
+				BlasterGS->RedTeamScore,
+				BlasterGS->BlueTeamScore
+			);
+		}
+	}
+}
 
 void ABlasterPlayerController::OnRep_MatchState()
 {

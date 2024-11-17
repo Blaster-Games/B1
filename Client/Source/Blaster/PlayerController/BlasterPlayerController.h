@@ -127,8 +127,25 @@ private:
 	// 실제 위젯 인스턴스
 	UPROPERTY()
 	class UReturnToMainMenu* ReturnToMainMenu;
-
+	
 	bool bReturnToMainMenuOpen = false;
+
+	UPROPERTY()
+	class UScoreBoard* ScoreBoardWidget;
+
+	UPROPERTY(EditDefaultsOnly, Category = "HUD")
+	TSubclassOf<UScoreBoard> ScoreBoardClass;
+
+	UPROPERTY()
+	class UTeamScoreBoard* TeamScoreBoardWidget;
+
+	UPROPERTY(EditAnywhere, Category = "HUD")
+	TSubclassOf<UTeamScoreBoard> TeamScoreBoardClass;
+
+	void HandleShowScoreboard();
+	void HandleHideScoreboard();
+	void UpdateScoreboard();
+	void UpdateTeamScoreboard();
 
 	UPROPERTY()
 	class ABlasterGameMode* BlasterGameMode;
