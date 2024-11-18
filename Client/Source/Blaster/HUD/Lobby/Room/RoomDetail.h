@@ -65,9 +65,6 @@ private:
 	UFUNCTION()
 	void OnLeaveGameButtonClicked();
 
-private:
-    FRoomDetailInfo CurrentRoomInfo;
-
 public:
     UFUNCTION()
     void UpdateRoomInfo(const FRoomDetailInfo& RoomInfo);

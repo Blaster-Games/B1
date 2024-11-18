@@ -68,6 +68,10 @@ public:
     void SendRoomChat(const FString& Message);
     void HandleBroadcastRoomChat(Protocol::S_BroadcastRoomChat& packet);
 
+	void SendStartGameReq(const FString& HostAddress, int32 Port);
+	void HandleStartGameRes(Protocol::S_StartGameRes& packet);
+	void HandleBroadcastStartGame(Protocol::S_BroadcastStartGame& packet);
+
     void HandlePing();
     void SendPong();
 

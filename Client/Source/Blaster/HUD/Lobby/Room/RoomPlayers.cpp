@@ -38,42 +38,82 @@ void URoomPlayers::InitializePlayerTextBlocks()
     UE_LOG(LogTemp, Log, TEXT("RoomPlayers: Found %d valid text blocks out of %d"), ValidTextBlocks, PlayerNameTexts.Num());
 }
 
-void URoomPlayers::UpdatePlayers(const TArray<FPlayerInfo>& Players)
+void URoomPlayers::UpdatePlayers(const TArray<FPlayerInfo>& Players, int32 MaxPlayers)
 {
     if (PlayerNameTexts.Num() == 0)
     {
-        UE_LOG(LogTemp, Log, TEXT("RoomPlayers: Late initialization"));
         InitializePlayerTextBlocks();
     }
 
-    UE_LOG(LogTemp, Log, TEXT("RoomPlayers: Updating players list with %d players"), Players.Num());
+    UE_LOG(LogTemp, Log, TEXT("RoomPlayers: Updating players list with %d players (Max: %d)"), Players.Num(), MaxPlayers);
 
-    // 모든 TextBlock 초기화
+    // 모든 슬롯 초기화
+    ClearAllSlots();
+
+    // 활성화할 슬롯 수 계산
+    int32 SlotsPerTeam = FMath::CeilToInt(MaxPlayers / 2.0f);
+
+    // 각 슬롯의 활성화/비활성화 상태 설정
     for (int32 i = 0; i < PlayerNameTexts.Num(); ++i)
     {
         if (PlayerNameTexts[i])
         {
-            PlayerNameTexts[i]->SetText(FText::FromString(TEXT("")));
-            UE_LOG(LogTemp, Log, TEXT("RoomPlayers: Cleared text for player slot %d"), i + 1);
+            bool bIsRedTeam = IsRedTeamSlot(i);
+            int32 TeamSlotIndex = GetTeamSlotIndex(i);
+
+            // 해당 슬롯이 현재 MaxPlayers 설정에서 사용되어야 하는지 확인
+            bool bShouldBeActive = TeamSlotIndex < SlotsPerTeam;
+
+            if (bShouldBeActive)
+            {
+                PlayerNameTexts[i]->SetVisibility(ESlateVisibility::Visible);
+                // 빈 슬롯 텍스트 표시
+                FString SlotText = FString::Printf(TEXT("%s 팀 슬롯 %d - 비어있음"),
+                    bIsRedTeam ? TEXT("Red") : TEXT("Blue"),
+                    TeamSlotIndex + 1);
+                PlayerNameTexts[i]->SetText(FText::FromString(SlotText));
+            }
+            else
+            {
+                PlayerNameTexts[i]->SetVisibility(ESlateVisibility::Collapsed);
+            }
         }
     }
 
     // 플레이어 정보 설정
-    for (int32 i = 0; i < Players.Num() && i < PlayerNameTexts.Num(); ++i)
+    for (const FPlayerInfo& Player : Players)
     {
-        if (PlayerNameTexts[i])
+        // 플레이어의 팀에 따라 적절한 슬롯 찾기
+        int32 SlotIndex;
+        if (Player.Team == ETeamType::TEAM_RED)
         {
-            FString PlayerText = Players[i].PlayerName;
-            if (Players[i].IsHost)
-            {
-                PlayerText += TEXT(" (방장)");
-            }
-            PlayerNameTexts[i]->SetText(FText::FromString(PlayerText));
-            UE_LOG(LogTemp, Log, TEXT("RoomPlayers: Set player %d name to: %s"), i + 1, *PlayerText);
+            SlotIndex = Player.PlayerId % 4;  // Red팀 슬롯 (0-3)
         }
         else
         {
-            UE_LOG(LogTemp, Warning, TEXT("RoomPlayers: Cannot set player %d name - TextBlock is null"), i + 1);
+            SlotIndex = (Player.PlayerId % 4) + 4;  // Blue팀 슬롯 (4-7)
+        }
+
+        if (SlotIndex < PlayerNameTexts.Num() && PlayerNameTexts[SlotIndex])
+        {
+            FString PlayerText = FString::Printf(TEXT("%s 팀 슬롯 %d - %s%s"),
+                IsRedTeamSlot(SlotIndex) ? TEXT("Red") : TEXT("Blue"),
+                GetTeamSlotIndex(SlotIndex) + 1,
+                *Player.PlayerName,
+                Player.IsHost ? TEXT(" (방장)") : TEXT(""));
+
+            PlayerNameTexts[SlotIndex]->SetText(FText::FromString(PlayerText));
+        }
+    }
+}
+
+void URoomPlayers::ClearAllSlots()
+{
+    for (auto* TextBlock : PlayerNameTexts)
+    {
+        if (TextBlock)
+        {
+            TextBlock->SetVisibility(ESlateVisibility::Collapsed);
         }
     }
 }

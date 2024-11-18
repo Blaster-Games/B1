@@ -167,5 +167,31 @@ namespace GameServer
                 currentGameRoom.BroadcastChat(Player, reqPacket.Message);
             });
         }
+
+        public void HandleStartRoomReq(C_StartGameReq reqPacket)
+        {
+            GameRoom currentGameRoom = Player.GameRoom;
+
+            string hostAddress = reqPacket.HostAddress;
+            int hostPort = reqPacket.Port;
+
+            // 로그: 게임 시작 요청
+            Console.WriteLine($"[HandleSelectRoomReq] Received game start request from Player {Player.PlayerId} ({Player.PlayerName})");
+
+            if (currentGameRoom == null)
+            {
+                Console.WriteLine($"[HandleSelectRoomReq] Error: Player {Player.PlayerId} is not in any room");
+                return;
+            }
+
+            // 로그: 게임룸 정보
+            Console.WriteLine($"[HandleSelectRoomReq] GameRoom ID: {currentGameRoom.GameRoomId}");
+
+            currentGameRoom.Push(() =>
+            {
+                Console.WriteLine($"[HandleSelectRoomReq] Pushing game start task to room {currentGameRoom.GameRoomId}");
+                currentGameRoom.StartGame(hostAddress, hostPort);
+            });
+        }
     }
 }

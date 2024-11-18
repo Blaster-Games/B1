@@ -17,8 +17,7 @@ class BLASTER_API URoomPlayers : public UUserWidget
 	GENERATED_BODY()
 
 public:
-	// 플레이어 정보 업데이트
-	void UpdatePlayers(const TArray<FPlayerInfo>& Players);
+	void UpdatePlayers(const TArray<FPlayerInfo>& Players, int32 MaxPlayers);
 	
 protected:
 	virtual void NativeConstruct() override;
@@ -48,7 +47,10 @@ protected:
 	UTextBlock* Player8NameText;
 
 private:
-	// TextBlock 배열로 관리하면 편리
 	void InitializePlayerTextBlocks();
+	void ClearAllSlots();
+	bool IsRedTeamSlot(int32 SlotIndex) const { return SlotIndex < 4; }
+	int32 GetTeamSlotIndex(int32 SlotIndex) const { return IsRedTeamSlot(SlotIndex) ? SlotIndex : SlotIndex - 4; }
+
 	TArray<UTextBlock*> PlayerNameTexts;
 };

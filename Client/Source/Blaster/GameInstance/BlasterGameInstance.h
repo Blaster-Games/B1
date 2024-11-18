@@ -2,6 +2,7 @@
 #include "CoreMinimal.h"
 #include "Engine/GameInstance.h"
 #include "Blaster.h"
+#include "HUD/Lobby/RoomTypes.h"
 #include "BlasterGameInstance.generated.h"
 
 UCLASS()
@@ -29,6 +30,19 @@ public:
 
     void SendNetworkPacket(SendBufferRef SendBuffer);
 
+    UFUNCTION(BlueprintCallable, Category = "Network")
+    void HostGame();
+
+    UFUNCTION(BlueprintCallable, Category = "Network")
+    void JoinGame(const FString& Address, int32 Port);
+
+    // Getter
+    const FRoomDetailInfo& GetCurrentRoomInfo() const { return CurrentRoomInfo; }
+
+    // Setter with broadcast
+    UFUNCTION()
+    void UpdateCurrentRoomInfo(const FRoomDetailInfo& NewRoomInfo);
+
     UPROPERTY(Config)
     FString DefaultServerIP = TEXT("127.0.0.1");
 
@@ -44,4 +58,6 @@ public:
 private:
     UPROPERTY()
     class UBlasterNetworkSubsystem* NetworkSystem;
+
+    FRoomDetailInfo CurrentRoomInfo;
 };

@@ -86,6 +86,24 @@ namespace GameServer
             // TODO
         }
 
+        public void StartGame(string hostAddress, int hostPort)
+        {
+            // 호스트를 제외한 모든 플레이어에게 브로드 캐스팅
+            foreach (Player p in _players)
+            {
+                if (p.IsHost == false)
+                {
+                    S_BroadcastStartGame startPacket = new S_BroadcastStartGame()
+                    {
+                        HostAddress = hostAddress,
+                        Port = hostPort
+                    };
+
+                    p.Session?.Send(startPacket);
+                }
+            }
+        }
+
         public void LeaveGame(ClientSession session)
         {
             Push(() =>

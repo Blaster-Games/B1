@@ -1,5 +1,6 @@
 #include "RoomDetail.h"
 #include "GameInstance/BlasterNetworkSubsystem.h"
+#include "GameInstance/BlasterGameInstance.h"
 
 
 void URoomDetail::NativeConstruct()
@@ -7,42 +8,48 @@ void URoomDetail::NativeConstruct()
     Super::NativeConstruct();
     UE_LOG(LogTemp, Log, TEXT("RoomDetail: NativeConstruct called"));
 
-    // 초기 UI 업데이트
-    UpdateUI();
-
-    // 이미 설정된 플레이어 정보가 있다면 업데이트
-    if (RoomPlayers && CurrentRoomInfo.Players.Num() > 0)
+    // GameInstance에서 현재 방 정보 가져오기
+    if (UBlasterGameInstance* GameInstance = Cast<UBlasterGameInstance>(GetGameInstance()))
     {
-        RoomPlayers->UpdatePlayers(CurrentRoomInfo.Players);
-        UE_LOG(LogTemp, Log, TEXT("RoomDetail: Initialize players list with %d players"), CurrentRoomInfo.Players.Num());
+        // 초기 UI 업데이트
+        UpdateUI();
+
+        // 이미 설정된 플레이어 정보가 있다면 업데이트
+        if (RoomPlayers)
+        {
+            const FRoomDetailInfo& RoomInfo = GameInstance->GetCurrentRoomInfo();
+            if (RoomInfo.Players.Num() > 0)
+            {
+                RoomPlayers->UpdatePlayers(RoomInfo.Players);
+                UE_LOG(LogTemp, Log, TEXT("RoomDetail: Initialize players list with %d players"), RoomInfo.Players.Num());
+            }
+        }
     }
 
+    // 버튼 이벤트 바인딩
     if (RedTeamButton)
     {
         RedTeamButton->OnClicked.AddDynamic(this, &URoomDetail::OnRedTeamButtonClicked);
     }
-
     if (BlueTeamButton)
     {
         BlueTeamButton->OnClicked.AddDynamic(this, &URoomDetail::OnBlueTeamButtonClicked);
     }
-
     if (StartGameButton)
     {
-		// TODO: StartGameButton 클릭 이벤트 바인딩
+        StartGameButton->OnClicked.AddDynamic(this, &URoomDetail::OnStartGameButtonClicked);
     }
-
     if (LeaveGameButton)
     {
-		// TODO: LeaveGameButton 클릭 이벤트 바인딩
+        // TODO: LeaveGameButton 클릭 이벤트 바인딩
     }
 
+    // 네트워크 이벤트 바인딩
     if (UBlasterNetworkSubsystem* NS = GetNetworkSubsystem())
     {
         NS->OnBroadcastJoinRoom.AddDynamic(this, &URoomDetail::UpdateRoomInfo);
     }
 }
-
 void URoomDetail::NativeDestruct()
 {
     NetworkSubsystem = nullptr;
@@ -63,50 +70,59 @@ UBlasterNetworkSubsystem* URoomDetail::GetNetworkSubsystem() const
 
 void URoomDetail::UpdateRoomInfo(const FRoomDetailInfo& RoomInfo)
 {
-    CurrentRoomInfo = RoomInfo;
-    UE_LOG(LogTemp, Log, TEXT("RoomDetail: Updating room info for Room ID: %d"), RoomInfo.RoomId);
+    // GameInstance에 방 정보 업데이트
+    if (UBlasterGameInstance* GameInstance = Cast<UBlasterGameInstance>(GetGameInstance()))
+    {
+        GameInstance->UpdateCurrentRoomInfo(RoomInfo);
 
-    // NativeConstruct 이후에 호출되도록 Tick에서 한번만 업데이트하도록 수정
-    GetWorld()->GetTimerManager().SetTimerForNextTick([this]()
-        {
-            UpdateUI();
+        UE_LOG(LogTemp, Log, TEXT("RoomDetail: Updating room info for Room ID: %d"), RoomInfo.RoomId);
 
-            // 플레이어 리스트 업데이트
-            if (RoomPlayers)
+        // UI 업데이트는 다음 틱에서 실행
+        GetWorld()->GetTimerManager().SetTimerForNextTick([this]()
             {
-                RoomPlayers->UpdatePlayers(CurrentRoomInfo.Players);
-                UE_LOG(LogTemp, Log, TEXT("RoomDetail: Updated players list with %d players"), CurrentRoomInfo.Players.Num());
-            }
-            else
-            {
-                UE_LOG(LogTemp, Warning, TEXT("RoomDetail: RoomPlayers widget is null"));
-            }
-        });
+                UpdateUI();
+
+                // 플레이어 리스트 업데이트
+                if (RoomPlayers)
+                {
+                    // GameInstance에서 최신 정보 가져오기
+                    const FRoomDetailInfo& CurrentInfo = Cast<UBlasterGameInstance>(GetGameInstance())->GetCurrentRoomInfo();
+                    RoomPlayers->UpdatePlayers(CurrentInfo.Players);
+                    UE_LOG(LogTemp, Log, TEXT("RoomDetail: Updated players list with %d players"), CurrentInfo.Players.Num());
+                }
+                else
+                {
+                    UE_LOG(LogTemp, Warning, TEXT("RoomDetail: RoomPlayers widget is null"));
+                }
+            });
+    }
+    else
+    {
+        UE_LOG(LogTemp, Error, TEXT("RoomDetail: Failed to get BlasterGameInstance"));
+    }
 }
 
 void URoomDetail::UpdateUI()
 {
-    // 방 이름 업데이트
-    if (RoomNameText)
+    if (UBlasterGameInstance* GameInstance = Cast<UBlasterGameInstance>(GetGameInstance()))
     {
-        RoomNameText->SetText(FText::FromString(CurrentRoomInfo.RoomName));
-        UE_LOG(LogTemp, Log, TEXT("RoomDetail: Updated room name to: %s"), *CurrentRoomInfo.RoomName);
-    }
+        const FRoomDetailInfo& CurrentInfo = GameInstance->GetCurrentRoomInfo();
 
-    // 방 타입 업데이트
-    if (RoomTypeText)
-    {
-        FString RoomTypeStr = GetRoomTypeString(CurrentRoomInfo.RoomType);
-        RoomTypeText->SetText(FText::FromString(RoomTypeStr));
-    }
+        if (RoomNameText)
+        {
+            RoomNameText->SetText(FText::FromString(CurrentInfo.RoomName));
+        }
 
-    // 플레이어 수 업데이트
-    if (PlayerCountText)
-    {
-        FString PlayerCountStr = FString::Printf(TEXT("%d/%d"),
-            CurrentRoomInfo.Players.Num(),
-            CurrentRoomInfo.MaxPlayers);
-        PlayerCountText->SetText(FText::FromString(PlayerCountStr));
+        if (RoomTypeText)
+        {
+            RoomTypeText->SetText(FText::FromString(GetRoomTypeString(CurrentInfo.RoomType)));
+        }
+
+        if (PlayerCountText)
+        {
+            FString PlayerCountString = FString::Printf(TEXT("%d/%d"), CurrentInfo.Players.Num(), CurrentInfo.MaxPlayers);
+            PlayerCountText->SetText(FText::FromString(PlayerCountString));
+        }
     }
 }
 
@@ -135,12 +151,17 @@ void URoomDetail::OnBlueTeamButtonClicked()
 
 void URoomDetail::RequestTeamChange()
 {
-
+	// TODO : 팀 변경 요청 코드 구현
 }
 
 void URoomDetail::OnStartGameButtonClicked()
 {
-    // 게임 시작 버튼 클릭 시 실행할 코드 구현
+    if (UBlasterGameInstance* GameInstance = Cast<UBlasterGameInstance>(GetGameInstance()))
+    {
+        // 현재 맵에서 리슨서버 시작
+        GameInstance->HostGame();
+        UE_LOG(LogTemp, Log, TEXT("Starting listen server in current map"));
+    }
 }
 
 void URoomDetail::OnLeaveGameButtonClicked()

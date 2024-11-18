@@ -404,6 +404,23 @@ void UBlasterNetworkSubsystem::HandleBroadcastRoomChat(Protocol::S_BroadcastRoom
     OnRoomChatMessage.Broadcast(PlayerId, PlayerName, Message);
 }
 
+void UBlasterNetworkSubsystem::SendStartGameReq(const FString& HostAddress, int32 ServerPort)
+{
+    Protocol::C_StartGameReq StartGamePacket;
+    StartGamePacket.set_hostaddress(TCHAR_TO_UTF8(*HostAddress));
+    StartGamePacket.set_port(ServerPort);
+    SendBufferRef SendBuffer = ClientPacketHandler::MakeSendBuffer(StartGamePacket);
+    SendPacket(SendBuffer);
+}
+
+void UBlasterNetworkSubsystem::HandleStartGameRes(Protocol::S_StartGameRes& packet)
+{
+}
+
+void UBlasterNetworkSubsystem::HandleBroadcastStartGame(Protocol::S_BroadcastStartGame& packet)
+{
+}
+
 void UBlasterNetworkSubsystem::HandlePing()
 {
     UE_LOG(LogTemp, Log, TEXT("[NetworkSubsystem] Handling Ping"));

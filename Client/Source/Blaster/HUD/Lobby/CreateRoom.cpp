@@ -17,6 +17,7 @@ void UCreateRoom::NativeConstruct()
 
     if (MaxPlayersComboBox)
     {
+		MaxPlayersComboBox->AddOption(TEXT("2"));
         MaxPlayersComboBox->AddOption(TEXT("4"));
         MaxPlayersComboBox->AddOption(TEXT("6"));
         MaxPlayersComboBox->AddOption(TEXT("8"));
