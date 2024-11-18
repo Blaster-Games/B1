@@ -340,8 +340,7 @@ struct C_StartGameReqDefaultTypeInternal {
 PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 C_StartGameReqDefaultTypeInternal _C_StartGameReq_default_instance_;
 PROTOBUF_CONSTEXPR S_StartGameRes::S_StartGameRes(
     ::_pbi::ConstantInitialized): _impl_{
-    /*decltype(_impl_.players_)*/{}
-  , /*decltype(_impl_.success_)*/false
+    /*decltype(_impl_.success_)*/false
   , /*decltype(_impl_._cached_size_)*/{}} {}
 struct S_StartGameResDefaultTypeInternal {
   PROTOBUF_CONSTEXPR S_StartGameResDefaultTypeInternal()
@@ -356,7 +355,6 @@ PROTOBUF_CONSTEXPR S_BroadcastStartGame::S_BroadcastStartGame(
     ::_pbi::ConstantInitialized): _impl_{
     /*decltype(_impl_.hostaddress_)*/{&::_pbi::fixed_address_empty_string, ::_pbi::ConstantInitialized{}}
   , /*decltype(_impl_.port_)*/0
-  , /*decltype(_impl_.sessionid_)*/0
   , /*decltype(_impl_._cached_size_)*/{}} {}
 struct S_BroadcastStartGameDefaultTypeInternal {
   PROTOBUF_CONSTEXPR S_BroadcastStartGameDefaultTypeInternal()
@@ -674,7 +672,6 @@ const uint32_t TableStruct_Protocol_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE
   ~0u,  // no _weak_field_map_
   ~0u,  // no _inlined_string_donated_
   PROTOBUF_FIELD_OFFSET(::Protocol::S_StartGameRes, _impl_.success_),
-  PROTOBUF_FIELD_OFFSET(::Protocol::S_StartGameRes, _impl_.players_),
   ~0u,  // no _has_bits_
   PROTOBUF_FIELD_OFFSET(::Protocol::S_BroadcastStartGame, _internal_metadata_),
   ~0u,  // no _extensions_
@@ -683,7 +680,6 @@ const uint32_t TableStruct_Protocol_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE
   ~0u,  // no _inlined_string_donated_
   PROTOBUF_FIELD_OFFSET(::Protocol::S_BroadcastStartGame, _impl_.hostaddress_),
   PROTOBUF_FIELD_OFFSET(::Protocol::S_BroadcastStartGame, _impl_.port_),
-  PROTOBUF_FIELD_OFFSET(::Protocol::S_BroadcastStartGame, _impl_.sessionid_),
   ~0u,  // no _has_bits_
   PROTOBUF_FIELD_OFFSET(::Protocol::C_EndGameReq, _internal_metadata_),
   ~0u,  // no _extensions_
@@ -775,16 +771,16 @@ static const ::_pbi::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protode
   { 162, -1, -1, sizeof(::Protocol::S_BroadcastReadyGame)},
   { 170, -1, -1, sizeof(::Protocol::C_StartGameReq)},
   { 178, -1, -1, sizeof(::Protocol::S_StartGameRes)},
-  { 186, -1, -1, sizeof(::Protocol::S_BroadcastStartGame)},
-  { 195, -1, -1, sizeof(::Protocol::C_EndGameReq)},
-  { 202, -1, -1, sizeof(::Protocol::S_EndGameRes)},
-  { 209, -1, -1, sizeof(::Protocol::S_BroadcastEndGame)},
-  { 217, -1, -1, sizeof(::Protocol::S_BroadcastChangeHost)},
-  { 225, -1, -1, sizeof(::Protocol::S_BroadcastRoomState)},
-  { 233, -1, -1, sizeof(::Protocol::S_ErrorMessage)},
-  { 240, -1, -1, sizeof(::Protocol::S_KickPlayer)},
-  { 247, -1, -1, sizeof(::Protocol::S_Ping)},
-  { 253, -1, -1, sizeof(::Protocol::C_Pong)},
+  { 185, -1, -1, sizeof(::Protocol::S_BroadcastStartGame)},
+  { 193, -1, -1, sizeof(::Protocol::C_EndGameReq)},
+  { 200, -1, -1, sizeof(::Protocol::S_EndGameRes)},
+  { 207, -1, -1, sizeof(::Protocol::S_BroadcastEndGame)},
+  { 215, -1, -1, sizeof(::Protocol::S_BroadcastChangeHost)},
+  { 223, -1, -1, sizeof(::Protocol::S_BroadcastRoomState)},
+  { 231, -1, -1, sizeof(::Protocol::S_ErrorMessage)},
+  { 238, -1, -1, sizeof(::Protocol::S_KickPlayer)},
+  { 245, -1, -1, sizeof(::Protocol::S_Ping)},
+  { 251, -1, -1, sizeof(::Protocol::C_Pong)},
 };
 
 static const ::_pb::Message* const file_default_instances[] = {
@@ -856,21 +852,19 @@ const char descriptor_table_protodef_Protocol_2eproto[] PROTOBUF_SECTION_VARIABL
   "eadyGameReq\022\r\n\005ready\030\001 \001(\010\"7\n\024S_Broadcas"
   "tReadyGame\022\020\n\010playerId\030\001 \001(\005\022\r\n\005ready\030\002 "
   "\001(\010\"3\n\016C_StartGameReq\022\023\n\013hostAddress\030\001 \001"
-  "(\t\022\014\n\004port\030\002 \001(\005\"H\n\016S_StartGameRes\022\017\n\007su"
-  "ccess\030\001 \001(\010\022%\n\007players\030\002 \003(\0132\024.Protocol."
-  "PlayerInfo\"L\n\024S_BroadcastStartGame\022\023\n\013ho"
-  "stAddress\030\001 \001(\t\022\014\n\004port\030\002 \001(\005\022\021\n\tsession"
-  "Id\030\003 \001(\005\"\036\n\014C_EndGameReq\022\016\n\006reason\030\001 \001(\t"
-  "\"\037\n\014S_EndGameRes\022\017\n\007success\030\001 \001(\010\"7\n\022S_B"
-  "roadcastEndGame\022\016\n\006reason\030\001 \001(\t\022\021\n\tnewHo"
-  "stId\030\002 \001(\003\"D\n\025S_BroadcastChangeHost\022\027\n\017n"
-  "ewHostPlayerId\030\001 \001(\005\022\022\n\nplayerName\030\002 \001(\t"
-  "\"K\n\024S_BroadcastRoomState\022\016\n\006roomId\030\001 \001(\005"
-  "\022#\n\005state\030\002 \001(\0162\024.Protocol.ERoomState\"!\n"
-  "\016S_ErrorMessage\022\017\n\007message\030\001 \001(\t\"\036\n\014S_Ki"
-  "ckPlayer\022\016\n\006reason\030\001 \001(\t\"\010\n\006S_Ping\"\010\n\006C_"
-  "PongB\033\252\002\030Google.Protobuf.ProtocolP\000P\001b\006p"
-  "roto3"
+  "(\t\022\014\n\004port\030\002 \001(\005\"!\n\016S_StartGameRes\022\017\n\007su"
+  "ccess\030\001 \001(\010\"9\n\024S_BroadcastStartGame\022\023\n\013h"
+  "ostAddress\030\001 \001(\t\022\014\n\004port\030\002 \001(\005\"\036\n\014C_EndG"
+  "ameReq\022\016\n\006reason\030\001 \001(\t\"\037\n\014S_EndGameRes\022\017"
+  "\n\007success\030\001 \001(\010\"7\n\022S_BroadcastEndGame\022\016\n"
+  "\006reason\030\001 \001(\t\022\021\n\tnewHostId\030\002 \001(\003\"D\n\025S_Br"
+  "oadcastChangeHost\022\027\n\017newHostPlayerId\030\001 \001"
+  "(\005\022\022\n\nplayerName\030\002 \001(\t\"K\n\024S_BroadcastRoo"
+  "mState\022\016\n\006roomId\030\001 \001(\005\022#\n\005state\030\002 \001(\0162\024."
+  "Protocol.ERoomState\"!\n\016S_ErrorMessage\022\017\n"
+  "\007message\030\001 \001(\t\"\036\n\014S_KickPlayer\022\016\n\006reason"
+  "\030\001 \001(\t\"\010\n\006S_Ping\"\010\n\006C_PongB\033\252\002\030Google.Pr"
+  "otobuf.ProtocolP\000P\001b\006proto3"
   ;
 static const ::_pbi::DescriptorTable* const descriptor_table_Protocol_2eproto_deps[2] = {
   &::descriptor_table_Enum_2eproto,
@@ -878,7 +872,7 @@ static const ::_pbi::DescriptorTable* const descriptor_table_Protocol_2eproto_de
 };
 static ::_pbi::once_flag descriptor_table_Protocol_2eproto_once;
 const ::_pbi::DescriptorTable descriptor_table_Protocol_2eproto = {
-    false, false, 1765, descriptor_table_protodef_Protocol_2eproto,
+    false, false, 1707, descriptor_table_protodef_Protocol_2eproto,
     "Protocol.proto",
     &descriptor_table_Protocol_2eproto_once, descriptor_table_Protocol_2eproto_deps, 2, 35,
     schemas, file_default_instances, TableStruct_Protocol_2eproto::offsets,
@@ -5280,9 +5274,6 @@ class S_StartGameRes::_Internal {
  public:
 };
 
-void S_StartGameRes::clear_players() {
-  _impl_.players_.Clear();
-}
 S_StartGameRes::S_StartGameRes(::PROTOBUF_NAMESPACE_ID::Arena* arena,
                          bool is_message_owned)
   : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned) {
@@ -5293,8 +5284,7 @@ S_StartGameRes::S_StartGameRes(const S_StartGameRes& from)
   : ::PROTOBUF_NAMESPACE_ID::Message() {
   S_StartGameRes* const _this = this; (void)_this;
   new (&_impl_) Impl_{
-      decltype(_impl_.players_){from._impl_.players_}
-    , decltype(_impl_.success_){}
+      decltype(_impl_.success_){}
     , /*decltype(_impl_._cached_size_)*/{}};
 
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
@@ -5307,8 +5297,7 @@ inline void S_StartGameRes::SharedCtor(
   (void)arena;
   (void)is_message_owned;
   new (&_impl_) Impl_{
-      decltype(_impl_.players_){arena}
-    , decltype(_impl_.success_){false}
+      decltype(_impl_.success_){false}
     , /*decltype(_impl_._cached_size_)*/{}
   };
 }
@@ -5324,7 +5313,6 @@ S_StartGameRes::~S_StartGameRes() {
 
 inline void S_StartGameRes::SharedDtor() {
   GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
-  _impl_.players_.~RepeatedPtrField();
 }
 
 void S_StartGameRes::SetCachedSize(int size) const {
@@ -5337,7 +5325,6 @@ void S_StartGameRes::Clear() {
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
-  _impl_.players_.Clear();
   _impl_.success_ = false;
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
@@ -5353,19 +5340,6 @@ const char* S_StartGameRes::_InternalParse(const char* ptr, ::_pbi::ParseContext
         if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 8)) {
           _impl_.success_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
           CHK_(ptr);
-        } else
-          goto handle_unusual;
-        continue;
-      // repeated .Protocol.PlayerInfo players = 2;
-      case 2:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 18)) {
-          ptr -= 1;
-          do {
-            ptr += 1;
-            ptr = ctx->ParseMessage(_internal_add_players(), ptr);
-            CHK_(ptr);
-            if (!ctx->DataAvailable(ptr)) break;
-          } while (::PROTOBUF_NAMESPACE_ID::internal::ExpectTag<18>(ptr));
         } else
           goto handle_unusual;
         continue;
@@ -5404,14 +5378,6 @@ uint8_t* S_StartGameRes::_InternalSerialize(
     target = ::_pbi::WireFormatLite::WriteBoolToArray(1, this->_internal_success(), target);
   }
 
-  // repeated .Protocol.PlayerInfo players = 2;
-  for (unsigned i = 0,
-      n = static_cast<unsigned>(this->_internal_players_size()); i < n; i++) {
-    const auto& repfield = this->_internal_players(i);
-    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
-        InternalWriteMessage(2, repfield, repfield.GetCachedSize(), target, stream);
-  }
-
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
     target = ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
         _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
@@ -5427,13 +5393,6 @@ size_t S_StartGameRes::ByteSizeLong() const {
   uint32_t cached_has_bits = 0;
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
-
-  // repeated .Protocol.PlayerInfo players = 2;
-  total_size += 1UL * this->_internal_players_size();
-  for (const auto& msg : this->_impl_.players_) {
-    total_size +=
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(msg);
-  }
 
   // bool success = 1;
   if (this->_internal_success() != 0) {
@@ -5458,7 +5417,6 @@ void S_StartGameRes::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const :
   uint32_t cached_has_bits = 0;
   (void) cached_has_bits;
 
-  _this->_impl_.players_.MergeFrom(from._impl_.players_);
   if (from._internal_success() != 0) {
     _this->_internal_set_success(from._internal_success());
   }
@@ -5479,7 +5437,6 @@ bool S_StartGameRes::IsInitialized() const {
 void S_StartGameRes::InternalSwap(S_StartGameRes* other) {
   using std::swap;
   _internal_metadata_.InternalSwap(&other->_internal_metadata_);
-  _impl_.players_.InternalSwap(&other->_impl_.players_);
   swap(_impl_.success_, other->_impl_.success_);
 }
 
@@ -5507,7 +5464,6 @@ S_BroadcastStartGame::S_BroadcastStartGame(const S_BroadcastStartGame& from)
   new (&_impl_) Impl_{
       decltype(_impl_.hostaddress_){}
     , decltype(_impl_.port_){}
-    , decltype(_impl_.sessionid_){}
     , /*decltype(_impl_._cached_size_)*/{}};
 
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
@@ -5519,9 +5475,7 @@ S_BroadcastStartGame::S_BroadcastStartGame(const S_BroadcastStartGame& from)
     _this->_impl_.hostaddress_.Set(from._internal_hostaddress(), 
       _this->GetArenaForAllocation());
   }
-  ::memcpy(&_impl_.port_, &from._impl_.port_,
-    static_cast<size_t>(reinterpret_cast<char*>(&_impl_.sessionid_) -
-    reinterpret_cast<char*>(&_impl_.port_)) + sizeof(_impl_.sessionid_));
+  _this->_impl_.port_ = from._impl_.port_;
   // @@protoc_insertion_point(copy_constructor:Protocol.S_BroadcastStartGame)
 }
 
@@ -5532,7 +5486,6 @@ inline void S_BroadcastStartGame::SharedCtor(
   new (&_impl_) Impl_{
       decltype(_impl_.hostaddress_){}
     , decltype(_impl_.port_){0}
-    , decltype(_impl_.sessionid_){0}
     , /*decltype(_impl_._cached_size_)*/{}
   };
   _impl_.hostaddress_.InitDefault();
@@ -5566,9 +5519,7 @@ void S_BroadcastStartGame::Clear() {
   (void) cached_has_bits;
 
   _impl_.hostaddress_.ClearToEmpty();
-  ::memset(&_impl_.port_, 0, static_cast<size_t>(
-      reinterpret_cast<char*>(&_impl_.sessionid_) -
-      reinterpret_cast<char*>(&_impl_.port_)) + sizeof(_impl_.sessionid_));
+  _impl_.port_ = 0;
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
@@ -5592,14 +5543,6 @@ const char* S_BroadcastStartGame::_InternalParse(const char* ptr, ::_pbi::ParseC
       case 2:
         if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 16)) {
           _impl_.port_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
-          CHK_(ptr);
-        } else
-          goto handle_unusual;
-        continue;
-      // int32 sessionId = 3;
-      case 3:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 24)) {
-          _impl_.sessionid_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
           CHK_(ptr);
         } else
           goto handle_unusual;
@@ -5649,12 +5592,6 @@ uint8_t* S_BroadcastStartGame::_InternalSerialize(
     target = ::_pbi::WireFormatLite::WriteInt32ToArray(2, this->_internal_port(), target);
   }
 
-  // int32 sessionId = 3;
-  if (this->_internal_sessionid() != 0) {
-    target = stream->EnsureSpace(target);
-    target = ::_pbi::WireFormatLite::WriteInt32ToArray(3, this->_internal_sessionid(), target);
-  }
-
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
     target = ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
         _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
@@ -5683,11 +5620,6 @@ size_t S_BroadcastStartGame::ByteSizeLong() const {
     total_size += ::_pbi::WireFormatLite::Int32SizePlusOne(this->_internal_port());
   }
 
-  // int32 sessionId = 3;
-  if (this->_internal_sessionid() != 0) {
-    total_size += ::_pbi::WireFormatLite::Int32SizePlusOne(this->_internal_sessionid());
-  }
-
   return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
 }
 
@@ -5712,9 +5644,6 @@ void S_BroadcastStartGame::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, c
   if (from._internal_port() != 0) {
     _this->_internal_set_port(from._internal_port());
   }
-  if (from._internal_sessionid() != 0) {
-    _this->_internal_set_sessionid(from._internal_sessionid());
-  }
   _this->_internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
 }
 
@@ -5738,12 +5667,7 @@ void S_BroadcastStartGame::InternalSwap(S_BroadcastStartGame* other) {
       &_impl_.hostaddress_, lhs_arena,
       &other->_impl_.hostaddress_, rhs_arena
   );
-  ::PROTOBUF_NAMESPACE_ID::internal::memswap<
-      PROTOBUF_FIELD_OFFSET(S_BroadcastStartGame, _impl_.sessionid_)
-      + sizeof(S_BroadcastStartGame::_impl_.sessionid_)
-      - PROTOBUF_FIELD_OFFSET(S_BroadcastStartGame, _impl_.port_)>(
-          reinterpret_cast<char*>(&_impl_.port_),
-          reinterpret_cast<char*>(&other->_impl_.port_));
+  swap(_impl_.port_, other->_impl_.port_);
 }
 
 ::PROTOBUF_NAMESPACE_ID::Metadata S_BroadcastStartGame::GetMetadata() const {

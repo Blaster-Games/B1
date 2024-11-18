@@ -27,10 +27,9 @@ namespace Google.Protobuf.Protocol {
             "CgpFbnVtLnByb3RvEghQcm90b2NvbCpICglFR2FtZU1vZGUSDQoJTU9ERV9O",
             "T05FEAASEwoPTU9ERV9ERUFUSE1BVENIEAESFwoTTU9ERV9URUFNREVBVEhN",
             "QVRDSBACKjcKCUVUZWFtVHlwZRINCglURUFNX05PTkUQABIMCghURUFNX1JF",
-            "RBABEg0KCVRFQU1fQkxVRRACKlgKCkVSb29tU3RhdGUSDgoKU1RBVEVfTk9O",
-            "RRAAEhEKDVNUQVRFX1dBSVRJTkcQARIRCg1TVEFURV9QTEFZSU5HEAISFAoQ",
-            "U1RBVEVfVEVSTUlOQVRFRBADQhuqAhhHb29nbGUuUHJvdG9idWYuUHJvdG9j",
-            "b2xiBnByb3RvMw=="));
+            "RBABEg0KCVRFQU1fQkxVRRACKkgKCkVSb29tU3RhdGUSEQoNU1RBVEVfV0FJ",
+            "VElORxAAEhEKDVNUQVRFX1BMQVlJTkcQARIUChBTVEFURV9URVJNSU5BVEVE",
+            "EAJCG6oCGEdvb2dsZS5Qcm90b2J1Zi5Qcm90b2NvbGIGcHJvdG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Google.Protobuf.Protocol.EGameMode), typeof(global::Google.Protobuf.Protocol.ETeamType), typeof(global::Google.Protobuf.Protocol.ERoomState), }, null, null));
@@ -52,10 +51,9 @@ namespace Google.Protobuf.Protocol {
   }
 
   public enum ERoomState {
-    [pbr::OriginalName("STATE_NONE")] StateNone = 0,
-    [pbr::OriginalName("STATE_WAITING")] StateWaiting = 1,
-    [pbr::OriginalName("STATE_PLAYING")] StatePlaying = 2,
-    [pbr::OriginalName("STATE_TERMINATED")] StateTerminated = 3,
+    [pbr::OriginalName("STATE_WAITING")] StateWaiting = 0,
+    [pbr::OriginalName("STATE_PLAYING")] StatePlaying = 1,
+    [pbr::OriginalName("STATE_TERMINATED")] StateTerminated = 2,
   }
 
   #endregion

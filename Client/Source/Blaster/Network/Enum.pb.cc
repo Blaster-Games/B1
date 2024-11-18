@@ -32,14 +32,14 @@ const char descriptor_table_protodef_Enum_2eproto[] PROTOBUF_SECTION_VARIABLE(pr
   "\n\nEnum.proto\022\010Protocol*H\n\tEGameMode\022\r\n\tM"
   "ODE_NONE\020\000\022\023\n\017MODE_DEATHMATCH\020\001\022\027\n\023MODE_"
   "TEAMDEATHMATCH\020\002*7\n\tETeamType\022\r\n\tTEAM_NO"
-  "NE\020\000\022\014\n\010TEAM_RED\020\001\022\r\n\tTEAM_BLUE\020\002*X\n\nERo"
-  "omState\022\016\n\nSTATE_NONE\020\000\022\021\n\rSTATE_WAITING"
-  "\020\001\022\021\n\rSTATE_PLAYING\020\002\022\024\n\020STATE_TERMINATE"
-  "D\020\003B\033\252\002\030Google.Protobuf.Protocolb\006proto3"
+  "NE\020\000\022\014\n\010TEAM_RED\020\001\022\r\n\tTEAM_BLUE\020\002*H\n\nERo"
+  "omState\022\021\n\rSTATE_WAITING\020\000\022\021\n\rSTATE_PLAY"
+  "ING\020\001\022\024\n\020STATE_TERMINATED\020\002B\033\252\002\030Google.P"
+  "rotobuf.Protocolb\006proto3"
   ;
 static ::_pbi::once_flag descriptor_table_Enum_2eproto_once;
 const ::_pbi::DescriptorTable descriptor_table_Enum_2eproto = {
-    false, false, 280, descriptor_table_protodef_Enum_2eproto,
+    false, false, 264, descriptor_table_protodef_Enum_2eproto,
     "Enum.proto",
     &descriptor_table_Enum_2eproto_once, nullptr, 0, 0,
     schemas, file_default_instances, TableStruct_Enum_2eproto::offsets,
@@ -92,7 +92,6 @@ bool ERoomState_IsValid(int value) {
     case 0:
     case 1:
     case 2:
-    case 3:
       return true;
     default:
       return false;

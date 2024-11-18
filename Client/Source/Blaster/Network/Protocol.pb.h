@@ -3983,27 +3983,8 @@ class S_StartGameRes final :
   // accessors -------------------------------------------------------
 
   enum : int {
-    kPlayersFieldNumber = 2,
     kSuccessFieldNumber = 1,
   };
-  // repeated .Protocol.PlayerInfo players = 2;
-  int players_size() const;
-  private:
-  int _internal_players_size() const;
-  public:
-  void clear_players();
-  ::Protocol::PlayerInfo* mutable_players(int index);
-  ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Protocol::PlayerInfo >*
-      mutable_players();
-  private:
-  const ::Protocol::PlayerInfo& _internal_players(int index) const;
-  ::Protocol::PlayerInfo* _internal_add_players();
-  public:
-  const ::Protocol::PlayerInfo& players(int index) const;
-  ::Protocol::PlayerInfo* add_players();
-  const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Protocol::PlayerInfo >&
-      players() const;
-
   // bool success = 1;
   void clear_success();
   bool success() const;
@@ -4021,7 +4002,6 @@ class S_StartGameRes final :
   typedef void InternalArenaConstructable_;
   typedef void DestructorSkippable_;
   struct Impl_ {
-    ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Protocol::PlayerInfo > players_;
     bool success_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
@@ -4153,7 +4133,6 @@ class S_BroadcastStartGame final :
   enum : int {
     kHostAddressFieldNumber = 1,
     kPortFieldNumber = 2,
-    kSessionIdFieldNumber = 3,
   };
   // string hostAddress = 1;
   void clear_hostaddress();
@@ -4178,15 +4157,6 @@ class S_BroadcastStartGame final :
   void _internal_set_port(int32_t value);
   public:
 
-  // int32 sessionId = 3;
-  void clear_sessionid();
-  int32_t sessionid() const;
-  void set_sessionid(int32_t value);
-  private:
-  int32_t _internal_sessionid() const;
-  void _internal_set_sessionid(int32_t value);
-  public:
-
   // @@protoc_insertion_point(class_scope:Protocol.S_BroadcastStartGame)
  private:
   class _Internal;
@@ -4197,7 +4167,6 @@ class S_BroadcastStartGame final :
   struct Impl_ {
     ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr hostaddress_;
     int32_t port_;
-    int32_t sessionid_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
   union { Impl_ _impl_; };
@@ -6947,43 +6916,6 @@ inline void S_StartGameRes::set_success(bool value) {
   // @@protoc_insertion_point(field_set:Protocol.S_StartGameRes.success)
 }
 
-// repeated .Protocol.PlayerInfo players = 2;
-inline int S_StartGameRes::_internal_players_size() const {
-  return _impl_.players_.size();
-}
-inline int S_StartGameRes::players_size() const {
-  return _internal_players_size();
-}
-inline ::Protocol::PlayerInfo* S_StartGameRes::mutable_players(int index) {
-  // @@protoc_insertion_point(field_mutable:Protocol.S_StartGameRes.players)
-  return _impl_.players_.Mutable(index);
-}
-inline ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Protocol::PlayerInfo >*
-S_StartGameRes::mutable_players() {
-  // @@protoc_insertion_point(field_mutable_list:Protocol.S_StartGameRes.players)
-  return &_impl_.players_;
-}
-inline const ::Protocol::PlayerInfo& S_StartGameRes::_internal_players(int index) const {
-  return _impl_.players_.Get(index);
-}
-inline const ::Protocol::PlayerInfo& S_StartGameRes::players(int index) const {
-  // @@protoc_insertion_point(field_get:Protocol.S_StartGameRes.players)
-  return _internal_players(index);
-}
-inline ::Protocol::PlayerInfo* S_StartGameRes::_internal_add_players() {
-  return _impl_.players_.Add();
-}
-inline ::Protocol::PlayerInfo* S_StartGameRes::add_players() {
-  ::Protocol::PlayerInfo* _add = _internal_add_players();
-  // @@protoc_insertion_point(field_add:Protocol.S_StartGameRes.players)
-  return _add;
-}
-inline const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Protocol::PlayerInfo >&
-S_StartGameRes::players() const {
-  // @@protoc_insertion_point(field_list:Protocol.S_StartGameRes.players)
-  return _impl_.players_;
-}
-
 // -------------------------------------------------------------------
 
 // S_BroadcastStartGame
@@ -7056,26 +6988,6 @@ inline void S_BroadcastStartGame::_internal_set_port(int32_t value) {
 inline void S_BroadcastStartGame::set_port(int32_t value) {
   _internal_set_port(value);
   // @@protoc_insertion_point(field_set:Protocol.S_BroadcastStartGame.port)
-}
-
-// int32 sessionId = 3;
-inline void S_BroadcastStartGame::clear_sessionid() {
-  _impl_.sessionid_ = 0;
-}
-inline int32_t S_BroadcastStartGame::_internal_sessionid() const {
-  return _impl_.sessionid_;
-}
-inline int32_t S_BroadcastStartGame::sessionid() const {
-  // @@protoc_insertion_point(field_get:Protocol.S_BroadcastStartGame.sessionId)
-  return _internal_sessionid();
-}
-inline void S_BroadcastStartGame::_internal_set_sessionid(int32_t value) {
-  
-  _impl_.sessionid_ = value;
-}
-inline void S_BroadcastStartGame::set_sessionid(int32_t value) {
-  _internal_set_sessionid(value);
-  // @@protoc_insertion_point(field_set:Protocol.S_BroadcastStartGame.sessionId)
 }
 
 // -------------------------------------------------------------------

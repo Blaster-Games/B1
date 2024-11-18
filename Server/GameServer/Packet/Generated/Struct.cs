@@ -480,7 +480,7 @@ namespace Google.Protobuf.Protocol {
 
     /// <summary>Field number for the "state" field.</summary>
     public const int StateFieldNumber = 6;
-    private global::Google.Protobuf.Protocol.ERoomState state_ = global::Google.Protobuf.Protocol.ERoomState.StateNone;
+    private global::Google.Protobuf.Protocol.ERoomState state_ = global::Google.Protobuf.Protocol.ERoomState.StateWaiting;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public global::Google.Protobuf.Protocol.ERoomState State {
@@ -536,7 +536,7 @@ namespace Google.Protobuf.Protocol {
       if (RoomType != global::Google.Protobuf.Protocol.EGameMode.ModeNone) hash ^= RoomType.GetHashCode();
       if (CurrentPlayers != 0) hash ^= CurrentPlayers.GetHashCode();
       if (MaxPlayers != 0) hash ^= MaxPlayers.GetHashCode();
-      if (State != global::Google.Protobuf.Protocol.ERoomState.StateNone) hash ^= State.GetHashCode();
+      if (State != global::Google.Protobuf.Protocol.ERoomState.StateWaiting) hash ^= State.GetHashCode();
       if (MapName.Length != 0) hash ^= MapName.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
@@ -576,7 +576,7 @@ namespace Google.Protobuf.Protocol {
         output.WriteRawTag(40);
         output.WriteInt32(MaxPlayers);
       }
-      if (State != global::Google.Protobuf.Protocol.ERoomState.StateNone) {
+      if (State != global::Google.Protobuf.Protocol.ERoomState.StateWaiting) {
         output.WriteRawTag(48);
         output.WriteEnum((int) State);
       }
@@ -614,7 +614,7 @@ namespace Google.Protobuf.Protocol {
         output.WriteRawTag(40);
         output.WriteInt32(MaxPlayers);
       }
-      if (State != global::Google.Protobuf.Protocol.ERoomState.StateNone) {
+      if (State != global::Google.Protobuf.Protocol.ERoomState.StateWaiting) {
         output.WriteRawTag(48);
         output.WriteEnum((int) State);
       }
@@ -647,7 +647,7 @@ namespace Google.Protobuf.Protocol {
       if (MaxPlayers != 0) {
         size += 1 + pb::CodedOutputStream.ComputeInt32Size(MaxPlayers);
       }
-      if (State != global::Google.Protobuf.Protocol.ERoomState.StateNone) {
+      if (State != global::Google.Protobuf.Protocol.ERoomState.StateWaiting) {
         size += 1 + pb::CodedOutputStream.ComputeEnumSize((int) State);
       }
       if (MapName.Length != 0) {
@@ -680,7 +680,7 @@ namespace Google.Protobuf.Protocol {
       if (other.MaxPlayers != 0) {
         MaxPlayers = other.MaxPlayers;
       }
-      if (other.State != global::Google.Protobuf.Protocol.ERoomState.StateNone) {
+      if (other.State != global::Google.Protobuf.Protocol.ERoomState.StateWaiting) {
         State = other.State;
       }
       if (other.MapName.Length != 0) {
@@ -897,7 +897,7 @@ namespace Google.Protobuf.Protocol {
 
     /// <summary>Field number for the "state" field.</summary>
     public const int StateFieldNumber = 6;
-    private global::Google.Protobuf.Protocol.ERoomState state_ = global::Google.Protobuf.Protocol.ERoomState.StateNone;
+    private global::Google.Protobuf.Protocol.ERoomState state_ = global::Google.Protobuf.Protocol.ERoomState.StateWaiting;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public global::Google.Protobuf.Protocol.ERoomState State {
@@ -969,7 +969,7 @@ namespace Google.Protobuf.Protocol {
       if (RoomType != global::Google.Protobuf.Protocol.EGameMode.ModeNone) hash ^= RoomType.GetHashCode();
       if (MaxPlayers != 0) hash ^= MaxPlayers.GetHashCode();
       hash ^= players_.GetHashCode();
-      if (State != global::Google.Protobuf.Protocol.ERoomState.StateNone) hash ^= State.GetHashCode();
+      if (State != global::Google.Protobuf.Protocol.ERoomState.StateWaiting) hash ^= State.GetHashCode();
       if (MapName.Length != 0) hash ^= MapName.GetHashCode();
       if (HostPlayerId != 0) hash ^= HostPlayerId.GetHashCode();
       if (_unknownFields != null) {
@@ -1007,7 +1007,7 @@ namespace Google.Protobuf.Protocol {
         output.WriteInt32(MaxPlayers);
       }
       players_.WriteTo(output, _repeated_players_codec);
-      if (State != global::Google.Protobuf.Protocol.ERoomState.StateNone) {
+      if (State != global::Google.Protobuf.Protocol.ERoomState.StateWaiting) {
         output.WriteRawTag(48);
         output.WriteEnum((int) State);
       }
@@ -1046,7 +1046,7 @@ namespace Google.Protobuf.Protocol {
         output.WriteInt32(MaxPlayers);
       }
       players_.WriteTo(ref output, _repeated_players_codec);
-      if (State != global::Google.Protobuf.Protocol.ERoomState.StateNone) {
+      if (State != global::Google.Protobuf.Protocol.ERoomState.StateWaiting) {
         output.WriteRawTag(48);
         output.WriteEnum((int) State);
       }
@@ -1081,7 +1081,7 @@ namespace Google.Protobuf.Protocol {
         size += 1 + pb::CodedOutputStream.ComputeInt32Size(MaxPlayers);
       }
       size += players_.CalculateSize(_repeated_players_codec);
-      if (State != global::Google.Protobuf.Protocol.ERoomState.StateNone) {
+      if (State != global::Google.Protobuf.Protocol.ERoomState.StateWaiting) {
         size += 1 + pb::CodedOutputStream.ComputeEnumSize((int) State);
       }
       if (MapName.Length != 0) {
@@ -1115,7 +1115,7 @@ namespace Google.Protobuf.Protocol {
         MaxPlayers = other.MaxPlayers;
       }
       players_.Add(other.players_);
-      if (other.State != global::Google.Protobuf.Protocol.ERoomState.StateNone) {
+      if (other.State != global::Google.Protobuf.Protocol.ERoomState.StateWaiting) {
         State = other.State;
       }
       if (other.MapName.Length != 0) {
