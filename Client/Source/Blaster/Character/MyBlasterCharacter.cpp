@@ -547,6 +547,7 @@ void AMyBlasterCharacter::OnPlayerStateInitialized()
 	SetSpawnPoint();
 }
 
+// 
 void AMyBlasterCharacter::SetSpawnPoint()
 {
 	if (HasAuthority() && BlasterPlayerState->GetTeam() != ETeam::ET_NoTeam)
@@ -559,22 +560,46 @@ void AMyBlasterCharacter::SetSpawnPoint()
 			ATeamPlayerStart* TeamStart = Cast<ATeamPlayerStart>(Start);
 			if (TeamStart && TeamStart->Team == BlasterPlayerState->GetTeam())
 			{
-				TeamPlayerStarts.Add(TeamStart); // 해당 팀만 들어가겠지.
+				TeamPlayerStarts.Add(TeamStart);
 			}
 		}
 		if (TeamPlayerStarts.Num() > 0)
 		{
 			ATeamPlayerStart* ChosenPlayerStart = TeamPlayerStarts[FMath::RandRange(0, TeamPlayerStarts.Num() - 1)];
 			UArrowComponent* ArrowComponentStart = ChosenPlayerStart->FindComponentByClass<UArrowComponent>();
+			FRotator SpawnRotation;
+
 			if (ArrowComponentStart)
 			{
-				SetActorLocationAndRotation(ChosenPlayerStart->GetActorLocation(), ArrowComponentStart->GetComponentRotation());
+				SpawnRotation = ArrowComponentStart->GetComponentRotation();
 			}
 			else
 			{
-				SetActorLocationAndRotation(ChosenPlayerStart->GetActorLocation(), ChosenPlayerStart->GetActorRotation());
+				SpawnRotation = ChosenPlayerStart->GetActorRotation();
 			}
+
+			// 위치와 회전 설정
+			SetActorLocationAndRotation(ChosenPlayerStart->GetActorLocation(), SpawnRotation);
+
+			// 컨트롤러의 회전도 설정
+			if (AController* PlayerController = GetController())
+			{
+				PlayerController->SetControlRotation(SpawnRotation);
+			}
+
+			// 모든 클라이언트에 동기화하기 위한 MulticastSetSpawnRotation 호출
+			MulticastSetSpawnRotation(ChosenPlayerStart->GetActorLocation(), SpawnRotation);
 		}
+	}
+}
+
+void AMyBlasterCharacter::MulticastSetSpawnRotation_Implementation(const FVector& Location, const FRotator& Rotation)
+{
+	SetActorLocationAndRotation(Location, Rotation);
+
+	if (AController* PlayerController = GetController())
+	{
+		PlayerController->SetControlRotation(Rotation);
 	}
 }
 
@@ -909,8 +934,18 @@ void AMyBlasterCharacter::ReceiveDamage(AActor* DamagedActor, float Damage, cons
 		}
 	}
 
+	const float OldHealth = Health;  // 이전 체력 저장
 	Health = FMath::Clamp(Health - DamageToHealth, 0.f, MaxHealth);
 	// 서버에서만 실행됨. -> 클라도 챙겨주자 (OnRep_Health())
+	
+	if (DamageToHealth > 0.f && Health < OldHealth)
+	{
+		if (Buff)
+		{
+			Buff->OnHealthDecreased();
+		}
+	}
+	
 	UpdateHUDHealth();
 	UpdateHUDShield();
 	PlayHitReactMontage();

@@ -17,6 +17,9 @@ public:
 	UBuffComponent();
 	friend class AMyBlasterCharacter;
 	void Heal(float HealAmount, float HealingTime);
+	// 지속 힐
+	void PersistentHeal(float HealAmount, float HealingTime);
+	void OnHealthDecreased();
 	void ReplenishShield(float ShieldAmount, float ReplenishTime);
 	void BuffSpeed(float BuffBaseSpeed, float BuffCrouchSpeed, float BuffTime);
 	void BuffJump(float BuffJumpVelocity, float BuffTime);
@@ -47,6 +50,19 @@ private:
 	bool bHealing = false;
 	float HealingRate = 0.f;
 	float AmountToHeal = 0.f;
+	UPROPERTY()
+	bool bPersistentHealing = false;
+	UPROPERTY()
+	float RemainingHealAmount = 0.f;
+
+	UPROPERTY(EditAnywhere, Category = "Combat")
+	float HealingDelayTime = 2.f;
+
+	UPROPERTY()
+	FTimerHandle HealingDelayTimer; 
+
+	void StartDelayedHealing();
+
 
 	/**
 	* Shield buff

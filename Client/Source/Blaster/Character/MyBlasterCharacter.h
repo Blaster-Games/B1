@@ -99,6 +99,9 @@ protected:
 	void DropOrDestroyWeapon(AWeapon* Weapon);
 	void DropOrDestroyWeapons();
 	void SetSpawnPoint();
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastSetSpawnRotation(const FVector& Location, const FRotator& Rotation);
+
 	void OnPlayerStateInitialized();
 
 	UFUNCTION()
