@@ -1,9 +1,9 @@
-// Fill out your copyright notice in the Description page of Project Settings.
 
 
 #include "HUD/OverheadWidget.h"
 #include "Components/TextBlock.h"
 #include "GameFramework/PlayerState.h"
+#include "Kismet/GameplayStatics.h"
 
 void UOverheadWidget::SetDisplayText(FString TextToDisplay)
 {
@@ -15,52 +15,83 @@ void UOverheadWidget::SetDisplayText(FString TextToDisplay)
 
 void UOverheadWidget::ShowPlayerNetRole(APawn* InPawn)
 {
-	ENetRole LocalRole = InPawn->GetLocalRole();
-	FString LocalRoleStr;
-	switch (LocalRole)
+	if (!InPawn)
 	{
-	case ROLE_None:
-		LocalRoleStr = FString("None");
-		break;
-	case ROLE_SimulatedProxy:
-		LocalRoleStr = FString("SimulatedProxy");
-		break;
-	case ROLE_AutonomousProxy:
-		LocalRoleStr = FString("AutonomousProxy");
-		break;
-	case ROLE_Authority:
-		LocalRoleStr = FString("Authority");
-		break;
+		SetDisplayText(TEXT("Unknown"));
+		return;
+	}
+	
+	// 이름 정도니깐 그냥 이렇게 해도 될듯.
+	FTimerHandle TimerHandle;
+	GetWorld()->GetTimerManager().SetTimer(
+		TimerHandle,
+		[this, InPawn]()
+		{
+			if (APlayerState* PlayerState = InPawn->GetPlayerState<APlayerState>())
+			{
+				SetDisplayText(PlayerState->GetPlayerName());
+			}
+			else
+			{
+				SetDisplayText(TEXT("Unknown"));
+			}
+		},
+		0.5f,
+		false
+	);
+}
+
+void UOverheadWidget::UpdateVisibility(APawn* LocalPawn, APawn* TargetPawn)
+{
+	if (!LocalPawn || !TargetPawn || !DisplayText)
+	{
+		return;
 	}
 
-	ENetRole RemoteRole = InPawn->GetRemoteRole();
-	FString RemoteRoleStr;
-	switch (RemoteRole)
+	// 거리 계산
+	const float MaxVisibleDistance = 2500.f; // 25미터
+	const float DistanceSquared = FVector::DistSquared(LocalPawn->GetActorLocation(), TargetPawn->GetActorLocation());
+
+	// 최대 거리보다 멀면 바로 숨김
+	if (DistanceSquared > (MaxVisibleDistance * MaxVisibleDistance))
 	{
-	case ROLE_None:
-		RemoteRoleStr = FString("None");
-		break;
-	case ROLE_SimulatedProxy:
-		RemoteRoleStr = FString("SimulatedProxy");
-		break;
-	case ROLE_AutonomousProxy:
-		RemoteRoleStr = FString("AutonomousProxy");
-		break;
-	case ROLE_Authority:
-		RemoteRoleStr = FString("Authority");
-		break;
+		DisplayText->SetVisibility(ESlateVisibility::Hidden);
+		return;
 	}
 
-	// 참고
-	// 플레이어 이름을 가져옴 (PlayerState에서)
-	/*FString PlayerName = "Unknown";
-	if (APlayerState* PlayerState = InPawn->GetPlayerState<APlayerState>())
+	// 카메라 위치 기준으로 체크
+	APlayerController* LocalController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+	if (!LocalController || !LocalController->PlayerCameraManager)
 	{
-		PlayerName = PlayerState->GetPlayerName();
-	}*/
+		return;
+	}
 
-	FString RoleStr = FString::Printf(TEXT("Local Role: %s\n Remote Role: %s"), *LocalRoleStr, *RemoteRoleStr);
-	SetDisplayText(RoleStr);
+	const FVector CameraLocation = LocalController->PlayerCameraManager->GetCameraLocation();
+	const FVector TargetLocation = TargetPawn->GetActorLocation() + FVector(0, 0, 50); // 머리 위치
+
+	// 라인 트레이스로 시야 체크
+	FHitResult HitResult;
+	FCollisionQueryParams QueryParams;
+	QueryParams.AddIgnoredActor(LocalPawn);
+	QueryParams.AddIgnoredActor(TargetPawn);
+
+	const bool bHit = GetWorld()->LineTraceSingleByChannel(
+		HitResult,
+		CameraLocation,
+		TargetLocation,
+		ECC_Visibility,
+		QueryParams
+	);
+
+	// 벽에 가려졌는지 확인
+	if (bHit && HitResult.GetActor() != TargetPawn)
+	{
+		DisplayText->SetVisibility(ESlateVisibility::Hidden);
+	}
+	else
+	{
+		DisplayText->SetVisibility(ESlateVisibility::Visible);
+	}
 }
 
 void UOverheadWidget::NativeDestruct()
@@ -68,3 +99,6 @@ void UOverheadWidget::NativeDestruct()
 	RemoveFromParent();
 	Super::NativeDestruct();
 }
+
+
+

@@ -28,7 +28,7 @@
 #include "Blaster/GameState/BlasterGameState.h"
 #include "Blaster/PlayerStart/TeamPlayerStart.h"
 #include "Components/ArrowComponent.h"
-
+#include "Blaster/HUD/OverheadWidget.h"
 AMyBlasterCharacter::AMyBlasterCharacter()
 {
 	PrimaryActorTick.bCanEverTick = true;
@@ -49,6 +49,7 @@ AMyBlasterCharacter::AMyBlasterCharacter()
 
 	OverheadWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("OverheadWidget"));
 	OverheadWidget->SetupAttachment(RootComponent);
+
 
 	Combat = CreateDefaultSubobject<UCombatComponent>(TEXT("CombatComponent"));
 	// Combat을 통해 우리 캐릭터의 모든 전투 관련 기능을 처리할 것이다. 즉, 전투 구성 요소에 복제될 변수가 있다는 의미!
@@ -692,6 +693,7 @@ void AMyBlasterCharacter::Tick(float DeltaTime)
 	RotateInPlace(DeltaTime);
 	HideCameraIfCharacterClose();
 	PollInit();
+	UpdateOverheadWidget();
 }
 
 void AMyBlasterCharacter::RotateInPlace(float DeltaTime)
@@ -1505,6 +1507,22 @@ void AMyBlasterCharacter::SetOverlappingWeapon(AWeapon* Weapon)
 			OverlappingWeapon->ShowPickupWidget(true);
 		}
 	}
+}
+
+void AMyBlasterCharacter::UpdateOverheadWidget()
+{
+	if (!OverheadWidget) return;
+
+	// 현재 로컬 플레이어 컨트롤러 가져오기
+	APlayerController* LocalController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+	if (!LocalController || !LocalController->GetPawn()) return;
+
+	// 위젯 가져오기
+	UOverheadWidget* Widget = Cast<UOverheadWidget>(OverheadWidget->GetUserWidgetObject());
+	if (!Widget) return;
+
+	// 가시성 업데이트
+	Widget->UpdateVisibility(LocalController->GetPawn(), this);
 }
 
 void AMyBlasterCharacter::OnRep_OverlappingWeapon(AWeapon* LastWeapon)

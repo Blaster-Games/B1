@@ -183,6 +183,8 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	class UWidgetComponent* OverheadWidget;
 
+	void UpdateOverheadWidget();
+
 	// 값이 변하자마자 복제될 것임. (모든 MyBlasterCharacter에 변수가 설정됨.)
 	UPROPERTY(ReplicatedUsing = OnRep_OverlappingWeapon) // 값이 바뀔 때 OnRep_OverlappingWeapon함수 호출.
 	class AWeapon* OverlappingWeapon;
