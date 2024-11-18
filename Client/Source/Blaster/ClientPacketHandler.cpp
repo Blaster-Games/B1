@@ -97,6 +97,11 @@ bool Handle_S_JoinRoomRes(PacketSessionRef& session, Protocol::S_JoinRoomRes& pk
 
 bool Handle_S_BroadcastJoinRoom(PacketSessionRef& session, Protocol::S_BroadcastJoinRoom& pkt)
 {
+    if (auto NetworkSystem = GetNetworkSystem(session))
+    {
+        NetworkSystem->HandleBroadcastJoinRoom(pkt);
+        return true;
+    }
     return false;
 }
 

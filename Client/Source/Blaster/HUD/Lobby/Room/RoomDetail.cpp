@@ -1,5 +1,6 @@
-
 #include "RoomDetail.h"
+#include "GameInstance/BlasterNetworkSubsystem.h"
+
 
 void URoomDetail::NativeConstruct()
 {
@@ -15,6 +16,49 @@ void URoomDetail::NativeConstruct()
         RoomPlayers->UpdatePlayers(CurrentRoomInfo.Players);
         UE_LOG(LogTemp, Log, TEXT("RoomDetail: Initialize players list with %d players"), CurrentRoomInfo.Players.Num());
     }
+
+    if (RedTeamButton)
+    {
+        RedTeamButton->OnClicked.AddDynamic(this, &URoomDetail::OnRedTeamButtonClicked);
+    }
+
+    if (BlueTeamButton)
+    {
+        BlueTeamButton->OnClicked.AddDynamic(this, &URoomDetail::OnBlueTeamButtonClicked);
+    }
+
+    if (StartGameButton)
+    {
+		// TODO: StartGameButton 클릭 이벤트 바인딩
+    }
+
+    if (LeaveGameButton)
+    {
+		// TODO: LeaveGameButton 클릭 이벤트 바인딩
+    }
+
+    if (UBlasterNetworkSubsystem* NS = GetNetworkSubsystem())
+    {
+        NS->OnBroadcastJoinRoom.AddDynamic(this, &URoomDetail::UpdateRoomInfo);
+    }
+}
+
+void URoomDetail::NativeDestruct()
+{
+    NetworkSubsystem = nullptr;
+    Super::NativeDestruct();
+}
+
+UBlasterNetworkSubsystem* URoomDetail::GetNetworkSubsystem() const
+{
+    if (NetworkSubsystem == nullptr)
+    {
+        if (UGameInstance* GameInstance = GetGameInstance())
+        {
+            NetworkSubsystem = GameInstance->GetSubsystem<UBlasterNetworkSubsystem>();
+        }
+    }
+    return NetworkSubsystem;
 }
 
 void URoomDetail::UpdateRoomInfo(const FRoomDetailInfo& RoomInfo)
@@ -77,4 +121,29 @@ FString URoomDetail::GetRoomTypeString(EGameMode RoomType) const
     default:
         return TEXT("알 수 없음");
     }
+}
+
+void URoomDetail::OnRedTeamButtonClicked()
+{
+    RequestTeamChange();
+}
+
+void URoomDetail::OnBlueTeamButtonClicked()
+{
+    RequestTeamChange();
+}
+
+void URoomDetail::RequestTeamChange()
+{
+
+}
+
+void URoomDetail::OnStartGameButtonClicked()
+{
+    // 게임 시작 버튼 클릭 시 실행할 코드 구현
+}
+
+void URoomDetail::OnLeaveGameButtonClicked()
+{
+    // 게임 나가기 버튼 클릭 시 실행할 코드 구현
 }

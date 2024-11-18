@@ -1,5 +1,4 @@
 #pragma once
-
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
 #include "Components/ScrollBox.h"
@@ -8,81 +7,78 @@
 #include "RoomItem.h"
 #include "CreateRoom.h"
 #include "Protocol.pb.h"
+
 #include "RoomList.generated.h"
 
-// 델리게이트 선언
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnRoomSelectedDelegate, int32, RoomId);
 
-class URoomItem;
-class UCreateRoom;
-class URoomDetail;
+class UBlasterNetworkSubsystem;
 
 UCLASS()
 class BLASTER_API URoomList : public UUserWidget
 {
-	GENERATED_BODY()
+    GENERATED_BODY()
 
 protected:
-	virtual void NativeConstruct() override;
+    virtual void NativeConstruct() override;
+    virtual void NativeDestruct() override;
 
 private:
-	// UI 컴포넌트들
-	UPROPERTY(meta = (BindWidget))
-	class UButton* CreateRoomButton;
+    // UI 컴포넌트
+    UPROPERTY(meta = (BindWidget))
+    class UButton* CreateRoomButton;
 
-	UPROPERTY(meta = (BindWidget))
-	class UButton* UpdateRoomItemButton;
+    UPROPERTY(meta = (BindWidget))
+    class UButton* UpdateRoomItemButton;
 
-	UPROPERTY(meta = (BindWidget))
-	class UScrollBox* RoomListScrollBox;
+    UPROPERTY(meta = (BindWidget))
+    class UScrollBox* RoomListScrollBox;
 
-	// 위젯 클래스 레퍼런스들
-	UPROPERTY(EditDefaultsOnly, Category = "UI")
-	TSubclassOf<URoomItem> RoomItemClass;
+    // 위젯 클래스들
+    UPROPERTY(EditDefaultsOnly, Category = "UI")
+    TSubclassOf<URoomItem> RoomItemClass;
 
-	// 방 아이템 배열
-	UPROPERTY()
-	TArray<URoomItem*> RoomItems;
+    UPROPERTY(EditDefaultsOnly, Category = "UI")
+    TSubclassOf<URoomDetail> RoomDetailWidgetClass;
 
-	// 이벤트 핸들러
-	UFUNCTION()
-	void OnCreateRoomClicked();
+    UPROPERTY(EditDefaultsOnly, Category = "UI")
+    TSubclassOf<UCreateRoom> CreateRoomWidgetClass;
 
-	UFUNCTION()
-	void OnUpdateRoomItemClicked();
+    // 캐시된 방 아이템들
+    UPROPERTY()
+    TArray<URoomItem*> RoomItems;
 
-	UFUNCTION()
-	void HandleRoomListResponse(const TArray<FRoomListItemInfo>& Rooms);
+    // 서브시스템 참조
+    UPROPERTY()
+    mutable UBlasterNetworkSubsystem* NetworkSubsystem;
+    UBlasterNetworkSubsystem* GetNetworkSubsystem() const;
 
-	UFUNCTION()
-	void HandleRoomItemDoubleClicked(int32 RoomId);
+    // 이벤트 핸들러들
+    UFUNCTION()
+    void OnCreateRoomClicked();
+
+    UFUNCTION()
+    void OnUpdateRoomItemClicked();
+
+    UFUNCTION()
+    void HandleRoomListResponse(const TArray<FRoomListItemInfo>& Rooms);
+
+    UFUNCTION()
+    void HandleRoomItemDoubleClicked(int32 RoomId);
+
+    UFUNCTION()
+    void HandleCreateRoomResponse(const FRoomDetailInfo& RoomInfo);
 
 public:
-	// 방 목록 관리 함수들
-	void UpdateRoomList(const TArray<FRoomListItemInfo>& Rooms);
-	URoomItem* AddRoom(const FRoomListItemInfo& RoomInfo);
-	void ClearRoomList();
+    // Public API
+    void UpdateRoomList(const TArray<FRoomListItemInfo>& Rooms);
+    URoomItem* AddRoom(const FRoomListItemInfo& RoomInfo);
+    void ClearRoomList();
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI")
-	TSubclassOf<URoomDetail> RoomDetailWidgetClass;
+    UFUNCTION()
+    void RequestUpdateRoomList();
 
-	UPROPERTY(EditDefaultsOnly, Category = "UI")
-	TSubclassOf<UCreateRoom> CreateRoomWidgetClass;
-
-	// 방 목록 갱신 요청
-	UFUNCTION()
-	void RequestUpdateRoomList();
-
-	// 네트워크 핸들러 설정
-	void SetNetworkHandler(class INetworkHandler* InHandler) { NetworkHandler = InHandler; }
-
-	UPROPERTY(BlueprintAssignable, Category = "Room Events")
-	FOnRoomSelectedDelegate OnRoomSelected;
-
-	UFUNCTION()
-	void HandleCreateRoomResponse(const FRoomDetailInfo& RoomInfo);
-
-private:
-	// 네트워크 핸들러
-	class INetworkHandler* NetworkHandler;
+    // 이벤트
+    UPROPERTY(BlueprintAssignable, Category = "Room Events")
+    FOnRoomSelectedDelegate OnRoomSelected;
 };

@@ -356,6 +356,33 @@ void UBlasterNetworkSubsystem::HandleJoinRoomRes(Protocol::S_JoinRoomRes& packet
     UE_LOG(LogTemp, Log, TEXT("[HandleJoinRoomRes] Broadcast completed"));
 }
 
+void UBlasterNetworkSubsystem::HandleBroadcastJoinRoom(Protocol::S_BroadcastJoinRoom& packet)
+{
+    FRoomDetailInfo RoomInfo;
+
+    // packet.room()을 통해 RoomDetailInfo에 접근
+    RoomInfo.RoomId = packet.room().roomid();
+    RoomInfo.RoomName = FString(UTF8_TO_TCHAR(packet.room().roomname().c_str()));
+    RoomInfo.RoomType = static_cast<EGameMode>(packet.room().roomtype());
+    RoomInfo.MaxPlayers = packet.room().maxplayers();
+    RoomInfo.State = static_cast<ERoomState>(packet.room().state());
+    RoomInfo.MapName = FString(UTF8_TO_TCHAR(packet.room().mapname().c_str()));
+    RoomInfo.HostPlayerId = packet.room().hostplayerid();
+
+    // Players 배열 변환
+    RoomInfo.Players.Empty();
+    for (const auto& player : packet.room().players())
+    {
+        FPlayerInfo playerInfo;
+        playerInfo.PlayerId = player.playerid();
+        playerInfo.PlayerName = FString(UTF8_TO_TCHAR(player.playername().c_str()));
+        playerInfo.IsHost = player.ishost();
+        playerInfo.Team = static_cast<ETeamType>(player.team());
+        RoomInfo.Players.Add(playerInfo);
+    }
+	OnBroadcastJoinRoom.Broadcast(RoomInfo);
+}
+
 void UBlasterNetworkSubsystem::SendRoomChat(const FString& Message)
 {
     Protocol::C_RoomChat chatPacket;

@@ -80,7 +80,7 @@ message S_JoinRoomRes {
 }
 
 message S_BroadcastJoinRoom {
-    PlayerInfo newPlayer = 1;
+    RoomDetailInfo room = 1;
 }
 
 // ·ë ÅðÀå

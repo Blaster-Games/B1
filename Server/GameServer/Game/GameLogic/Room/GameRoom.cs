@@ -42,7 +42,6 @@ namespace GameServer
                 callback.Invoke(false);
                 return;
             }
-
             if (_players.Count >= MaxPlayers)
             {
                 callback.Invoke(false);
@@ -56,6 +55,7 @@ namespace GameServer
                 return;
             }
 
+            // 1. 새로운 플레이어 정보 설정
             if (_players.Count == 0)
             {
                 _host = player;
@@ -63,12 +63,23 @@ namespace GameServer
                 player.GameRoom = this;
                 player.RoomId = GameRoomId;
             }
+            else
+            {
+                player.IsHost = false;
+                player.GameRoom = this;
+                player.RoomId = GameRoomId;
+            }
 
+            // 2. 플레이어 리스트에 추가
             _players.Add(player);
-            //BroadcastEnterGame(player);
 
+            // 3. 기존 플레이어들에게 새 플레이어 입장을 브로드캐스트
+            BroadcastEnterGame();
+
+            // 4. 성공 콜백
             callback.Invoke(true);
         }
+
 
         public void LeaveRoom(ClientSession session, Action<bool> callback)
         {
@@ -98,19 +109,15 @@ namespace GameServer
         }
 
         #region 패킷 브로드캐스트
-        private void BroadcastEnterGame(Player newPlayer)
+
+        private void BroadcastEnterGame()
         {
             S_BroadcastJoinRoom enterPacket = new S_BroadcastJoinRoom()
             {
-                NewPlayer = new PlayerInfo()
-                {
-                    PlayerId = newPlayer.PlayerId,
-                    PlayerName = newPlayer.PlayerName,
-                    IsHost = newPlayer.IsHost,
-                    Team = newPlayer.Team
-                }
+                Room = ToRoomDetail()
             };
 
+            // 새로운 플레이어를 제외한 기존 플레이어들에게만 브로드캐스트
             foreach (Player p in _players)
             {
                 p.Session?.Send(enterPacket);

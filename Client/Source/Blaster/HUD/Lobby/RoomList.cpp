@@ -1,11 +1,12 @@
 #include "RoomList.h"
-#include "GameInstance/BlasterNetworkSubsystem.h"
 #include "CreateRoom.h"
+#include "GameInstance/BlasterNetworkSubsystem.h"
 #include "Room/RoomDetail.h"
 
 void URoomList::NativeConstruct()
 {
     Super::NativeConstruct();
+
     // 버튼 클릭 이벤트 바인딩
     if (CreateRoomButton)
     {
@@ -16,14 +17,29 @@ void URoomList::NativeConstruct()
         UpdateRoomItemButton->OnClicked.AddDynamic(this, &URoomList::OnUpdateRoomItemClicked);
     }
 
-    // NetworkSubsystem 이벤트 바인딩
-    if (UGameInstance* GameInstance = GetGameInstance())
+    // NetworkSubsystem 초기화 및 이벤트 바인딩
+    if (UBlasterNetworkSubsystem* NS = GetNetworkSubsystem())
     {
-        if (UBlasterNetworkSubsystem* NetworkSubsystem = GameInstance->GetSubsystem<UBlasterNetworkSubsystem>())
+        NS->OnRoomListResponse.AddDynamic(this, &URoomList::HandleRoomListResponse);
+    }
+}
+
+void URoomList::NativeDestruct()
+{
+    NetworkSubsystem = nullptr;
+    Super::NativeDestruct();
+}
+
+UBlasterNetworkSubsystem* URoomList::GetNetworkSubsystem() const
+{
+    if (NetworkSubsystem == nullptr)
+    {
+        if (UGameInstance* GameInstance = GetGameInstance())
         {
-            NetworkSubsystem->OnRoomListResponse.AddDynamic(this, &URoomList::HandleRoomListResponse);
+            NetworkSubsystem = GameInstance->GetSubsystem<UBlasterNetworkSubsystem>();
         }
     }
+    return NetworkSubsystem;
 }
 
 void URoomList::OnCreateRoomClicked()
@@ -32,10 +48,7 @@ void URoomList::OnCreateRoomClicked()
     if (NewCreateRoomWidget)
     {
         NewCreateRoomWidget->AddToViewport(100);
-        if (NewCreateRoomWidget)
-        {
-            NewCreateRoomWidget->OnRoomCreated.AddDynamic(this, &URoomList::HandleCreateRoomResponse);
-        }
+        NewCreateRoomWidget->OnRoomCreated.AddDynamic(this, &URoomList::HandleCreateRoomResponse);
     }
 }
 
@@ -46,18 +59,15 @@ void URoomList::OnUpdateRoomItemClicked()
 
 void URoomList::RequestUpdateRoomList()
 {
-    if (UGameInstance* GameInstance = GetGameInstance())
+    if (UBlasterNetworkSubsystem* NS = GetNetworkSubsystem())
     {
-        if (UBlasterNetworkSubsystem* NetworkSubsystem = GameInstance->GetSubsystem<UBlasterNetworkSubsystem>())
-        {
-            NetworkSubsystem->SendRoomListReq();
-        }
+        NS->SendRoomListReq();
     }
 }
 
 void URoomList::HandleCreateRoomResponse(const FRoomDetailInfo& RoomInfo)
 {
-    UE_LOG(LogTemp, Log, TEXT("Lobby: ShowRoomWidget called"));
+    UE_LOG(LogTemp, Log, TEXT("RoomList: ShowRoomWidget called"));
     RemoveFromParent();
 
     if (RoomDetailWidgetClass)
@@ -65,8 +75,7 @@ void URoomList::HandleCreateRoomResponse(const FRoomDetailInfo& RoomInfo)
         if (URoomDetail* RoomWidget = CreateWidget<URoomDetail>(GetWorld(), RoomDetailWidgetClass))
         {
             RoomWidget->UpdateRoomInfo(RoomInfo);
-
-            UE_LOG(LogTemp, Log, TEXT("Lobby: Created RoomWidget and updated room info"));
+            UE_LOG(LogTemp, Log, TEXT("RoomList: Created RoomWidget and updated room info"));
             RoomWidget->AddToViewport();
         }
         else
@@ -120,9 +129,7 @@ URoomItem* URoomList::AddRoom(const FRoomListItemInfo& RoomInfo)
             RoomInfo.MapName
         );
 
-        // 더블클릭 이벤트 바인딩
         NewRoomItem->OnRoomItemClicked.AddDynamic(this, &URoomList::HandleRoomItemDoubleClicked);
-
         RoomListScrollBox->AddChild(NewRoomItem);
         RoomItems.Add(NewRoomItem);
 

@@ -97,20 +97,19 @@ namespace GameServer
             return null;
         }
 
-        public void TryEnterRoom(ClientSession session, int roomId, Action<bool> callback)
+        public void TryEnterRoom(ClientSession session, int roomId, Action<bool, GameRoom> callback)
         {
             Push(() =>
             {
                 GameRoom room = FindRoom(roomId);
                 if (room == null)
                 {
-                    callback.Invoke(false);
+                    callback.Invoke(false, null);
                     return;
                 }
-
                 room.Push(() =>
                 {
-                    room.EnterRoom(session, callback);
+                    room.EnterRoom(session, (success) => callback.Invoke(success, room));
                 });
             });
         }
