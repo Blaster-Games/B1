@@ -2,8 +2,11 @@
 #include "BlasterGameInstance.h"
 #include "Json.h"
 #include "JsonUtilities.h"
+#include "Blaster/GameState/BlasterGameState.h"
 
 const TCHAR* const UBlasterWebSubsystem::LOGIN_ENDPOINT = TEXT("/api/member/login");
+const TCHAR* const UBlasterWebSubsystem::MATCH_STATS_ENDPOINT = TEXT("/api/statistics/");
+
 const TCHAR* const UBlasterWebSubsystem::FIELD_NICKNAME = TEXT("nickname");
 const TCHAR* const UBlasterWebSubsystem::FIELD_ID = TEXT("id");
 const TCHAR* const UBlasterWebSubsystem::FIELD_ACCESS_TOKEN = TEXT("accessToken");
@@ -17,8 +20,8 @@ void UBlasterWebSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 {
     Super::Initialize(Collection);
     HttpModule = &FHttpModule::Get();
-    //BaseUrl = TEXT("https://native-pika-possibly.ngrok-free.app");
-    BaseUrl = TEXT("http://localhost:8080");
+    BaseUrl = TEXT("https://native-pika-possibly.ngrok-free.app");
+    //BaseUrl = TEXT("http://localhost:8080");
 }
 
 void UBlasterWebSubsystem::Deinitialize()
@@ -45,6 +48,76 @@ void UBlasterWebSubsystem::RequestLogin(const FString& Username, const FString& 
 
     Request->OnProcessRequestComplete().BindUObject(this, &UBlasterWebSubsystem::OnLoginResponse);
     Request->ProcessRequest();
+}
+
+void UBlasterWebSubsystem::SendMatchStats(const ABlasterGameState* GameState)
+{
+    if (!GameState || !HttpModule) return;
+
+    // JSON 객체 생성
+    TSharedPtr<FJsonObject> JsonObject = MakeShared<FJsonObject>();
+
+
+    // 구매 통계
+    const FGamePurchaseStats& Stats = GameState->GetGamePurchaseStats();
+
+    // 무기 구매 통계
+    TArray<TSharedPtr<FJsonValue>> WeaponStats;
+    for (const auto& Pair : Stats.WeaponPurchases)
+    {
+        TSharedPtr<FJsonObject> WeaponObj = MakeShared<FJsonObject>();
+        WeaponObj->SetStringField("weaponType", StaticEnum<EWeaponType>()->GetNameStringByValue((int64)Pair.Key));
+        WeaponObj->SetNumberField("purchaseCount", Pair.Value);
+        WeaponStats.Add(MakeShared<FJsonValueObject>(WeaponObj));
+    }
+    JsonObject->SetArrayField("weaponPurchases", WeaponStats);
+
+    // 버프 구매 통계
+    TArray<TSharedPtr<FJsonValue>> BuffStats;
+    for (const auto& Pair : Stats.BuffPurchases)
+    {
+        TSharedPtr<FJsonObject> BuffObj = MakeShared<FJsonObject>();
+        BuffObj->SetStringField("buffType", StaticEnum<EBuffType>()->GetNameStringByValue((int64)Pair.Key));
+        BuffObj->SetNumberField("purchaseCount", Pair.Value);
+        BuffStats.Add(MakeShared<FJsonValueObject>(BuffObj));
+    }
+    JsonObject->SetArrayField("buffPurchases", BuffStats);
+
+    // 투척무기 구매 통계
+    TArray<TSharedPtr<FJsonValue>> ThrowableStats;
+    for (const auto& Pair : Stats.ThrowablePurchases)
+    {
+        TSharedPtr<FJsonObject> ThrowObj = MakeShared<FJsonObject>();
+        ThrowObj->SetStringField("throwType", StaticEnum<EThrowType>()->GetNameStringByValue((int64)Pair.Key));
+        ThrowObj->SetNumberField("purchaseCount", Pair.Value);
+        ThrowableStats.Add(MakeShared<FJsonValueObject>(ThrowObj));
+    }
+    JsonObject->SetArrayField("throwablePurchases", ThrowableStats);
+
+
+    // JSON 문자열로 변환
+    FString JsonString;
+    TSharedRef<TJsonWriter<>> Writer = TJsonWriterFactory<>::Create(&JsonString);
+    FJsonSerializer::Serialize(JsonObject.ToSharedRef(), Writer);
+
+    // HTTP 요청 생성
+    auto Request = HttpModule->CreateRequest();
+    Request->SetURL(BaseUrl + MATCH_STATS_ENDPOINT);
+    Request->SetVerb(TEXT("POST"));
+    Request->SetHeader(CONTENT_TYPE_HEADER, TEXT("application/json"));
+
+    // 인증 토큰 추가
+    if (UBlasterGameInstance* BlasterGameInstance = Cast<UBlasterGameInstance>(GetGameInstance()))
+    {
+        const FString AuthHeader = FString(BEARER_PREFIX) + BlasterGameInstance->AccessToken;
+        Request->SetHeader(AUTH_HEADER, AuthHeader);
+    }
+
+    Request->SetContentAsString(JsonString);
+
+    UE_LOG(LogTemp, Log, TEXT("[WebSubsystem] Sending match stats"));
+    Request->ProcessRequest();
+
 }
 
 void UBlasterWebSubsystem::OnLoginResponse(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bSuccess)

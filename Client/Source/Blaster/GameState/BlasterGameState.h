@@ -4,7 +4,22 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameState.h"
+#include "Blaster/BlasterTypes/BuffTypes.h"
+#include "Blaster/BlasterTypes/ThrowTypes.h"
+#include "Blaster/Weapon/WeaponTypes.h"
 #include "BlasterGameState.generated.h"
+
+
+USTRUCT()
+struct FGamePurchaseStats
+{
+	GENERATED_BODY()
+
+	TMap<EWeaponType, int32> WeaponPurchases;
+	TMap<EBuffType, int32> BuffPurchases;
+	TMap<EThrowType, int32> ThrowablePurchases;
+};
+
 
 /**
  * 
@@ -47,6 +62,8 @@ public:
 private:
 	float TopScore = 0.f;
 
+	// 통계 관련
+	FGamePurchaseStats GamePurchaseStats;
 
 	// Rounds 관련
 	UPROPERTY(ReplicatedUsing = OnRep_CurrentRound)
@@ -67,6 +84,10 @@ public:
 	void SetCurrentRound(int32 NewRound);
 	void SetMaxRounds(int32 NewMaxRounds);
 
+	void AddWeaponPurchase(EWeaponType WeaponType);
+	void AddBuffPurchase(EBuffType BuffType);
+	void AddThrowablePurchase(EThrowType ThrowType, int32 Count);
+	const FGamePurchaseStats& GetGamePurchaseStats() const { return GamePurchaseStats; }
 };
 
 

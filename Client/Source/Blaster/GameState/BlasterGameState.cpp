@@ -6,6 +6,7 @@
 #include "Blaster/PlayerState/BlasterPlayerState.h"
 #include "Blaster/PlayerController/BlasterPlayerController.h"
 
+
 void ABlasterGameState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
@@ -94,4 +95,40 @@ void ABlasterGameState::SetCurrentRound(int32 NewRound)
 void ABlasterGameState::SetMaxRounds(int32 NewMaxRounds)
 {
 	MaxRounds = NewMaxRounds;
+}
+
+void ABlasterGameState::AddWeaponPurchase(EWeaponType WeaponType)
+{
+	if (!GamePurchaseStats.WeaponPurchases.Contains(WeaponType))
+	{
+		GamePurchaseStats.WeaponPurchases.Add(WeaponType, 1);
+	}
+	else
+	{
+		GamePurchaseStats.WeaponPurchases[WeaponType]++;
+	}
+}
+
+void ABlasterGameState::AddBuffPurchase(EBuffType BuffType)
+{
+	if (!GamePurchaseStats.BuffPurchases.Contains(BuffType))
+	{
+		GamePurchaseStats.BuffPurchases.Add(BuffType, 1);
+	}
+	else
+	{
+		GamePurchaseStats.BuffPurchases[BuffType]++;
+	}
+}
+
+void ABlasterGameState::AddThrowablePurchase(EThrowType ThrowType, int32 Count)
+{
+	if (!GamePurchaseStats.ThrowablePurchases.Contains(ThrowType))
+	{
+		GamePurchaseStats.ThrowablePurchases.Add(ThrowType, Count);
+	}
+	else
+	{
+		GamePurchaseStats.ThrowablePurchases[ThrowType] += Count;
+	}
 }

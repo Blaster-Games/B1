@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameMode.h"
+#include "Blaster/BlasterTypes/Team.h"
 #include "BlasterGameMode.generated.h"
 
 // 사용자 지정 만들기
@@ -37,21 +38,22 @@ public:
 	UPROPERTY(EditDefaultsOnly)
 	float CooldownTime = 10.f;
 
-	float LevelStartingTime = 0.f;
+	float StateStartTime = 0.f;
 
 	bool bTeamsMatch = false;
 
 protected:
 	virtual void BeginPlay() override;
 	virtual void OnMatchStateSet() override;
-
+	// 처음 스폰 위치가 맘에 안들어서 해당 함수를 오버라이딩 함.
+	virtual void RestartPlayer(AController* NewPlayer) override;
 	// 라운드 관련
 	virtual void ResetAllPlayers();
 	virtual void StartNewRound();
 	virtual void EndRound();
 
 	void AllPlayerApplyBuffs();
-
+	bool IsTeamEliminated(ETeam Team) const;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Game Rules")
 	bool bIsRoundBased = false;
@@ -61,9 +63,17 @@ protected:
 
 	float CountdownTime = 0.f;
 
-private:
-	bool ShouldRespawnPlayer() const;
+	// 돈 관련
+	int32 KillReward = 200;
+	int32 RoundReward = 500;
+	int32 GetTotalPlayerCount() const;
+	int32 CalculateKillReward();
 
+	bool ShouldRespawnPlayer() const;
+	AActor* FindSafestSpawnPoint();
+
+private:
+	void CheckWeaponSlots();
 public:
 	FORCEINLINE float GetCountdownTime() const { return CountdownTime; }
 	FORCEINLINE bool IsRoundBased() const { return bIsRoundBased; }

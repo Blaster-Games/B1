@@ -18,6 +18,44 @@ void UBuffComponent::Heal(float HealAmount, float HealingTime)
 	AmountToHeal += HealAmount;
 }
 
+void UBuffComponent::PersistentHeal(float HealAmount, float HealingTime)
+{
+	bPersistentHealing = true;
+	Heal(HealAmount, HealingTime);
+}
+
+void UBuffComponent::OnHealthDecreased()
+{
+	// 이게 있어야 차는 도중에 피격 판정이 있을 시에 피 차는 것이 멈춤.
+	bHealing = false;
+
+	if (bPersistentHealing && RemainingHealAmount > 0.f)
+	{
+		// 이미 실행 중인 타이머가 있다면 리셋
+		if (GetWorld()->GetTimerManager().IsTimerActive(HealingDelayTimer))
+		{
+			GetWorld()->GetTimerManager().ClearTimer(HealingDelayTimer);
+		}
+
+		GetWorld()->GetTimerManager().SetTimer(
+			HealingDelayTimer,
+			this,
+			&UBuffComponent::StartDelayedHealing,
+			HealingDelayTime,
+			false  // 반복 없음
+		);
+	}
+}
+
+void UBuffComponent::StartDelayedHealing()
+{
+	if (bPersistentHealing && RemainingHealAmount > 0.f)
+	{
+		bHealing = true;
+		AmountToHeal = RemainingHealAmount;
+	}
+}
+
 void UBuffComponent::ReplenishShield(float ShieldAmount, float ReplenishTime)
 {
 	bReplenishingShield = true;
@@ -38,10 +76,27 @@ void UBuffComponent::HealRampUp(float DeltaTime)
 	Character->UpdateHUDHealth();
 	AmountToHeal -= HealThisFrame;
 
-	if (AmountToHeal <= 0.f || Character->GetHealth() >= Character->GetMaxHealth())
+	if (AmountToHeal <= 0.f)
 	{
 		bHealing = false;
 		AmountToHeal = 0.f;
+		bPersistentHealing = false; 
+		RemainingHealAmount = 0.f;
+	}
+	else if (Character->GetHealth() >= Character->GetMaxHealth())
+	{
+		if (!bPersistentHealing)
+		{
+			// 일반 힐링의 경우 기존처럼 종료
+			bHealing = false;
+			AmountToHeal = 0.f;
+		}
+		else
+		{
+			// 지속형 힐링의 경우 현재 힐링을 중지하되 남은 양 저장
+			bHealing = false;
+			RemainingHealAmount = AmountToHeal;
+		}
 	}
 }
 
@@ -152,7 +207,8 @@ void UBuffComponent::ApplyBuff(EBuffType BuffType)
 	switch (BuffType)
 	{
 	case EBuffType::EBT_Health:
-		Heal(1800.f, 180.f);
+		// 얘만 지속 힐로
+		PersistentHeal(1800.f, 180.f);
 		break;
 	case EBuffType::EBT_Shield:
 		ReplenishShield(100.f, 5.f);

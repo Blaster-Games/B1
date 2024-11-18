@@ -11,6 +11,7 @@
 #include "Blaster/BlasterComponents/BuffComponent.h"
 #include "Blaster/BlasterComponents/CombatComponent.h"
 #include "GameFramework/GameState.h" 
+#include "Blaster/Weapon/WeaponTypes.h"
 
 
 namespace MatchState
@@ -34,10 +35,8 @@ void ABlasterGameMode::BeginPlay()
 			BlasterGS->SetMaxRounds(MaxRounds);
 		}
 	}
-	// Blaster 게임모드는 게임 시작 맵이 아닌 Blaster 맵에서만 사용됨.
-	// -> 따라서 게임을 시작할 때부터 Blaster 맵에 실제로 들어가기까지 얼마나 많은 시간이 걸렸는지 알 수 있음.
-	LevelStartingTime = GetWorld()->GetTimeSeconds();
 
+	KillReward = CalculateKillReward();
 
 }
 
@@ -46,9 +45,11 @@ void ABlasterGameMode::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	float CurrentTime = GetWorld()->GetTimeSeconds();
+
 	if (MatchState == MatchState::WaitingToStart)
 	{
-		CountdownTime = WarmupTime - GetWorld()->GetTimeSeconds() + LevelStartingTime;
+		CountdownTime = WarmupTime - (CurrentTime - StateStartTime);
 
 		if (CountdownTime <= 0.f)
 		{
@@ -57,7 +58,7 @@ void ABlasterGameMode::Tick(float DeltaTime)
 	}
 	else if (MatchState == MatchState::InProgress)
 	{
-		CountdownTime = WarmupTime + MatchTime - GetWorld()->GetTimeSeconds() + LevelStartingTime;
+		CountdownTime = MatchTime - (CurrentTime - StateStartTime);
 		if (CountdownTime <= 0.f)
 		{
 			if (bIsRoundBased)
@@ -72,7 +73,7 @@ void ABlasterGameMode::Tick(float DeltaTime)
 	}
 	else if (MatchState == MatchState::Cooldown)
 	{
-		CountdownTime = CooldownTime + WarmupTime + MatchTime - GetWorld()->GetTimeSeconds() + LevelStartingTime;
+		CountdownTime = CooldownTime - (CurrentTime - StateStartTime);
 		if (CountdownTime <= 0.f)
 		{
 			if (bIsRoundBased)
@@ -100,6 +101,8 @@ void ABlasterGameMode::OnMatchStateSet()
 {
 	Super::OnMatchStateSet();
 
+	StateStartTime = GetWorld()->GetTimeSeconds();
+
 	// 게임에 있는 모든 플레이어 컨트롤러를 가져와서 매치 상태를 알릴 수 있음.
 	// 플레이어 컨트롤러를 모두 모으려면 Iterator를 사용해야됨.
 	// 서버의 모든 플레이어 컨트롤러를 순환하고 매치 상태를 설정함.
@@ -113,6 +116,29 @@ void ABlasterGameMode::OnMatchStateSet()
 	}
 }
 
+
+void ABlasterGameMode::RestartPlayer(AController* NewPlayer)
+{
+	if (NewPlayer == nullptr || NewPlayer->IsPendingKillPending())
+	{
+		return;
+	}
+
+	AActor* SpawnPoint = FindSafestSpawnPoint();
+	if (SpawnPoint == nullptr)
+	{
+		// 안전한 스폰 포인트를 찾지 못했다면 이전 스폰 포인트 사용
+		if (NewPlayer->StartSpot != nullptr)
+		{
+			SpawnPoint = NewPlayer->StartSpot.Get();
+			UE_LOG(LogGameMode, Warning, TEXT("RestartPlayer: Safe spawn point not found, using last start spot"));
+		}
+	}
+
+	RestartPlayerAtPlayerStart(NewPlayer, SpawnPoint);
+}
+
+// 이것도 현재 접속하고 있는 애들만 리스폰을 시키도록 변경 필요.
 void ABlasterGameMode::ResetAllPlayers()
 {
 	for (FConstPlayerControllerIterator It = GetWorld()->GetPlayerControllerIterator(); It; ++It)
@@ -136,7 +162,6 @@ void ABlasterGameMode::ResetAllPlayers()
 		}
 	}
 
-	// 여기서 컴포넌트 초기화도 해줘야 된다???
 }
 
 void ABlasterGameMode::StartNewRound()
@@ -148,37 +173,64 @@ void ABlasterGameMode::StartNewRound()
 		BlasterGS->SetCurrentRound(NewRound);
 	}
 
-	LevelStartingTime = GetWorld()->GetTimeSeconds();
 	ResetAllPlayers();
 	AllPlayerApplyBuffs();
-	
+	CheckWeaponSlots();
 	SetMatchState(MatchState::InProgress);
 }
 
 void ABlasterGameMode::EndRound()
 {
-	// 라운드 종료 처리 (승자 결정 등)
 	if (ABlasterGameState* BlasterGS = GetGameState<ABlasterGameState>())
 	{
-		// 모든 플레이어의 버프 초기화
+		// 팀별 생존자 수 카운트
+		int32 RedTeamAlive = 0;
+		int32 BlueTeamAlive = 0;
+
 		for (APlayerState* PS : BlasterGS->PlayerArray)
 		{
 			if (ABlasterPlayerState* BPS = Cast<ABlasterPlayerState>(PS))
 			{
+				// 라운드 종료 보상 지급
+				BPS->SetMoney(BPS->GetMoney() + RoundReward);
+
+				// 버프 초기화
 				BPS->ClearBuff();
 
-				// 해당 플레이어의 캐릭터를 찾아서 수류탄 개수 저장
 				if (AMyBlasterCharacter* Character = Cast<AMyBlasterCharacter>(BPS->GetPawn()))
 				{
+					// 수류탄 개수 저장
 					if (UCombatComponent* Combat = Character->GetCombat())
 					{
 						Combat->SaveGrenadeCount();
 					}
+
+					// 살아있는 팀원 카운트
+					if (!Character->IsElimmed())
+					{
+						if (BPS->GetTeam() == ETeam::ET_RedTeam)
+						{
+							RedTeamAlive++;
+						}
+						else if (BPS->GetTeam() == ETeam::ET_BlueTeam)
+						{
+							BlueTeamAlive++;
+						}
+					}
 				}
 			}
 		}
-	}
-	
+
+		// 승자 결정 및 라운드 점수 업데이트
+		if (RedTeamAlive > BlueTeamAlive)
+		{
+			BlasterGS->RedTeamScores();
+		}
+		else if (BlueTeamAlive > RedTeamAlive)
+		{
+			BlasterGS->BlueTeamScores();
+		}
+	}	
 	SetMatchState(MatchState::Cooldown);
 }
 
@@ -208,6 +260,58 @@ void ABlasterGameMode::AllPlayerApplyBuffs()
 	}
 }
 
+bool ABlasterGameMode::IsTeamEliminated(ETeam Team) const
+{
+	ABlasterGameState* BlasterGS = GetGameState<ABlasterGameState>();
+	if (!BlasterGS) return false;
+
+	for (APlayerState* PS : BlasterGS->PlayerArray)
+	{
+		if (ABlasterPlayerState* BPS = Cast<ABlasterPlayerState>(PS))
+		{
+			if (BPS->GetTeam() == Team)
+			{
+				if (AMyBlasterCharacter* Character = Cast<AMyBlasterCharacter>(BPS->GetPawn()))
+				{
+					if (!Character->IsElimmed())
+					{
+						return false;
+					}
+				}
+			}
+		}
+	}
+	return true;
+}
+
+
+int32 ABlasterGameMode::GetTotalPlayerCount() const
+{
+	ABlasterGameState* BlasterGS = GetGameState<ABlasterGameState>();
+	return BlasterGS ? BlasterGS->PlayerArray.Num() : 0;
+}
+
+
+int32 ABlasterGameMode::CalculateKillReward()
+{
+	int32 TotalPlayers = GetTotalPlayerCount();
+	float RewardMultiplier = 1.0f;
+
+	// 플레이어 수가 적을수록 더 높은 보상
+	if (TotalPlayers <= 4)  // 2v2 이하
+	{
+		RewardMultiplier = 2.0f;  // 2배 보상
+	}
+	else if (TotalPlayers <= 6)  // 3v3
+	{
+		RewardMultiplier = 1.5f;  // 1.5배 보상
+	}
+	// 4v4 이상은 기본 보상
+
+	return FMath::RoundToInt(KillReward * RewardMultiplier);
+}
+
+
 bool ABlasterGameMode::ShouldRespawnPlayer() const
 {
 	// 라운드 기반 게임 이고 매치가 진행 중이면 리스폰하지 않음
@@ -231,7 +335,6 @@ void ABlasterGameMode::PlayerEliminated(AMyBlasterCharacter* ElimmedCharacter, A
 {
 	ABlasterPlayerState* AttackerPlayerState = AttackerController ? Cast<ABlasterPlayerState>(AttackerController->PlayerState) : nullptr;
 	ABlasterPlayerState* VictimPlayerState = VictimController ? Cast<ABlasterPlayerState>(VictimController->PlayerState) : nullptr;
-
 	ABlasterGameState* BlasterGameState = GetGameState<ABlasterGameState>();
 
 	if (AttackerPlayerState && AttackerPlayerState != VictimPlayerState && BlasterGameState)
@@ -244,6 +347,8 @@ void ABlasterGameMode::PlayerEliminated(AMyBlasterCharacter* ElimmedCharacter, A
 		}
 
 		AttackerPlayerState->AddToScore(1.f);
+		AttackerPlayerState->SetMoney(AttackerPlayerState->GetMoney() + KillReward);
+
 		BlasterGameState->UpdateTopScore(AttackerPlayerState);
 		if (BlasterGameState->TopScoringPlayers.Contains(AttackerPlayerState))
 		{
@@ -287,6 +392,17 @@ void ABlasterGameMode::PlayerEliminated(AMyBlasterCharacter* ElimmedCharacter, A
 			BlasterPlayer->BroadcastElim(AttackerPlayerState, VictimPlayerState);
 		}
 	}
+
+	if (bIsRoundBased)
+	{
+		bool bRedTeamEliminated = IsTeamEliminated(ETeam::ET_RedTeam);
+		bool bBlueTeamEliminated = IsTeamEliminated(ETeam::ET_BlueTeam);
+
+		if (bRedTeamEliminated || bBlueTeamEliminated)
+		{
+			EndRound();
+		}
+	}
 }
 
 void ABlasterGameMode::RequestRespawn(ACharacter* ElimmedCharacter, AController* ElimmedController)
@@ -303,11 +419,87 @@ void ABlasterGameMode::RequestRespawn(ACharacter* ElimmedCharacter, AController*
 	}
 	if (ElimmedController)
 	{
-		// 모든 actor를 가져오고 월드의 모든 플레이서 시작에 대한 포인터로 해당 배열을 채울 것임.
-		TArray<AActor*> PlayerStarts;
-		UGameplayStatics::GetAllActorsOfClass(this, APlayerStart::StaticClass(), PlayerStarts);
-		int32 Selection = FMath::RandRange(0, PlayerStarts.Num() - 1);
-		RestartPlayerAtPlayerStart(ElimmedController, PlayerStarts[Selection]);
+		AActor* SpawnPoint = FindSafestSpawnPoint();
+		RestartPlayerAtPlayerStart(ElimmedController, SpawnPoint);
+	}
+}
+
+AActor* ABlasterGameMode::FindSafestSpawnPoint()
+{
+	TArray<AActor*> PlayerStarts;
+	UGameplayStatics::GetAllActorsOfClass(this, APlayerStart::StaticClass(), PlayerStarts);
+
+	if (PlayerStarts.Num() == 0) return nullptr;
+
+	// 안전한 스폰 포인트들을 저장할 배열
+	TArray<AActor*> SafeSpawnPoints;
+	const float SafeRadius = 1000.f;
+
+	// 각 스폰 포인트 검사
+	for (AActor* Start : PlayerStarts)
+	{
+		bool bIsSafe = true;
+
+		// 주변 캐릭터 체크
+		TArray<AActor*> NearbyCharacters;
+		UGameplayStatics::GetAllActorsOfClass(this, AMyBlasterCharacter::StaticClass(), NearbyCharacters);
+
+		for (AActor* Actor : NearbyCharacters)
+		{
+			AMyBlasterCharacter* Character = Cast<AMyBlasterCharacter>(Actor);
+			if (!Character || Character->IsElimmed()) continue;
+
+			// 거리 계산
+			float Distance = FVector::Dist(Start->GetActorLocation(), Character->GetActorLocation());
+			if (Distance < SafeRadius)
+			{
+				bIsSafe = false;
+				break;
+			}
+		}
+
+		if (bIsSafe)
+		{
+			SafeSpawnPoints.Add(Start);
+		}
+	}
+
+	// 안전한 스폰 포인트 중 랜덤 선택
+	if (SafeSpawnPoints.Num() > 0)
+	{
+		int32 Selection = FMath::RandRange(0, SafeSpawnPoints.Num() - 1);
+		return SafeSpawnPoints[Selection];
+	}
+
+	// 안전한 지점이 없다면 기존처럼 랜덤 선택
+	int32 Selection = FMath::RandRange(0, PlayerStarts.Num() - 1);
+	return PlayerStarts[Selection];
+}
+
+void ABlasterGameMode::CheckWeaponSlots()
+{
+	ABlasterGameState* BlasterGS = GetGameState<ABlasterGameState>();
+	if (!BlasterGS) return;
+
+	// GameState에서 모든 플레이어의 무기 슬롯을 확인
+	for (APlayerState* PS : BlasterGS->PlayerArray)
+	{
+		if (ABlasterPlayerState* BlasterPS = Cast<ABlasterPlayerState>(PS))
+		{
+			FWeaponSlots WeaponSlots = BlasterPS->GetWeaponSlots();
+
+			// 슬롯 1 체크
+			if (WeaponSlots.Slot1Weapon != EWeaponType::EWT_MAX)
+			{
+				BlasterGS->AddWeaponPurchase(WeaponSlots.Slot1Weapon);
+			}
+
+			// 슬롯 2 체크
+			if (WeaponSlots.Slot2Weapon != EWeaponType::EWT_MAX)
+			{
+				BlasterGS->AddWeaponPurchase(WeaponSlots.Slot2Weapon);
+			}
+		}
 	}
 }
 

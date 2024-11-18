@@ -61,6 +61,9 @@ private:
 	UPROPERTY()
 	class ABlasterPlayerState* PlayerState;
 
+	UPROPERTY()
+	class ABlasterGameState* BlasterGameState;
+
 public:
 	// Character는 필요할 때마다 GetPawn()으로 가져오도록 변경
 	class AMyBlasterCharacter* GetCharacter() const;

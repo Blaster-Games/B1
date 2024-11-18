@@ -99,6 +99,9 @@ protected:
 	void DropOrDestroyWeapon(AWeapon* Weapon);
 	void DropOrDestroyWeapons();
 	void SetSpawnPoint();
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastSetSpawnRotation(const FVector& Location, const FRotator& Rotation);
+
 	void OnPlayerStateInitialized();
 
 	UFUNCTION()
@@ -187,7 +190,6 @@ private:
 	// 복제된 후에 클라이언트가 해야 할 작업을 정의
 	UFUNCTION()
 	void OnRep_OverlappingWeapon(AWeapon* LastWeapon);
-
 
 	/**
 	* Blaster components
@@ -406,6 +408,22 @@ private:
 	class ABlasterGameMode* BlasterGameMode;
 
 	FTimerHandle SpawnWeaponTimer;
+
+	/**
+	* 관전
+	*/
+	
+	void InitializeTeamSpectating();
+	// 관전 대상이 죽을 시를 대비해서
+	void UpdateSpectatorsOnDeath();
+	ABlasterPlayerController* GetSpectatingPlayerController(APlayerState* PS);
+	AMyBlasterCharacter* FindNewSpectatingTarget(ABlasterPlayerController* SpectatingPC);
+	void ViewPreviousTeammate();
+	void ViewNextTeammate();
+	void UpdateSpectatingTarget(bool bNext);
+	UFUNCTION(Server, Reliable)
+	void ServerUpdateSpectatingTarget(bool bNext);
+	void HandleSpectatingTargetChange(bool bNext);
 
 public:	
 	void SetOverlappingWeapon(AWeapon* Weapon);

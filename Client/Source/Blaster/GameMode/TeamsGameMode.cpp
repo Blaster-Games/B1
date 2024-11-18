@@ -124,13 +124,17 @@ void ATeamsGameMode::PlayerEliminated(AMyBlasterCharacter* ElimmedCharacter, ABl
 		return;
 	}
 
-	// 팀 점수 업데이트
-	if (AttackerPlayerState->GetTeam() == ETeam::ET_BlueTeam)
+	// 팀 점수 업데이트 (라운드 기반이 아닐 경우)
+	if (!bIsRoundBased)
 	{
-		BGameState->BlueTeamScores();
+		if (AttackerPlayerState->GetTeam() == ETeam::ET_BlueTeam)
+		{
+			BGameState->BlueTeamScores();
+		}
+		else if (AttackerPlayerState->GetTeam() == ETeam::ET_RedTeam)
+		{
+			BGameState->RedTeamScores();
+		}
 	}
-	else if (AttackerPlayerState->GetTeam() == ETeam::ET_RedTeam)
-	{
-		BGameState->RedTeamScores();
-	}
+	
 }
