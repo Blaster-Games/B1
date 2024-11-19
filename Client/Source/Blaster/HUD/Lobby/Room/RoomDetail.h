@@ -13,6 +13,14 @@ UCLASS()
 class BLASTER_API URoomDetail : public UUserWidget
 {
     GENERATED_BODY()
+
+public:
+    UFUNCTION()
+    void UpdateRoomInfo(const FRoomDetailInfo& RoomInfo);
+
+	UFUNCTION()
+	void TravelToHostServer(const FString& HostAddress, int32 HostPort);
+
 protected:
     virtual void NativeConstruct() override;
     virtual void NativeDestruct() override;
@@ -64,11 +72,6 @@ private:
 	UFUNCTION()
 	void OnLeaveGameButtonClicked();
 
-public:
-    UFUNCTION()
-    void UpdateRoomInfo(const FRoomDetailInfo& RoomInfo);
-
-    // UI 업데이트 헬퍼 함수들
 private:
     void UpdateUI();
     FString GetRoomTypeString(EGameMode RoomType) const;

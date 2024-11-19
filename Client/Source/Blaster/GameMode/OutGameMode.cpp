@@ -3,20 +3,36 @@
 #include "GameFramework/GameState.h"
 #include "GameInstance/BlasterGameInstance.h"
 #include "../HUD/Lobby/RoomTypes.h"
+#include "PlayerController/OutGamePlayerController.h"
 #include "Kismet/GameplayStatics.h"
 
 AOutGameMode::AOutGameMode()
 {
-    // BP_OutGamePlayerController는 이미 블루프린트에서 설정되어 있음
+    PlayerControllerClass = AOutGamePlayerController::StaticClass();
 }
 
 void AOutGameMode::PostLogin(APlayerController* NewPlayer)
 {
     Super::PostLogin(NewPlayer);
 
+    UE_LOG(LogTemp, Log, TEXT("PostLogin called - Player: %s, NetMode: %d"),
+        *GetNameSafe(NewPlayer), static_cast<int32>(GetNetMode()));
+
     if (GetNetMode() == NM_ListenServer)
     {
-        UE_LOG(LogTemp, Log, TEXT("Player logged in to listen server"));
+        if (GameState.Get()->PlayerArray.Num() == 1)
+        {
+            UE_LOG(LogTemp, Log, TEXT("Host logged in to listen server"));
+            // 호스트 관련 초기화 코드
+        }
+
+        // 현재 접속한 플레이어가 누구인지 확인
+        if (AOutGamePlayerController* PC = Cast<AOutGamePlayerController>(NewPlayer))
+        {
+            UE_LOG(LogTemp, Log, TEXT("Player logged in to listen server. PlayerNum: %d"),
+                GameState.Get()->PlayerArray.Num());
+        }
+
         CheckAndStartGame();
     }
 }
@@ -32,6 +48,8 @@ void AOutGameMode::CheckAndStartGame()
         const FRoomDetailInfo& RoomInfo = GameInstance->GetCurrentRoomInfo();
 
         UE_LOG(LogTemp, Log, TEXT("Checking players: %d/%d"), NumberOfPlayers, RoomInfo.MaxPlayers);
+
+        UE_LOG(LogTemp, Log, TEXT("Current Map Name from RoomInfo: '%s'"), *RoomInfo.MapName);
 
         // 필요한 플레이어 수가 모였는지 확인
         if (NumberOfPlayers >= RoomInfo.MaxPlayers)

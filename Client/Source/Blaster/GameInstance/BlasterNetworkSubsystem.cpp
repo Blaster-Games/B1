@@ -244,7 +244,8 @@ void UBlasterNetworkSubsystem::HandleCreateRoomRes(Protocol::S_CreateRoomRes& pa
         RoomInfo.RoomType = static_cast<EGameMode>(protoRoom.roomtype());
         RoomInfo.MaxPlayers = protoRoom.maxplayers();
         RoomInfo.State = static_cast<ERoomState>(protoRoom.state());
-        RoomInfo.MapName = UTF8_TO_TCHAR(protoRoom.mapname().c_str());
+        // TODO 맵이름 바꿔야됨
+        RoomInfo.MapName = UTF8_TO_TCHAR("HighRise");
         RoomInfo.HostPlayerId = protoRoom.hostplayerid();
 
         UE_LOG(LogTemp, Log, TEXT("[HandleCreateRoomRes] Room Details:"));
@@ -252,6 +253,7 @@ void UBlasterNetworkSubsystem::HandleCreateRoomRes(Protocol::S_CreateRoomRes& pa
         UE_LOG(LogTemp, Log, TEXT("\tRoom Name: %s"), *RoomInfo.RoomName);
         UE_LOG(LogTemp, Log, TEXT("\tMax Players: %d"), RoomInfo.MaxPlayers);
         UE_LOG(LogTemp, Log, TEXT("\tHost Player ID: %d"), RoomInfo.HostPlayerId);
+        UE_LOG(LogTemp, Log, TEXT("\tMap Name: %s"), *RoomInfo.MapName);
 
         // 플레이어 정보 복사
         for (const auto& protoPlayer : protoRoom.players())
@@ -306,7 +308,7 @@ void UBlasterNetworkSubsystem::HandleJoinRoomRes(Protocol::S_JoinRoomRes& packet
         RoomInfo.RoomType = static_cast<EGameMode>(protoRoom.roomtype());
         RoomInfo.MaxPlayers = protoRoom.maxplayers();
         RoomInfo.State = static_cast<ERoomState>(protoRoom.state());
-        RoomInfo.MapName = UTF8_TO_TCHAR(protoRoom.mapname().c_str());
+        RoomInfo.MapName = UTF8_TO_TCHAR("HighRise");
         RoomInfo.HostPlayerId = protoRoom.hostplayerid();
 
         UE_LOG(LogTemp, Log, TEXT("[HandleJoinRoomRes] Room Details:"));
@@ -363,7 +365,7 @@ void UBlasterNetworkSubsystem::HandleBroadcastJoinRoom(Protocol::S_BroadcastJoin
     RoomInfo.RoomType = static_cast<EGameMode>(packet.room().roomtype());
     RoomInfo.MaxPlayers = packet.room().maxplayers();
     RoomInfo.State = static_cast<ERoomState>(packet.room().state());
-    RoomInfo.MapName = FString(UTF8_TO_TCHAR(packet.room().mapname().c_str()));
+    RoomInfo.MapName = FString(UTF8_TO_TCHAR("HighRise"));
     RoomInfo.HostPlayerId = packet.room().hostplayerid();
 
     // Players 배열 변환
@@ -432,7 +434,7 @@ void UBlasterNetworkSubsystem::HandleBroadcastStartGame(Protocol::S_BroadcastSta
 	FString HostAddress = UTF8_TO_TCHAR(packet.hostaddress().c_str());
 	int32 HostPort = packet.port();
 
-	//OnBroadcastStartGame.Broadcast(HostAddress, Port);
+	OnBroadcastStartGame.Broadcast(HostAddress, HostPort);
 }
 
 void UBlasterNetworkSubsystem::HandlePing()

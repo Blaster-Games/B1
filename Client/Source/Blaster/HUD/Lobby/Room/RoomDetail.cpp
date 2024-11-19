@@ -48,6 +48,7 @@ void URoomDetail::NativeConstruct()
     if (UBlasterNetworkSubsystem* NS = GetNetworkSubsystem())
     {
         NS->OnBroadcastJoinRoom.AddDynamic(this, &URoomDetail::UpdateRoomInfo);
+		NS->OnBroadcastStartGame.AddDynamic(this, &URoomDetail::TravelToHostServer);
     }
 }
 void URoomDetail::NativeDestruct()
@@ -99,6 +100,20 @@ void URoomDetail::UpdateRoomInfo(const FRoomDetailInfo& RoomInfo)
     else
     {
         UE_LOG(LogTemp, Error, TEXT("RoomDetail: Failed to get BlasterGameInstance"));
+    }
+}
+
+void URoomDetail::TravelToHostServer(const FString& HostAddress, int32 HostPort)
+{
+    UE_LOG(LogTemp, Log, TEXT("Attempting to join host server at %s:%d"), *HostAddress, HostPort);
+
+    if (UBlasterGameInstance* GameInstance = Cast<UBlasterGameInstance>(GetGameInstance()))
+    {
+        GameInstance->JoinGame(HostAddress, HostPort);
+    }
+    else
+    {
+        UE_LOG(LogTemp, Error, TEXT("Failed to get GameInstance while trying to join host server"));
     }
 }
 

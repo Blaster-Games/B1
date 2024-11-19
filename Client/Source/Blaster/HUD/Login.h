@@ -19,6 +19,7 @@ protected:
     void HandleLoginFailed(const FString& ErrorMessage);
 
     virtual void NativeConstruct() override;
+	virtual void NativeDestruct() override;
 
     UPROPERTY(meta = (BindWidget))
     UEditableTextBox* EmailTextBox;

@@ -13,6 +13,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnJoinRoomResponseDelegate, bool, 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnRoomChatMessageDelegate, int32, PlayerId, const FString&, PlayerName, const FString&, Message);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnConfirmCreateRoomResponseDelegate, bool, Success, const FRoomDetailInfo&, RoomInfo);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnBroadcastJoinRoom, const FRoomDetailInfo&, RoomInfo);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnBroadcastStartGameDelegate, const FString&, HostAddress, int32, Port);
 
 UCLASS()
 class BLASTER_API UBlasterNetworkSubsystem : public UGameInstanceSubsystem
@@ -45,6 +46,9 @@ public:
 
     UPROPERTY(BlueprintAssignable, Category = "Network|Lobby")
     FOnConfirmCreateRoomResponseDelegate OnConfirmCreateRoomResponse;
+
+	UPROPERTY(BlueprintAssignable, Category = "Network|Game")
+	FOnBroadcastStartGameDelegate OnBroadcastStartGame;
 
 
 public:

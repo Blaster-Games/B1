@@ -21,6 +21,24 @@ void ULogin::NativeConstruct()
             WebSubsystem->OnLoginFailed.AddDynamic(this, &ULogin::HandleLoginFailed);
         }
     }
+
+    // 위젯 설정
+    SetVisibility(ESlateVisibility::Visible);
+    bIsFocusable = true;
+}
+
+void ULogin::NativeDestruct()
+{
+	if (UGameInstance* GameInstance = GetGameInstance())
+	{
+		if (UBlasterWebSubsystem* WebSubsystem = GameInstance->GetSubsystem<UBlasterWebSubsystem>())
+		{
+			WebSubsystem->OnLoginSuccess.RemoveDynamic(this, &ULogin::HandleLoginSuccess);
+			WebSubsystem->OnLoginFailed.RemoveDynamic(this, &ULogin::HandleLoginFailed);
+		}
+	}
+
+	Super::NativeDestruct();
 }
 
 void ULogin::OnLoginButtonClicked()
