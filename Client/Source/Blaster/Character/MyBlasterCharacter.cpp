@@ -28,6 +28,8 @@
 #include "Blaster/GameState/BlasterGameState.h"
 #include "Blaster/PlayerStart/TeamPlayerStart.h"
 #include "Components/ArrowComponent.h"
+#include "Blaster/HUD/OverheadWidget.h"
+#include "Blaster/GameInstance/BlasterGameInstance.h"
 
 AMyBlasterCharacter::AMyBlasterCharacter()
 {
@@ -49,6 +51,7 @@ AMyBlasterCharacter::AMyBlasterCharacter()
 
 	OverheadWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("OverheadWidget"));
 	OverheadWidget->SetupAttachment(RootComponent);
+
 
 	Combat = CreateDefaultSubobject<UCombatComponent>(TEXT("CombatComponent"));
 	// Combat을 통해 우리 캐릭터의 모든 전투 관련 기능을 처리할 것이다. 즉, 전투 구성 요소에 복제될 변수가 있다는 의미!
@@ -684,6 +687,12 @@ void AMyBlasterCharacter::BeginPlay()
 	{
 		AttachedGrenade->SetVisibility(false);
 	}
+
+	GameInstance = Cast<UBlasterGameInstance>(GetGameInstance());
+	if (GameInstance)
+	{
+		UpdateSensitivityMultiplier();
+	}
 }
 
 void AMyBlasterCharacter::Tick(float DeltaTime)
@@ -692,6 +701,7 @@ void AMyBlasterCharacter::Tick(float DeltaTime)
 	RotateInPlace(DeltaTime);
 	HideCameraIfCharacterClose();
 	PollInit();
+	UpdateOverheadWidget();
 }
 
 void AMyBlasterCharacter::RotateInPlace(float DeltaTime)
@@ -987,12 +997,12 @@ void AMyBlasterCharacter::MoveRight(float Value)
 
 void AMyBlasterCharacter::Turn(float Value)
 {
-	AddControllerYawInput(Value);
+	AddControllerYawInput(Value * CurrentSensitivityMultiplier);
 }
 
 void AMyBlasterCharacter::LookUp(float Value)
 {
-	AddControllerPitchInput(Value);
+	AddControllerPitchInput(Value * CurrentSensitivityMultiplier);
 }
 
 void AMyBlasterCharacter::EquipButtonPressed()
@@ -1487,6 +1497,36 @@ TSubclassOf<AWeapon> AMyBlasterCharacter::GetWeaponClass(EWeaponType WeaponType)
 	return WeaponClass;
 }
 
+bool AMyBlasterCharacter::IsSniperAiming() const
+{
+	return IsLocallyControlled() &&
+		Combat &&
+		Combat->bAiming &&
+		Combat->EquippedWeapon &&
+		Combat->EquippedWeapon->GetWeaponType() == EWeaponType::EWT_SniperRifle;
+}
+
+void AMyBlasterCharacter::UpdateSensitivityMultiplier()
+{
+	if (GameInstance)
+	{
+		const FSensitivitySettings& Settings = GameInstance->GetSensitivitySettings();
+
+		if (IsSniperAiming())
+		{
+			CurrentSensitivityMultiplier = Settings.ScopedSensitivity / 10.f;
+		}
+		else if (Combat && Combat->bAiming)
+		{
+			CurrentSensitivityMultiplier = Settings.AimSensitivity / 10.f;
+		}
+		else
+		{
+			CurrentSensitivityMultiplier = Settings.Sensitivity / 10.f;
+		}
+	}
+}
+
 // 서버는 적용이 안되는 것을 보완하기 위한.
 // 클라이언트 측에서 추가 로직을 수행!!!!!!!
 // 이렇게 하면 담당자 알림이 서버에서 호출되지 않기 때문에 서버에서 위젯을 가져오지 않음
@@ -1505,6 +1545,22 @@ void AMyBlasterCharacter::SetOverlappingWeapon(AWeapon* Weapon)
 			OverlappingWeapon->ShowPickupWidget(true);
 		}
 	}
+}
+
+void AMyBlasterCharacter::UpdateOverheadWidget()
+{
+	if (!OverheadWidget) return;
+
+	// 현재 로컬 플레이어 컨트롤러 가져오기
+	APlayerController* LocalController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+	if (!LocalController || !LocalController->GetPawn()) return;
+
+	// 위젯 가져오기
+	UOverheadWidget* Widget = Cast<UOverheadWidget>(OverheadWidget->GetUserWidgetObject());
+	if (!Widget) return;
+
+	// 가시성 업데이트
+	Widget->UpdateVisibility(LocalController->GetPawn(), this);
 }
 
 void AMyBlasterCharacter::OnRep_OverlappingWeapon(AWeapon* LastWeapon)

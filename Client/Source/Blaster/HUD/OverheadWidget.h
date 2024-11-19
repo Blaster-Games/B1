@@ -1,29 +1,28 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
 #include "OverheadWidget.generated.h"
-
 /**
- * 
+ *
  */
 UCLASS()
 class BLASTER_API UOverheadWidget : public UUserWidget
 {
-	GENERATED_BODY()
-	
+    GENERATED_BODY()
+
 public:
-	UPROPERTY(meta = (BindWidget))
-	class UTextBlock* DisplayText;
+    UPROPERTY(meta = (BindWidget))
+    class UTextBlock* DisplayText;
 
-	void SetDisplayText(FString TextToDisplay);
+    void SetDisplayText(FString TextToDisplay);
 
-	UFUNCTION(BlueprintCallable)
-	void ShowPlayerNetRole(APawn* InPawn);
+    UFUNCTION(BlueprintCallable)
+    void ShowPlayerNetRole(APawn* InPawn);
+
+    void UpdateVisibility(APawn* LocalPawn, APawn* TargetPawn);
 
 protected:
-	// (πˆ¿¸ø° µ˚∏• ∫Ø∞Ê) Override NativeDestruct instead of OnLevelRemovedFromWorld 
-	virtual void NativeDestruct() override;
+    // (Î≤ÑÏ†ÑÏóê Îî∞Î•∏ Î≥ÄÍ≤Ω) Override NativeDestruct instead of OnLevelRemovedFromWorld 
+    virtual void NativeDestruct() override;
 };

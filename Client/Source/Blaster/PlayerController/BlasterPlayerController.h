@@ -53,6 +53,8 @@ public:
 	// 멀티캐스트 RPC가 이에 적합하다고 생각할 수도 있지만, 특정 플레이어 컨트롤러에서
 	// 이것을 호출하는 경우 플레이어 컨트롤러를 소유한 클라만 메시지를 수신하길 원함.
 	void BroadcastElim(APlayerState* Attacker, APlayerState* Victim);
+
+	bool bReturnToMainMenuOpen = false;
 protected:
 	virtual void BeginPlay() override;
 	void SetHUDTime();
@@ -128,7 +130,7 @@ private:
 	UPROPERTY()
 	class UReturnToMainMenu* ReturnToMainMenu;
 	
-	bool bReturnToMainMenuOpen = false;
+	
 
 	UPROPERTY()
 	class UScoreBoard* ScoreBoardWidget;

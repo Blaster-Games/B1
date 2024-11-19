@@ -75,6 +75,11 @@ public:
 
 	void SetTeamColor(ETeam Team);
 
+	// 상태 변경 시 감도 업데이트
+	void UpdateSensitivityMultiplier();
+
+	bool IsSniperAiming() const;
+
 protected:
 	virtual void BeginPlay() override;
 	void MoveForward(float Value);
@@ -182,6 +187,8 @@ private:
 	// "AllowPrivateAccess = true"로 설정하여 클래스 내부에서만 접근 가능하게 함.
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	class UWidgetComponent* OverheadWidget;
+
+	void UpdateOverheadWidget();
 
 	// 값이 변하자마자 복제될 것임. (모든 MyBlasterCharacter에 변수가 설정됨.)
 	UPROPERTY(ReplicatedUsing = OnRep_OverlappingWeapon) // 값이 바뀔 때 OnRep_OverlappingWeapon함수 호출.
@@ -424,6 +431,19 @@ private:
 	UFUNCTION(Server, Reliable)
 	void ServerUpdateSpectatingTarget(bool bNext);
 	void HandleSpectatingTargetChange(bool bNext);
+
+	/**
+	* Settings
+	*/
+
+	
+
+	UPROPERTY()
+	class UBlasterGameInstance* GameInstance;
+
+	float CurrentSensitivityMultiplier = 1.0f;  // 현재 적용 중인 감도 배율
+
+	
 
 public:	
 	void SetOverlappingWeapon(AWeapon* Weapon);

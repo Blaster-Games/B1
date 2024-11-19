@@ -3,6 +3,7 @@
 #include "Engine/GameInstance.h"
 #include "Blaster.h"
 #include "HUD/Lobby/RoomTypes.h"
+#include "Blaster/Save/BlasterSaveSettings.h"
 #include "BlasterGameInstance.generated.h"
 
 UCLASS()
@@ -77,6 +78,25 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "User")
 	void SetPlayerId(int32 NewPlayerId) { PlayerId = NewPlayerId; }
 
+    /**
+    * Settings - 아니면 settings 관련 로직을 따로 별도의 서브시스템으로 분리를 해도 될 듯
+    */
+
+
+
+    UFUNCTION(BlueprintCallable)
+    const FSensitivitySettings& GetSensitivitySettings() const { return SensitivitySettings; }
+
+    UFUNCTION(BlueprintCallable)
+    void SetSensitivitySettings(const FSensitivitySettings& NewSettings);
+
+    UFUNCTION(BlueprintCallable)
+    void SaveSettings();
+
+    UFUNCTION(BlueprintCallable)
+    void LoadSettings();
+
+
 private:
 	//UPROPERTY(Config)
 	//FString DefaultServerIP = TEXT("147.185.221.23");
@@ -102,4 +122,6 @@ private:
 	FString Nickname;
 	int32 UserId;
 	int32 PlayerId;
+
+	FSensitivitySettings SensitivitySettings;
 };
