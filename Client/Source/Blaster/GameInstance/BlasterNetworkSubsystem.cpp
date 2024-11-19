@@ -218,7 +218,7 @@ void UBlasterNetworkSubsystem::HandleRoomListRes(Protocol::S_RoomListRes& packet
         RoomInfo.CurrentPlayers = protoRoom.currentplayers();
         RoomInfo.MaxPlayers = protoRoom.maxplayers();
         RoomInfo.State = static_cast<ERoomState>(protoRoom.state());
-        RoomInfo.MapName = FString(UTF8_TO_TCHAR("HighRise"));
+        RoomInfo.MapName = FString(UTF8_TO_TCHAR("Highrise"));
 
         // 각 방의 상세 정보 로깅
         UE_LOG(LogTemp, Log, TEXT("[NetworkSubsystem] Room Detail:"
@@ -253,7 +253,7 @@ void UBlasterNetworkSubsystem::HandleRoomListRes(Protocol::S_RoomListRes& packet
 void UBlasterNetworkSubsystem::SendCreateRoomReq(const FString& Title, EGameMode GameMode, int32 MaxPlayers)
 {
     Protocol::C_CreateRoomReq CreateRoomPacket;
-    CreateRoomPacket.set_mapname("temp map");
+    CreateRoomPacket.set_mapname("Highrise");
     CreateRoomPacket.set_title(TCHAR_TO_UTF8(*Title));
     CreateRoomPacket.set_mode(static_cast<Protocol::EGameMode>(GameMode));
     CreateRoomPacket.set_maxplayers(MaxPlayers);
@@ -344,7 +344,7 @@ void UBlasterNetworkSubsystem::HandleJoinRoomRes(Protocol::S_JoinRoomRes& packet
         RoomInfo.RoomType = static_cast<EGameMode>(protoRoom.roomtype());
         RoomInfo.MaxPlayers = protoRoom.maxplayers();
         RoomInfo.State = static_cast<ERoomState>(protoRoom.state());
-        RoomInfo.MapName = UTF8_TO_TCHAR(protoRoom.mapname().c_str());
+        RoomInfo.MapName = UTF8_TO_TCHAR("Highrise");
         RoomInfo.HostPlayerId = protoRoom.hostplayerid();
 
         UE_LOG(LogTemp, Log, TEXT("[HandleJoinRoomRes] Room Details:"));
@@ -401,7 +401,7 @@ void UBlasterNetworkSubsystem::HandleBroadcastJoinRoom(Protocol::S_BroadcastJoin
     RoomInfo.RoomType = static_cast<EGameMode>(packet.room().roomtype());
     RoomInfo.MaxPlayers = packet.room().maxplayers();
     RoomInfo.State = static_cast<ERoomState>(packet.room().state());
-    RoomInfo.MapName = FString(UTF8_TO_TCHAR(packet.room().mapname().c_str()));
+    RoomInfo.MapName = FString(UTF8_TO_TCHAR("Highrise"));
     RoomInfo.HostPlayerId = packet.room().hostplayerid();
 
     // Players 배열 변환

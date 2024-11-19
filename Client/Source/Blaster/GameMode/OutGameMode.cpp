@@ -56,21 +56,18 @@ void AOutGameMode::CheckAndStartGame()
         {
             UE_LOG(LogTemp, Log, TEXT("All players connected. Starting game..."));
 
-            // 게임 맵으로 이동
+            // URL에 게임모드 파라미터 추가
             FString GameMapPath;
             if (RoomInfo.MapName.StartsWith(TEXT("/Game/")))
             {
-                GameMapPath = FString::Printf(TEXT("%s?listen"), *RoomInfo.MapName);
+                GameMapPath = FString::Printf(TEXT("%s?listen?game=/Game/Blueprints/GameModes/BP_BlasterGameMode"), *RoomInfo.MapName);
             }
             else
             {
-                GameMapPath = FString::Printf(TEXT("/Game/Maps/%s?listen"), *RoomInfo.MapName);
+                GameMapPath = FString::Printf(TEXT("/Game/Maps/%s?listen?game=/Game/Blueprints/GameModes/BP_BlasterGameMode"), *RoomInfo.MapName);
             }
 
-            // 심리스 트래블 사용
-            bUseSeamlessTravel = true;
-
-            // 서버 트래블 실행
+            bUseSeamlessTravel = false;
             GetWorld()->ServerTravel(GameMapPath);
         }
     }
