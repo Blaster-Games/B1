@@ -30,6 +30,7 @@ namespace GameServer
 
             S_AuthRes resPacket = new S_AuthRes();
             resPacket.Success = true;
+            resPacket.PlayerId = Player.PlayerId;
 
             Send(resPacket);
         }
@@ -100,6 +101,19 @@ namespace GameServer
                         {
                             Console.WriteLine($"[HandleCreateRoomReq] 방 입장 결과 - 성공여부: {success}");
 
+                            // 플레이어 정보 상세 로깅
+                            var playerInfos = createdRoom.GetPlayerInfos();
+                            Console.WriteLine("\n[Player Details]");
+                            foreach (var player in playerInfos)
+                            {
+                                Console.WriteLine($"플레이어 ID: {player.PlayerId}" +
+                                    $"\n\t이름: {player.PlayerName}" +
+                                    $"\n\t호스트 여부: {player.IsHost}" +
+                                    $"\n\t팀: {player.Team}" +
+                                    $"\n\t슬롯 번호: {player.SlotNumber}" +
+                                    "\n----------------------------------------");
+                            }
+
                             S_CreateRoomRes resPacket = new S_CreateRoomRes()
                             {
                                 Success = success,
@@ -112,7 +126,7 @@ namespace GameServer
                                     State = createdRoom.State,
                                     MapName = createdRoom.MapName,
                                     HostPlayerId = createdRoom.Host?.PlayerId ?? 0,
-                                    Players = { createdRoom.GetPlayerInfos() }
+                                    Players = { playerInfos }
                                 }
                             };
 
@@ -140,6 +154,18 @@ namespace GameServer
                     resPacket.Room = room.ToRoomDetail();
                 }
                 Console.WriteLine($"[HandleJoinRoomReq] Sending response packet - Success: {resPacket.Success}");
+
+                var playerInfos = room.GetPlayerInfos();
+                Console.WriteLine("\n[Player Details]");
+                foreach (var player in playerInfos)
+                {
+                    Console.WriteLine($"플레이어 ID: {player.PlayerId}" +
+                        $"\n\t이름: {player.PlayerName}" +
+                        $"\n\t호스트 여부: {player.IsHost}" +
+                        $"\n\t팀: {player.Team}" +
+                        $"\n\t슬롯 번호: {player.SlotNumber}" +
+                        "\n----------------------------------------");
+                }
                 Send(resPacket);
             });
         }
@@ -176,20 +202,20 @@ namespace GameServer
             int hostPort = reqPacket.Port;
 
             // 로그: 게임 시작 요청
-            Console.WriteLine($"[HandleSelectRoomReq] Received game start request from Player {Player.PlayerId} ({Player.PlayerName})");
+            Console.WriteLine($"[HandleStartRoomReq] Received game start request from Player {Player.PlayerId} ({Player.PlayerName})");
 
             if (currentGameRoom == null)
             {
-                Console.WriteLine($"[HandleSelectRoomReq] Error: Player {Player.PlayerId} is not in any room");
+                Console.WriteLine($"[HandleStartRoomReq] Error: Player {Player.PlayerId} is not in any room");
                 return;
             }
 
             // 로그: 게임룸 정보
-            Console.WriteLine($"[HandleSelectRoomReq] GameRoom ID: {currentGameRoom.GameRoomId}");
+            Console.WriteLine($"[HandleStartRoomReq] GameRoom ID: {currentGameRoom.GameRoomId}");
 
             currentGameRoom.Push(() =>
             {
-                Console.WriteLine($"[HandleSelectRoomReq] Pushing game start task to room {currentGameRoom.GameRoomId}");
+                Console.WriteLine($"[HandleStartRoomReq] Pushing game start task to room {currentGameRoom.GameRoomId}");
                 currentGameRoom.StartGame(hostAddress, hostPort);
             });
         }

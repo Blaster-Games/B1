@@ -21,10 +21,10 @@ void UBlasterNetworkSubsystem::Deinitialize()
 
 void UBlasterNetworkSubsystem::LoadNetworkSettings()
 {
-    if (UBlasterGameInstance* GameInst = Cast<UBlasterGameInstance>(GetGameInstance()))
+    if (UBlasterGameInstance* GameInstance = Cast<UBlasterGameInstance>(GetGameInstance()))
     {
-        IpAddress = GameInst->DefaultServerIP;
-        Port = GameInst->DefaultServerPort;
+        IpAddress = GameInstance->GetDefaultServerIP();
+        Port = GameInstance->GetDefaultServerPort();
     }
 }
 
@@ -107,23 +107,13 @@ void UBlasterNetworkSubsystem::SendAuthReq()
     // 게임 인스턴스에서 값 가져오기
     if (UBlasterGameInstance* GameInst = Cast<UBlasterGameInstance>(GetGameInstance()))
     {
-        AuthReq.set_jwt(TCHAR_TO_UTF8(*GameInst->AccessToken));
-        AuthReq.set_accountdbid(GameInst->UserId);
-        AuthReq.set_nickname(TCHAR_TO_UTF8(*GameInst->Nickname));
-
-        // 패킷 데이터 검증 로그 추가
-        UE_LOG(LogTemp, Log, TEXT("[NetworkSubsystem] SendAuthReq - JWT: %s, AccountDbId: %d, Nickname: %s"),
-            *GameInst->AccessToken, GameInst->UserId, *GameInst->Nickname);
+        AuthReq.set_jwt(TCHAR_TO_UTF8(*GameInst->GetAccessToken()));
+        AuthReq.set_accountdbid(GameInst->GetUserId());
+        AuthReq.set_nickname(TCHAR_TO_UTF8(*GameInst->GetNickname()));
 
         // Protocol Buffer 객체 검증
         UE_LOG(LogTemp, Log, TEXT("[NetworkSubsystem] Protocol Buffer - Nickname set: %s"),
             UTF8_TO_TCHAR(AuthReq.nickname().c_str()));
-
-        // 화면에도 디버그 메시지 표시 (선택사항)
-        GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green,
-            FString::Printf(TEXT("Sending Auth - ID: %d : Nickname: %s"),
-                GameInst->UserId,
-                *GameInst->Nickname));
     }
     else
     {
@@ -326,19 +316,26 @@ void UBlasterNetworkSubsystem::HandleJoinRoomRes(Protocol::S_JoinRoomRes& packet
         UE_LOG(LogTemp, Log, TEXT("\tHost Player ID: %d"), RoomInfo.HostPlayerId);
 
         // 플레이어 정보 복사
-        for (const auto& protoPlayer : protoRoom.players())
+        for (const auto& player : protoRoom.players())
         {
             FPlayerInfo PlayerInfo;
-            PlayerInfo.PlayerId = protoPlayer.playerid();
-            PlayerInfo.PlayerName = UTF8_TO_TCHAR(protoPlayer.playername().c_str());
-            PlayerInfo.IsHost = protoPlayer.ishost();
-            PlayerInfo.Team = static_cast<ETeamType>(protoPlayer.team());
+            PlayerInfo.PlayerId = player.playerid();
+            PlayerInfo.PlayerName = UTF8_TO_TCHAR(player.playername().c_str());
+            PlayerInfo.IsHost = player.ishost();
+            PlayerInfo.Team = static_cast<ETeamType>(player.team());
+            PlayerInfo.SlotNumber = player.slotnumber();
             RoomInfo.Players.Add(PlayerInfo);
 
-            UE_LOG(LogTemp, Log, TEXT("\tPlayer: ID=%d, Name=%s, IsHost=%s"),
-                PlayerInfo.PlayerId,
-                *PlayerInfo.PlayerName,
-                PlayerInfo.IsHost ? TEXT("true") : TEXT("false"));
+            UE_LOG(LogTemp, Log, TEXT("Received from server - PlayerName: %s, SlotNumber raw: %d"),
+                *FString(UTF8_TO_TCHAR(player.playername().c_str())),
+                player.slotnumber());
+
+            UE_LOG(LogTemp, Log, TEXT("\tPlayer: ID=%d, Name=%s, IsHost=%s, SlotNumber=%d"),
+                player.playerid(),
+                *FString(UTF8_TO_TCHAR(player.playername().c_str())),
+                player.ishost() ? TEXT("true") : TEXT("false"),
+                player.slotnumber()
+            );
         }
     }
     else
@@ -378,7 +375,20 @@ void UBlasterNetworkSubsystem::HandleBroadcastJoinRoom(Protocol::S_BroadcastJoin
         playerInfo.PlayerName = FString(UTF8_TO_TCHAR(player.playername().c_str()));
         playerInfo.IsHost = player.ishost();
         playerInfo.Team = static_cast<ETeamType>(player.team());
+		playerInfo.SlotNumber = player.slotnumber();
         RoomInfo.Players.Add(playerInfo);
+
+        UE_LOG(LogTemp, Log, TEXT("Received from server - PlayerName: %s, SlotNumber raw: %d"),
+            *FString(UTF8_TO_TCHAR(player.playername().c_str())),
+            player.slotnumber());
+
+        // SlotNumber 로깅
+        UE_LOG(LogTemp, Log, TEXT("\tPlayer: ID=%d, Name=%s, IsHost=%s, SlotNumber=%d"),
+            player.playerid(),
+            *FString(UTF8_TO_TCHAR(player.playername().c_str())),
+            player.ishost() ? TEXT("true") : TEXT("false"),
+            player.slotnumber()
+        );
     }
 	OnBroadcastJoinRoom.Broadcast(RoomInfo);
 }
@@ -419,6 +429,10 @@ void UBlasterNetworkSubsystem::HandleStartGameRes(Protocol::S_StartGameRes& pack
 
 void UBlasterNetworkSubsystem::HandleBroadcastStartGame(Protocol::S_BroadcastStartGame& packet)
 {
+	FString HostAddress = UTF8_TO_TCHAR(packet.hostaddress().c_str());
+	int32 HostPort = packet.port();
+
+	//OnBroadcastStartGame.Broadcast(HostAddress, Port);
 }
 
 void UBlasterNetworkSubsystem::HandlePing()

@@ -20,8 +20,8 @@ void UBlasterWebSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 {
     Super::Initialize(Collection);
     HttpModule = &FHttpModule::Get();
-    //BaseUrl = TEXT("https://native-pika-possibly.ngrok-free.app");
-    BaseUrl = TEXT("http://localhost:8080");
+    BaseUrl = TEXT("https://native-pika-possibly.ngrok-free.app");
+    //BaseUrl = TEXT("http://localhost:8080");
 }
 
 void UBlasterWebSubsystem::Deinitialize()
@@ -109,7 +109,7 @@ void UBlasterWebSubsystem::SendMatchStats(const ABlasterGameState* GameState)
     // 인증 토큰 추가
     if (UBlasterGameInstance* BlasterGameInstance = Cast<UBlasterGameInstance>(GetGameInstance()))
     {
-        const FString AuthHeader = FString(BEARER_PREFIX) + BlasterGameInstance->AccessToken;
+        const FString AuthHeader = FString(BEARER_PREFIX) + BlasterGameInstance->GetAccessToken();
         Request->SetHeader(AUTH_HEADER, AuthHeader);
     }
 
@@ -156,10 +156,10 @@ void UBlasterWebSubsystem::OnLoginResponse(FHttpRequestPtr Request, FHttpRespons
             {
                 if (UBlasterGameInstance* BlasterGameInstance = Cast<UBlasterGameInstance>(GameInstance))
                 {
-                    BlasterGameInstance->Nickname = JsonObject->GetStringField(FIELD_NICKNAME);
-                    BlasterGameInstance->UserId = JsonObject->GetIntegerField(FIELD_ID);
-                    BlasterGameInstance->AccessToken = JsonObject->GetStringField(FIELD_ACCESS_TOKEN);
-                    BlasterGameInstance->RefreshToken = JsonObject->GetStringField(FIELD_REFRESH_TOKEN);
+                    BlasterGameInstance->SetNickname(JsonObject->GetStringField(FIELD_NICKNAME));
+                    BlasterGameInstance->SetUserId(JsonObject->GetIntegerField(FIELD_ID));
+                    BlasterGameInstance->SetAccessToken(JsonObject->GetStringField(FIELD_ACCESS_TOKEN));
+                    BlasterGameInstance->SetRefreshToken(JsonObject->GetStringField(FIELD_REFRESH_TOKEN));
                 }
             }
             HandleLoginSuccess();

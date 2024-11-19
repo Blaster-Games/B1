@@ -10,20 +10,26 @@ namespace GameServer
 {
     public class GameLogic : JobSerializer
     {
+        #region Singleton
         private static readonly Lazy<GameLogic> _instance = new Lazy<GameLogic>(() => new GameLogic());
         public static GameLogic Instance { get { return _instance.Value; } }
+        #endregion
 
-        // 게임룸 관련
-        static readonly Dictionary<int, GameRoom> _rooms = new Dictionary<int, GameRoom>();
-        static int _roomIdGenerator = 1;
-        static int _threadCount;
-        static public ConcurrentQueue<GameRoom> _updateQueue = new ConcurrentQueue<GameRoom>();
+        #region Fields
+        // Room 관련
+        private static Dictionary<int, GameRoom> _rooms = new Dictionary<int, GameRoom>();
+        private static int _roomIdGenerator = 1;
+        private static int _threadCount;
+        public static ConcurrentQueue<GameRoom> _updateQueue = new ConcurrentQueue<GameRoom>();
 
-        // 로비 관련
-        static LobbyRoom _lobbyRoom;
+        // Lobby 관련 
+        private static LobbyRoom _lobbyRoom;
 
-        static readonly object _roomLock = new object();
+        // Locks
+        private static readonly object _roomLock = new object();
+        #endregion
 
+        #region Constructors
         static GameLogic()
         {
             Console.WriteLine("Static 생성자 실행");
@@ -38,9 +44,9 @@ namespace GameServer
             _lobbyRoom = new LobbyRoom();
             _lobbyRoom.Init();
         }
+        #endregion
 
-        #region 룸 관리
-
+        #region Room Management
         public List<RoomListItemInfo> GetRoomListItems()
         {
             Console.WriteLine($"방 목록 요청 - 현재 총 방 개수: {_rooms.Count}");
@@ -56,7 +62,6 @@ namespace GameServer
             }).ToList();
             Console.WriteLine($"변환된 방 목록 개수: {roomList.Count}");
 
-            // 각 방의 정보도 출력
             foreach (var room in roomList)
             {
                 Console.WriteLine($"방 정보 - ID: {room.RoomId}, 이름: {room.RoomName}, 상태: {room.State}");
@@ -66,15 +71,15 @@ namespace GameServer
         }
 
         public GameRoom AddRoom(GameRoom room, Action<GameRoom> callback)
-{
-    room.GameRoomId = _roomIdGenerator;
-    _rooms.Add(_roomIdGenerator, room);
-    _roomIdGenerator++;
-    _updateQueue.Enqueue(room);
-    
-    callback?.Invoke(room);
-    return room;
-}
+        {
+            room.GameRoomId = _roomIdGenerator;
+            _rooms.Add(_roomIdGenerator, room);
+            _roomIdGenerator++;
+            _updateQueue.Enqueue(room);
+
+            callback?.Invoke(room);
+            return room;
+        }
 
         public void RemoveRoom(int roomId)
         {
@@ -113,10 +118,9 @@ namespace GameServer
                 });
             });
         }
-
         #endregion
 
-        #region 로비 관리
+        #region Lobby Management
         public void EnterLobby(ClientSession session)
         {
             Push(() =>
@@ -142,8 +146,8 @@ namespace GameServer
         }
         #endregion
 
-        #region Thread 관리
-        static public void FlushMainThreadJobs()
+        #region Thread Management
+        public static void FlushMainThreadJobs()
         {
             Thread.CurrentThread.Name = "MainThread";
             while (true)
@@ -153,7 +157,7 @@ namespace GameServer
             }
         }
 
-        static public void LaunchGameThreads(int threadCount)
+        public static void LaunchGameThreads(int threadCount)
         {
             _threadCount = threadCount;
             for (int i = 0; i < threadCount; i++)
@@ -164,12 +168,11 @@ namespace GameServer
             }
         }
 
-        static public void GameThreadJob(object arg)
+        public static void GameThreadJob(object arg)
         {
             int threadId = (int)arg;
             while (true)
             {
-                // 게임 룸만 실시간 업데이트
                 if (_updateQueue.TryDequeue(out GameRoom gameRoom) == false)
                 {
                     continue;

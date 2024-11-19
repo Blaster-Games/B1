@@ -19,6 +19,7 @@ message C_AuthReq {
 
 message S_AuthRes {
     bool success = 1;
+    int32 playerId = 2;
 }
 
 // ·Îºñ

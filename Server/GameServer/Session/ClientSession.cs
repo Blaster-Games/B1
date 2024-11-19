@@ -77,7 +77,7 @@ namespace GameServer
 
             Send(resPacket);
 
-            GameLogic.Instance.PushAfter(5000, Ping);
+            //GameLogic.Instance.PushAfter(5000, Ping);
         }
 
         public override void OnDisconnected(EndPoint endPoint)

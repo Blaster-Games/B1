@@ -615,6 +615,7 @@ class S_AuthRes final :
 
   enum : int {
     kSuccessFieldNumber = 1,
+    kPlayerIdFieldNumber = 2,
   };
   // bool success = 1;
   void clear_success();
@@ -623,6 +624,15 @@ class S_AuthRes final :
   private:
   bool _internal_success() const;
   void _internal_set_success(bool value);
+  public:
+
+  // int32 playerId = 2;
+  void clear_playerid();
+  int32_t playerid() const;
+  void set_playerid(int32_t value);
+  private:
+  int32_t _internal_playerid() const;
+  void _internal_set_playerid(int32_t value);
   public:
 
   // @@protoc_insertion_point(class_scope:Protocol.S_AuthRes)
@@ -634,6 +644,7 @@ class S_AuthRes final :
   typedef void DestructorSkippable_;
   struct Impl_ {
     bool success_;
+    int32_t playerid_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
   union { Impl_ _impl_; };
@@ -5659,6 +5670,26 @@ inline void S_AuthRes::_internal_set_success(bool value) {
 inline void S_AuthRes::set_success(bool value) {
   _internal_set_success(value);
   // @@protoc_insertion_point(field_set:Protocol.S_AuthRes.success)
+}
+
+// int32 playerId = 2;
+inline void S_AuthRes::clear_playerid() {
+  _impl_.playerid_ = 0;
+}
+inline int32_t S_AuthRes::_internal_playerid() const {
+  return _impl_.playerid_;
+}
+inline int32_t S_AuthRes::playerid() const {
+  // @@protoc_insertion_point(field_get:Protocol.S_AuthRes.playerId)
+  return _internal_playerid();
+}
+inline void S_AuthRes::_internal_set_playerid(int32_t value) {
+  
+  _impl_.playerid_ = value;
+}
+inline void S_AuthRes::set_playerid(int32_t value) {
+  _internal_set_playerid(value);
+  // @@protoc_insertion_point(field_set:Protocol.S_AuthRes.playerId)
 }
 
 // -------------------------------------------------------------------

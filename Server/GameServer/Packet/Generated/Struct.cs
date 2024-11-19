@@ -24,24 +24,24 @@ namespace Google.Protobuf.Protocol {
     static StructReflection() {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
-            "CgxTdHJ1Y3QucHJvdG8SCFByb3RvY29sGgpFbnVtLnByb3RvImUKClBsYXll",
+            "CgxTdHJ1Y3QucHJvdG8SCFByb3RvY29sGgpFbnVtLnByb3RvInkKClBsYXll",
             "ckluZm8SEAoIcGxheWVySWQYASABKAUSEgoKcGxheWVyTmFtZRgCIAEoCRIO",
             "CgZpc0hvc3QYAyABKAgSIQoEdGVhbRgEIAEoDjITLlByb3RvY29sLkVUZWFt",
-            "VHlwZSK9AQoQUm9vbUxpc3RJdGVtSW5mbxIOCgZyb29tSWQYASABKAUSEAoI",
-            "cm9vbU5hbWUYAiABKAkSJQoIcm9vbVR5cGUYAyABKA4yEy5Qcm90b2NvbC5F",
-            "R2FtZU1vZGUSFgoOY3VycmVudFBsYXllcnMYBCABKAUSEgoKbWF4UGxheWVy",
-            "cxgFIAEoBRIjCgVzdGF0ZRgGIAEoDjIULlByb3RvY29sLkVSb29tU3RhdGUS",
-            "DwoHbWFwTmFtZRgHIAEoCSLgAQoOUm9vbURldGFpbEluZm8SDgoGcm9vbUlk",
-            "GAEgASgFEhAKCHJvb21OYW1lGAIgASgJEiUKCHJvb21UeXBlGAMgASgOMhMu",
-            "UHJvdG9jb2wuRUdhbWVNb2RlEhIKCm1heFBsYXllcnMYBCABKAUSJQoHcGxh",
-            "eWVycxgFIAMoCzIULlByb3RvY29sLlBsYXllckluZm8SIwoFc3RhdGUYBiAB",
-            "KA4yFC5Qcm90b2NvbC5FUm9vbVN0YXRlEg8KB21hcE5hbWUYByABKAkSFAoM",
-            "aG9zdFBsYXllcklkGAggASgFQhuqAhhHb29nbGUuUHJvdG9idWYuUHJvdG9j",
-            "b2xiBnByb3RvMw=="));
+            "VHlwZRISCgpzbG90TnVtYmVyGAUgASgFIr0BChBSb29tTGlzdEl0ZW1JbmZv",
+            "Eg4KBnJvb21JZBgBIAEoBRIQCghyb29tTmFtZRgCIAEoCRIlCghyb29tVHlw",
+            "ZRgDIAEoDjITLlByb3RvY29sLkVHYW1lTW9kZRIWCg5jdXJyZW50UGxheWVy",
+            "cxgEIAEoBRISCgptYXhQbGF5ZXJzGAUgASgFEiMKBXN0YXRlGAYgASgOMhQu",
+            "UHJvdG9jb2wuRVJvb21TdGF0ZRIPCgdtYXBOYW1lGAcgASgJIuABCg5Sb29t",
+            "RGV0YWlsSW5mbxIOCgZyb29tSWQYASABKAUSEAoIcm9vbU5hbWUYAiABKAkS",
+            "JQoIcm9vbVR5cGUYAyABKA4yEy5Qcm90b2NvbC5FR2FtZU1vZGUSEgoKbWF4",
+            "UGxheWVycxgEIAEoBRIlCgdwbGF5ZXJzGAUgAygLMhQuUHJvdG9jb2wuUGxh",
+            "eWVySW5mbxIjCgVzdGF0ZRgGIAEoDjIULlByb3RvY29sLkVSb29tU3RhdGUS",
+            "DwoHbWFwTmFtZRgHIAEoCRIUCgxob3N0UGxheWVySWQYCCABKAVCG6oCGEdv",
+            "b2dsZS5Qcm90b2J1Zi5Qcm90b2NvbGIGcHJvdG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::Google.Protobuf.Protocol.EnumReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.PlayerInfo), global::Google.Protobuf.Protocol.PlayerInfo.Parser, new[]{ "PlayerId", "PlayerName", "IsHost", "Team" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.PlayerInfo), global::Google.Protobuf.Protocol.PlayerInfo.Parser, new[]{ "PlayerId", "PlayerName", "IsHost", "Team", "SlotNumber" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.RoomListItemInfo), global::Google.Protobuf.Protocol.RoomListItemInfo.Parser, new[]{ "RoomId", "RoomName", "RoomType", "CurrentPlayers", "MaxPlayers", "State", "MapName" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Google.Protobuf.Protocol.RoomDetailInfo), global::Google.Protobuf.Protocol.RoomDetailInfo.Parser, new[]{ "RoomId", "RoomName", "RoomType", "MaxPlayers", "Players", "State", "MapName", "HostPlayerId" }, null, null, null, null)
           }));
@@ -88,6 +88,7 @@ namespace Google.Protobuf.Protocol {
       playerName_ = other.playerName_;
       isHost_ = other.isHost_;
       team_ = other.team_;
+      slotNumber_ = other.slotNumber_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -157,6 +158,21 @@ namespace Google.Protobuf.Protocol {
       }
     }
 
+    /// <summary>Field number for the "slotNumber" field.</summary>
+    public const int SlotNumberFieldNumber = 5;
+    private int slotNumber_;
+    /// <summary>
+    /// ½½·Ô ¹øÈ£
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int SlotNumber {
+      get { return slotNumber_; }
+      set {
+        slotNumber_ = value;
+      }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override bool Equals(object other) {
@@ -176,6 +192,7 @@ namespace Google.Protobuf.Protocol {
       if (PlayerName != other.PlayerName) return false;
       if (IsHost != other.IsHost) return false;
       if (Team != other.Team) return false;
+      if (SlotNumber != other.SlotNumber) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -187,6 +204,7 @@ namespace Google.Protobuf.Protocol {
       if (PlayerName.Length != 0) hash ^= PlayerName.GetHashCode();
       if (IsHost != false) hash ^= IsHost.GetHashCode();
       if (Team != global::Google.Protobuf.Protocol.ETeamType.TeamNone) hash ^= Team.GetHashCode();
+      if (SlotNumber != 0) hash ^= SlotNumber.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -221,6 +239,10 @@ namespace Google.Protobuf.Protocol {
         output.WriteRawTag(32);
         output.WriteEnum((int) Team);
       }
+      if (SlotNumber != 0) {
+        output.WriteRawTag(40);
+        output.WriteInt32(SlotNumber);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -247,6 +269,10 @@ namespace Google.Protobuf.Protocol {
         output.WriteRawTag(32);
         output.WriteEnum((int) Team);
       }
+      if (SlotNumber != 0) {
+        output.WriteRawTag(40);
+        output.WriteInt32(SlotNumber);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -268,6 +294,9 @@ namespace Google.Protobuf.Protocol {
       }
       if (Team != global::Google.Protobuf.Protocol.ETeamType.TeamNone) {
         size += 1 + pb::CodedOutputStream.ComputeEnumSize((int) Team);
+      }
+      if (SlotNumber != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(SlotNumber);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -292,6 +321,9 @@ namespace Google.Protobuf.Protocol {
       }
       if (other.Team != global::Google.Protobuf.Protocol.ETeamType.TeamNone) {
         Team = other.Team;
+      }
+      if (other.SlotNumber != 0) {
+        SlotNumber = other.SlotNumber;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -324,6 +356,10 @@ namespace Google.Protobuf.Protocol {
             Team = (global::Google.Protobuf.Protocol.ETeamType) input.ReadEnum();
             break;
           }
+          case 40: {
+            SlotNumber = input.ReadInt32();
+            break;
+          }
         }
       }
     #endif
@@ -353,6 +389,10 @@ namespace Google.Protobuf.Protocol {
           }
           case 32: {
             Team = (global::Google.Protobuf.Protocol.ETeamType) input.ReadEnum();
+            break;
+          }
+          case 40: {
+            SlotNumber = input.ReadInt32();
             break;
           }
         }

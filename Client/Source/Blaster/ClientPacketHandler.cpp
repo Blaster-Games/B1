@@ -133,6 +133,11 @@ bool Handle_S_StartGameRes(PacketSessionRef& session, Protocol::S_StartGameRes& 
 
 bool Handle_S_BroadcastStartGame(PacketSessionRef& session, Protocol::S_BroadcastStartGame& pkt)
 {
+	if (auto NetworkSystem = GetNetworkSystem(session))
+	{
+		NetworkSystem->HandleBroadcastStartGame(pkt);
+		return true;
+	}
     return false;
 }
 

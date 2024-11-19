@@ -20,7 +20,7 @@ void URoomDetail::NativeConstruct()
             const FRoomDetailInfo& RoomInfo = GameInstance->GetCurrentRoomInfo();
             if (RoomInfo.Players.Num() > 0)
             {
-                RoomPlayers->UpdatePlayers(RoomInfo.Players);
+                RoomPlayers->UpdatePlayers(RoomInfo.Players, RoomInfo.MaxPlayers);
                 UE_LOG(LogTemp, Log, TEXT("RoomDetail: Initialize players list with %d players"), RoomInfo.Players.Num());
             }
         }
@@ -87,7 +87,7 @@ void URoomDetail::UpdateRoomInfo(const FRoomDetailInfo& RoomInfo)
                 {
                     // GameInstance에서 최신 정보 가져오기
                     const FRoomDetailInfo& CurrentInfo = Cast<UBlasterGameInstance>(GetGameInstance())->GetCurrentRoomInfo();
-                    RoomPlayers->UpdatePlayers(CurrentInfo.Players);
+                    RoomPlayers->UpdatePlayers(CurrentInfo.Players, CurrentInfo.MaxPlayers);
                     UE_LOG(LogTemp, Log, TEXT("RoomDetail: Updated players list with %d players"), CurrentInfo.Players.Num());
                 }
                 else
@@ -122,6 +122,28 @@ void URoomDetail::UpdateUI()
         {
             FString PlayerCountString = FString::Printf(TEXT("%d/%d"), CurrentInfo.Players.Num(), CurrentInfo.MaxPlayers);
             PlayerCountText->SetText(FText::FromString(PlayerCountString));
+        }
+
+        // 시작 버튼 가시성 설정
+        if (StartGameButton)
+        {
+            // 현재 플레이어가 호스트인지 확인
+            bool bIsHost = false;
+            int32 MyPlayerId = GameInstance->GetPlayerId(); // GetPlayerId() 함수가 필요합니다
+
+            // Players 배열에서 현재 플레이어를 찾아 호스트 여부 확인
+            for (const FPlayerInfo& Player : CurrentInfo.Players)
+            {
+                if (Player.PlayerId == MyPlayerId)
+                {
+                    bIsHost = Player.IsHost;
+                    break;
+                }
+            }
+
+            // 호스트일 경우만 버튼 표시
+            StartGameButton->SetVisibility(bIsHost ? ESlateVisibility::Visible : ESlateVisibility::Collapsed);
+            UE_LOG(LogTemp, Log, TEXT("Start button visibility set to: %s"), bIsHost ? TEXT("Visible") : TEXT("Collapsed"));
         }
     }
 }

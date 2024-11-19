@@ -1,7 +1,4 @@
-
-
 #pragma once
-
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
 #include "Components/TextBlock.h"
@@ -23,6 +20,9 @@ protected:
 	virtual void NativeConstruct() override;
 
 	UPROPERTY(meta = (BindWidget))
+	UTextBlock* Player0NameText;
+
+	UPROPERTY(meta = (BindWidget))
 	UTextBlock* Player1NameText;
 
 	UPROPERTY(meta = (BindWidget))
@@ -42,9 +42,6 @@ protected:
 
 	UPROPERTY(meta = (BindWidget))
 	UTextBlock* Player7NameText;
-
-	UPROPERTY(meta = (BindWidget))
-	UTextBlock* Player8NameText;
 
 private:
 	void InitializePlayerTextBlocks();

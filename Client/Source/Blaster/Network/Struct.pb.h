@@ -190,6 +190,7 @@ class PlayerInfo final :
     kPlayerIdFieldNumber = 1,
     kIsHostFieldNumber = 3,
     kTeamFieldNumber = 4,
+    kSlotNumberFieldNumber = 5,
   };
   // string playerName = 2;
   void clear_playername();
@@ -232,6 +233,15 @@ class PlayerInfo final :
   void _internal_set_team(::Protocol::ETeamType value);
   public:
 
+  // int32 slotNumber = 5;
+  void clear_slotnumber();
+  int32_t slotnumber() const;
+  void set_slotnumber(int32_t value);
+  private:
+  int32_t _internal_slotnumber() const;
+  void _internal_set_slotnumber(int32_t value);
+  public:
+
   // @@protoc_insertion_point(class_scope:Protocol.PlayerInfo)
  private:
   class _Internal;
@@ -244,6 +254,7 @@ class PlayerInfo final :
     int32_t playerid_;
     bool ishost_;
     int team_;
+    int32_t slotnumber_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
   union { Impl_ _impl_; };
@@ -836,6 +847,26 @@ inline void PlayerInfo::_internal_set_team(::Protocol::ETeamType value) {
 inline void PlayerInfo::set_team(::Protocol::ETeamType value) {
   _internal_set_team(value);
   // @@protoc_insertion_point(field_set:Protocol.PlayerInfo.team)
+}
+
+// int32 slotNumber = 5;
+inline void PlayerInfo::clear_slotnumber() {
+  _impl_.slotnumber_ = 0;
+}
+inline int32_t PlayerInfo::_internal_slotnumber() const {
+  return _impl_.slotnumber_;
+}
+inline int32_t PlayerInfo::slotnumber() const {
+  // @@protoc_insertion_point(field_get:Protocol.PlayerInfo.slotNumber)
+  return _internal_slotnumber();
+}
+inline void PlayerInfo::_internal_set_slotnumber(int32_t value) {
+  
+  _impl_.slotnumber_ = value;
+}
+inline void PlayerInfo::set_slotnumber(int32_t value) {
+  _internal_set_slotnumber(value);
+  // @@protoc_insertion_point(field_set:Protocol.PlayerInfo.slotNumber)
 }
 
 // -------------------------------------------------------------------
