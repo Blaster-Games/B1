@@ -207,6 +207,8 @@ private:
 
 	void ApplyCachedScores();
 
+	void SetupUIInputMode();
+
 
 public:
 	FORCEINLINE UShopComponent* GetShop() const { return Shop; }

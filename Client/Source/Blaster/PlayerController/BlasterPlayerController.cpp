@@ -69,6 +69,8 @@ void ABlasterPlayerController::BeginPlay()
 	BlasterHUD = Cast<ABlasterHUD>(GetHUD());
 	ServerCheckMatchState();
 
+	SetInputMode(FInputModeGameOnly());
+	SetupUIInputMode();
 }
 
 void ABlasterPlayerController::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -838,6 +840,11 @@ void ABlasterPlayerController::ApplyCachedScores()
 			BlasterHUD->Shop->RedTeamScore->SetText(FText::FromString(RedScoreText));
 		}
 	}
+}
+
+void ABlasterPlayerController::SetupUIInputMode()
+{
+	SetShowMouseCursor(false);
 }
 
 
