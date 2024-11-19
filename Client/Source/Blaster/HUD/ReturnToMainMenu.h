@@ -28,8 +28,22 @@ protected:
 	void OnPlayerLeftGame();
 
 private:
+
 	UPROPERTY(meta = (BindWidget))
-	class UButton* ReturnButton;
+	class UButton* OptionButton;
+
+	UFUNCTION()
+	void OptionButtonClicked();
+
+	UPROPERTY(EditDefaultsOnly, Category = "Widget")
+	TSubclassOf<class USetting> SettingWidgetClass;
+
+	UPROPERTY()
+	USetting* SettingWidget;
+
+
+	UPROPERTY(meta = (BindWidget))
+	UButton* ReturnButton;
 
 	UFUNCTION()
 	void ReturnButtonClicked();

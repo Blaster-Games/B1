@@ -892,11 +892,25 @@ void ABlasterPlayerController::HandleCooldown()
 		{
 			BlasterHUD->CharacterOverlay->SetVisibility(ESlateVisibility::Hidden);
 		}
-		//BlasterHUD->CharacterOverlay->RemoveFromParent();
 
 		// GameState 체크
 		ABlasterGameState* BlasterGS = Cast<ABlasterGameState>(UGameplayStatics::GetGameState(this));
 		if (!BlasterGS) return;
+
+		// 캐릭터 게임플레이 비활성화
+		AMyBlasterCharacter* BlasterCharacter = Cast<AMyBlasterCharacter>(GetPawn());
+		if (BlasterCharacter && BlasterCharacter->GetCombat())
+		{
+			BlasterCharacter->bDisableGameplay = true;
+			// 이렇게 해줘야 Cooldown 상태에 들어가자마자 거짓이 되고 캐릭터가 발사를 멈추게 됨.
+			BlasterCharacter->GetCombat()->FireButtonPressed(false);
+
+			// 스나이퍼 스코프 처리 추가
+			if (BlasterCharacter->IsSniperAiming())
+			{
+				BlasterCharacter->ShowSniperScopeWidget(false);
+			}
+		}
 
 		// 라운드 체크
 		bool bIsMatchEnded = BlasterGS->GetCurrentRound() >= BlasterGS->GetMaxRounds();
@@ -942,15 +956,6 @@ void ABlasterPlayerController::HandleCooldown()
 			);
 		}
 
-	}
-
-	// 캐릭터 게임플레이 비활성화
-	AMyBlasterCharacter* BlasterCharacter = Cast<AMyBlasterCharacter>(GetPawn());
-	if (BlasterCharacter && BlasterCharacter->GetCombat())
-	{
-		BlasterCharacter->bDisableGameplay = true; 
-		// 이렇게 해줘야 Cooldown 상태에 들어가자마자 거짓이 되고 캐릭터가 발사를 멈추게 됨.
-		BlasterCharacter->GetCombat()->FireButtonPressed(false);
 	}
 }
 

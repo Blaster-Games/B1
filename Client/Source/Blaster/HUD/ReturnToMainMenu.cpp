@@ -7,6 +7,8 @@
 #include "MultiplayerSessionsSubSystem.h"
 #include "GameFramework/GameModeBase.h"
 #include "Blaster/Character/MyBlasterCharacter.h"
+#include "Blaster/HUD/Setting.h"
+#include "Blaster/PlayerController/BlasterPlayerController.h"
 
 void UReturnToMainMenu::MenuSetup()
 {
@@ -27,6 +29,11 @@ void UReturnToMainMenu::MenuSetup()
 			PlayerController->SetInputMode(InputModeData);
 			PlayerController->SetShowMouseCursor(true);
 		}
+	}
+
+	if (OptionButton && !OptionButton->OnClicked.IsBound())
+	{
+		OptionButton->OnClicked.AddDynamic(this, &UReturnToMainMenu::OptionButtonClicked);
 	}
 
 	if (ReturnButton && !ReturnButton->OnClicked.IsBound()) // 이미 바인딩되지 않은 경우에만 바인딩 됨.
@@ -112,6 +119,38 @@ void UReturnToMainMenu::MenuTearDown()
 		MultiplayerSessionsSubsystem->MultiplayerOnDestroySessionComplete.RemoveDynamic(this, &UReturnToMainMenu::OnDestroySession);
 	}
 	
+	// PlayerController의 bReturnToMainMenuOpen 상태 업데이트
+	if (ABlasterPlayerController* PC = Cast<ABlasterPlayerController>(GetOwningPlayer()))
+	{
+		PC->bReturnToMainMenuOpen = false;  // ReturnToMainMenu 상태를 닫힘으로 설정
+	}
+
+	// Setting 위젯이 있다면 제거
+	if (SettingWidget)
+	{
+		SettingWidget->RemoveFromParent();
+		SettingWidget = nullptr;
+	}
+
+	if (OptionButton && OptionButton->OnClicked.IsBound())
+	{
+		OptionButton->OnClicked.RemoveDynamic(this, &UReturnToMainMenu::OptionButtonClicked);
+	}
+}
+
+void UReturnToMainMenu::OptionButtonClicked()
+{
+
+	if (SettingWidgetClass)
+	{
+		// Setting 위젯 생성 및 표시
+		SettingWidget = CreateWidget<USetting>(GetWorld(), SettingWidgetClass);
+		if (SettingWidget)
+		{
+			SettingWidget->SetParentWidget(this);
+			SettingWidget->AddToViewport();
+		}
+	}
 }
 
 void UReturnToMainMenu::ReturnButtonClicked()

@@ -29,6 +29,8 @@
 #include "Blaster/PlayerStart/TeamPlayerStart.h"
 #include "Components/ArrowComponent.h"
 #include "Blaster/HUD/OverheadWidget.h"
+#include "Blaster/GameInstance/BlasterGameInstance.h"
+
 AMyBlasterCharacter::AMyBlasterCharacter()
 {
 	PrimaryActorTick.bCanEverTick = true;
@@ -685,6 +687,12 @@ void AMyBlasterCharacter::BeginPlay()
 	{
 		AttachedGrenade->SetVisibility(false);
 	}
+
+	GameInstance = Cast<UBlasterGameInstance>(GetGameInstance());
+	if (GameInstance)
+	{
+		UpdateSensitivityMultiplier();
+	}
 }
 
 void AMyBlasterCharacter::Tick(float DeltaTime)
@@ -989,12 +997,12 @@ void AMyBlasterCharacter::MoveRight(float Value)
 
 void AMyBlasterCharacter::Turn(float Value)
 {
-	AddControllerYawInput(Value);
+	AddControllerYawInput(Value * CurrentSensitivityMultiplier);
 }
 
 void AMyBlasterCharacter::LookUp(float Value)
 {
-	AddControllerPitchInput(Value);
+	AddControllerPitchInput(Value * CurrentSensitivityMultiplier);
 }
 
 void AMyBlasterCharacter::EquipButtonPressed()
@@ -1487,6 +1495,36 @@ TSubclassOf<AWeapon> AMyBlasterCharacter::GetWeaponClass(EWeaponType WeaponType)
 	}
 
 	return WeaponClass;
+}
+
+bool AMyBlasterCharacter::IsSniperAiming() const
+{
+	return IsLocallyControlled() &&
+		Combat &&
+		Combat->bAiming &&
+		Combat->EquippedWeapon &&
+		Combat->EquippedWeapon->GetWeaponType() == EWeaponType::EWT_SniperRifle;
+}
+
+void AMyBlasterCharacter::UpdateSensitivityMultiplier()
+{
+	if (GameInstance)
+	{
+		const FSensitivitySettings& Settings = GameInstance->GetSensitivitySettings();
+
+		if (IsSniperAiming())
+		{
+			CurrentSensitivityMultiplier = Settings.ScopedSensitivity / 10.f;
+		}
+		else if (Combat && Combat->bAiming)
+		{
+			CurrentSensitivityMultiplier = Settings.AimSensitivity / 10.f;
+		}
+		else
+		{
+			CurrentSensitivityMultiplier = Settings.Sensitivity / 10.f;
+		}
+	}
 }
 
 // 서버는 적용이 안되는 것을 보완하기 위한.

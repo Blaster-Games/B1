@@ -75,6 +75,11 @@ public:
 
 	void SetTeamColor(ETeam Team);
 
+	// 상태 변경 시 감도 업데이트
+	void UpdateSensitivityMultiplier();
+
+	bool IsSniperAiming() const;
+
 protected:
 	virtual void BeginPlay() override;
 	void MoveForward(float Value);
@@ -426,6 +431,19 @@ private:
 	UFUNCTION(Server, Reliable)
 	void ServerUpdateSpectatingTarget(bool bNext);
 	void HandleSpectatingTargetChange(bool bNext);
+
+	/**
+	* Settings
+	*/
+
+	
+
+	UPROPERTY()
+	class UBlasterGameInstance* GameInstance;
+
+	float CurrentSensitivityMultiplier = 1.0f;  // 현재 적용 중인 감도 배율
+
+	
 
 public:	
 	void SetOverlappingWeapon(AWeapon* Weapon);

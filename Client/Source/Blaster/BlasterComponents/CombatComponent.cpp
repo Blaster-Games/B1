@@ -483,6 +483,8 @@ void UCombatComponent::OnRep_Aiming()
 	if (Character && Character->IsLocallyControlled())
 	{
 		bAiming = bAimButtonPressed;
+		// 감도 업데이트
+		Character->UpdateSensitivityMultiplier();
 	}
 }
 
@@ -1111,6 +1113,12 @@ void UCombatComponent::SetAiming(bool bIsAiming)
 	if (Character)
 	{
 		Character->GetCharacterMovement()->MaxWalkSpeed = bIsAiming ? AimWalkSpeed : BaseWalkSpeed;
+		// 감도 업데이트
+		if (Character->IsLocallyControlled())
+		{
+			Character->UpdateSensitivityMultiplier();
+		}
+
 	}
 	if (Character->IsLocallyControlled() && EquippedWeapon->GetWeaponType() == EWeaponType::EWT_SniperRifle)
 	{
