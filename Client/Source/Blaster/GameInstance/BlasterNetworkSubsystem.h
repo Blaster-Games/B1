@@ -84,8 +84,11 @@ public:
     TSharedPtr<class PacketSession> GameServerSession;
 
     // 서버 연결 정보
+    //FString IpAddress = TEXT("147.185.221.23");
+    //int32 Port = 63753;
+
     FString IpAddress = TEXT("127.0.0.1");
-    int16 Port = 7777;
+    int32 Port = 7777;
 
 private:
     virtual void Initialize(FSubsystemCollectionBase& Collection) override;

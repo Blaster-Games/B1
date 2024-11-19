@@ -1,5 +1,4 @@
 #pragma once
-
 #include "CoreMinimal.h"
 #include "Blaster.h"
 #include "ClientPacketHandler.h"
@@ -7,36 +6,41 @@
 class BLASTER_API PacketSession : public TSharedFromThis<PacketSession>
 {
 public:
-	PacketSession(class FSocket* Socket);
-	~PacketSession();
+    PacketSession(class FSocket* Socket);
+    ~PacketSession();
 
-	UGameInstance* GetGameInstance() const
-	{
-		if (GEngine)
-		{
-			if (UWorld* World = GEngine->GetWorld())
-			{
-				return World->GetGameInstance();
-			}
-		}
-		return nullptr;
-	}
+    UGameInstance* GetGameInstance() const
+    {
+        if (GEngine)
+        {
+            if (UWorld* World = GEngine->GetWorld())
+            {
+                return World->GetGameInstance();
+            }
+        }
+        return nullptr;
+    }
 
-	void Run();
+    void Run();
+    void Stop();  // 새로 추가된 Stop 함수
 
-	UFUNCTION(BlueprintCallable)
-	void HandleRecvPackets();
+    UFUNCTION(BlueprintCallable)
+    void HandleRecvPackets();
 
-	void SendPacket(SendBufferRef SendBuffer);
-
-	void Disconnect();
+    void SendPacket(SendBufferRef SendBuffer);
+    void Disconnect();
 
 public:
-	class FSocket* Socket;
+    class FSocket* Socket;
+    TSharedPtr<class RecvWorker> RecvWorkerThread;
+    TSharedPtr<class SendWorker> SendWorkerThread;
+    TQueue<TArray<uint8>> RecvPacketQueue;
+    TQueue<SendBufferRef> SendPacketQueue;
 
-	TSharedPtr<class RecvWorker> RecvWorkerThread;
-	TSharedPtr<class SendWorker> SendWorkerThread;
+private:
+    bool bStopThread;
 
-	TQueue<TArray<uint8>> RecvPacketQueue;
-	TQueue<SendBufferRef> SendPacketQueue;
+public:
+
+    bool IsRunning() const { return !bStopThread; }
 };

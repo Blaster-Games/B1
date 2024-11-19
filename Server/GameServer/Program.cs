@@ -19,7 +19,7 @@ namespace GameServer
             Console.WriteLine("Listening...");
 
             // GameLogic
-            const int GameThreadCount = 5;
+            const int GameThreadCount = 2;
             GameLogic.LaunchGameThreads(GameThreadCount);
 
             // DB

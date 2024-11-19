@@ -8,6 +8,13 @@ public class Blaster : ModuleRules
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 
+        PublicDefinitions.AddRange(new string[]
+       {
+           "WITH_DEBUGGING=1",
+           "DO_CHECK=0",
+           "DO_GUARD_SLOW=0"
+       });
+
         PublicIncludePaths.AddRange(new string[]
         {
             "Blaster"

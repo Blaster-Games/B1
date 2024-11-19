@@ -15,6 +15,11 @@ void UBlasterNetworkSubsystem::Initialize(FSubsystemCollectionBase& Collection)
 
 void UBlasterNetworkSubsystem::Deinitialize()
 {
+    if (GameServerSession)
+    {
+        GameServerSession->Stop();  // PacketSession에 Stop 함수 추가 필요
+    }
+
     DisconnectFromGameServer();
     Super::Deinitialize();
 }
@@ -30,38 +35,64 @@ void UBlasterNetworkSubsystem::LoadNetworkSettings()
 
 void UBlasterNetworkSubsystem::ConnectToGameServer()
 {
+    if (!IsInGameThread())
+    {
+        AsyncTask(ENamedThreads::GameThread, [this]()
+            {
+                ConnectToGameServer();
+            });
+        return;
+    }
+
     // 이미 연결되어 있다면 연결 해제
     if (Socket)
     {
         DisconnectFromGameServer();
     }
 
-    Socket = ISocketSubsystem::Get(PLATFORM_SOCKETSUBSYSTEM)->CreateSocket(TEXT("Stream"), TEXT("Client Socket"));
-    if (!Socket)
+    // 소켓 생성 전 서브시스템 체크
+    ISocketSubsystem* SocketSubsystem = ISocketSubsystem::Get(PLATFORM_SOCKETSUBSYSTEM);
+    if (!SocketSubsystem)
     {
-        GEngine->AddOnScreenDebugMessage(-1, 4.f, FColor::Red, TEXT("Failed to create socket"));
         return;
     }
 
+    Socket = SocketSubsystem->CreateSocket(TEXT("Stream"), TEXT("Client Socket"));
+    if (!Socket)
+    {
+        return;
+    }
+
+    // 소켓 옵션 설정
+    Socket->SetNonBlocking(true);
+    Socket->SetReuseAddr(true);
+
+    // 타임아웃 설정
+    int32 ActualSize;  // 여기에 변수 선언
+    Socket->SetSendBufferSize(64 * 1024, ActualSize);
+    Socket->SetReceiveBufferSize(64 * 1024, ActualSize);
+
+    // 접속 시도 전 로그
+    UE_LOG(LogTemp, Log, TEXT("Attempting to connect to %s:%d"), *IpAddress, Port);
+
     FIPv4Address Ip;
     FIPv4Address::Parse(IpAddress, Ip);
-    TSharedRef<FInternetAddr> InternetAddr = ISocketSubsystem::Get(PLATFORM_SOCKETSUBSYSTEM)->CreateInternetAddr();
+    TSharedRef<FInternetAddr> InternetAddr = SocketSubsystem->CreateInternetAddr();
     InternetAddr->SetIp(Ip.Value);
     InternetAddr->SetPort(Port);
 
-    GEngine->AddOnScreenDebugMessage(-1, 4.f, FColor::Red, TEXT("Connecting To Server..."));
+    // 연결 시도
     bool Connected = Socket->Connect(*InternetAddr);
 
     if (Connected)
     {
-        GEngine->AddOnScreenDebugMessage(-1, 4.f, FColor::Red, TEXT("Connection Success"));
-
+        UE_LOG(LogTemp, Log, TEXT("Connection Success"));
         GameServerSession = MakeShared<PacketSession>(Socket);
         GameServerSession->Run();
     }
     else
     {
-        GEngine->AddOnScreenDebugMessage(-1, 4.f, FColor::Red, TEXT("Connection Failed"));
+        UE_LOG(LogTemp, Warning, TEXT("Connection Failed"));
         DisconnectFromGameServer();
     }
 }
@@ -69,6 +100,12 @@ void UBlasterNetworkSubsystem::ConnectToGameServer()
 void UBlasterNetworkSubsystem::DisconnectFromGameServer()
 {
     UE_LOG(LogTemp, Warning, TEXT("Disconnected from server"));
+
+    if (GameServerSession)
+    {
+        GameServerSession->Stop();
+        GameServerSession.Reset();
+    }
 
     if (Socket)
     {
@@ -181,7 +218,7 @@ void UBlasterNetworkSubsystem::HandleRoomListRes(Protocol::S_RoomListRes& packet
         RoomInfo.CurrentPlayers = protoRoom.currentplayers();
         RoomInfo.MaxPlayers = protoRoom.maxplayers();
         RoomInfo.State = static_cast<ERoomState>(protoRoom.state());
-        RoomInfo.MapName = FString(UTF8_TO_TCHAR(protoRoom.mapname().c_str()));
+        RoomInfo.MapName = FString(UTF8_TO_TCHAR("HighRise"));
 
         // 각 방의 상세 정보 로깅
         UE_LOG(LogTemp, Log, TEXT("[NetworkSubsystem] Room Detail:"
@@ -253,7 +290,6 @@ void UBlasterNetworkSubsystem::HandleCreateRoomRes(Protocol::S_CreateRoomRes& pa
         UE_LOG(LogTemp, Log, TEXT("\tRoom Name: %s"), *RoomInfo.RoomName);
         UE_LOG(LogTemp, Log, TEXT("\tMax Players: %d"), RoomInfo.MaxPlayers);
         UE_LOG(LogTemp, Log, TEXT("\tHost Player ID: %d"), RoomInfo.HostPlayerId);
-        UE_LOG(LogTemp, Log, TEXT("\tMap Name: %s"), *RoomInfo.MapName);
 
         // 플레이어 정보 복사
         for (const auto& protoPlayer : protoRoom.players())
@@ -308,7 +344,7 @@ void UBlasterNetworkSubsystem::HandleJoinRoomRes(Protocol::S_JoinRoomRes& packet
         RoomInfo.RoomType = static_cast<EGameMode>(protoRoom.roomtype());
         RoomInfo.MaxPlayers = protoRoom.maxplayers();
         RoomInfo.State = static_cast<ERoomState>(protoRoom.state());
-        RoomInfo.MapName = UTF8_TO_TCHAR("HighRise");
+        RoomInfo.MapName = UTF8_TO_TCHAR(protoRoom.mapname().c_str());
         RoomInfo.HostPlayerId = protoRoom.hostplayerid();
 
         UE_LOG(LogTemp, Log, TEXT("[HandleJoinRoomRes] Room Details:"));
@@ -365,7 +401,7 @@ void UBlasterNetworkSubsystem::HandleBroadcastJoinRoom(Protocol::S_BroadcastJoin
     RoomInfo.RoomType = static_cast<EGameMode>(packet.room().roomtype());
     RoomInfo.MaxPlayers = packet.room().maxplayers();
     RoomInfo.State = static_cast<ERoomState>(packet.room().state());
-    RoomInfo.MapName = FString(UTF8_TO_TCHAR("HighRise"));
+    RoomInfo.MapName = FString(UTF8_TO_TCHAR(packet.room().mapname().c_str()));
     RoomInfo.HostPlayerId = packet.room().hostplayerid();
 
     // Players 배열 변환
