@@ -19,6 +19,7 @@ message C_AuthReq {
 
 message S_AuthRes {
     bool success = 1;
+    int32 playerId = 2;
 }
 
 // 로비
@@ -80,7 +81,7 @@ message S_JoinRoomRes {
 }
 
 message S_BroadcastJoinRoom {
-    PlayerInfo newPlayer = 1;
+    RoomDetailInfo room = 1;
 }
 
 // 룸 퇴장
@@ -125,13 +126,11 @@ message C_StartGameReq {
 
 message S_StartGameRes {
     bool success = 1;
-    repeated PlayerInfo players = 2;    // 호스트에게 보내는 다른 플레이어들 정보
 }
 
 message S_BroadcastStartGame {
     string hostAddress = 1;     // 호스트 주소
     int32 port = 2;            // 리슨서버 포트
-    int32 sessionId = 3;       // 각 플레이어의 세션 ID
 }
 
 // 게임 종료

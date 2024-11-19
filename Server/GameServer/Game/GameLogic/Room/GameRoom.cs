@@ -7,6 +7,7 @@ namespace GameServer
 {
     public class GameRoom : JobSerializer
     {
+        #region Properties
         // Room 기본 정보
         public int GameRoomId { get; set; }
         public string RoomName { get; set; }
@@ -24,7 +25,53 @@ namespace GameServer
 
         public int CurrentPlayerCount => _players.Count;
         public int HostPlayerId => _host?.PlayerId ?? 0;
+        #endregion
 
+        #region Slot Management
+        private class SlotInfo
+        {
+            public bool IsOccupied;
+            public Player Player;
+            public ETeamType Team;
+        }
+        private SlotInfo[] _slots = new SlotInfo[8];
+
+        private int FindAvailableSlot()
+        {
+            // 각 팀 인원 계산
+            int redCount = 0, blueCount = 0;
+            for (int i = 0; i < _slots.Length; i++)
+            {
+                if (_slots[i].IsOccupied)
+                {
+                    if (i < 4) redCount++;
+                    else blueCount++;
+                }
+            }
+
+            // 인원이 적은 팀 우선 배정
+            bool tryRedFirst = (redCount <= blueCount);
+
+            // 첫 번째 시도 (선호 팀)
+            for (int i = 0; i < _slots.Length; i++)
+            {
+                bool isRedSlot = i < 4;
+                if (!_slots[i].IsOccupied && isRedSlot == tryRedFirst)
+                    return i;
+            }
+
+            // 두 번째 시도 (반대 팀)
+            for (int i = 0; i < _slots.Length; i++)
+            {
+                if (!_slots[i].IsOccupied)
+                    return i;
+            }
+
+            return -1;
+        }
+        #endregion
+
+        #region Room Management
         public void Init()
         {
             _players = new List<Player>();
@@ -33,10 +80,26 @@ namespace GameServer
             GameMode = EGameMode.ModeTeamdeathmatch;
             RoomName = "";
             MapName = "";
+
+            _slots = new SlotInfo[8];
+            for (int i = 0; i < 8; i++)
+            {
+                _slots[i] = new SlotInfo
+                {
+                    IsOccupied = false,
+                    Player = null,
+                    Team = i < 4 ? ETeamType.TeamRed : ETeamType.TeamBlue
+                };
+            }
         }
 
         public void EnterRoom(ClientSession session, Action<bool> callback)
         {
+            if (State == ERoomState.StateTerminated)
+            {
+                callback.Invoke(false);
+                return;
+            }
             if (_players.Count >= MaxPlayers)
             {
                 callback.Invoke(false);
@@ -50,23 +113,77 @@ namespace GameServer
                 return;
             }
 
+            // 사용 가능한 슬롯 찾기
+            int slotIndex = FindAvailableSlot();
+            if (slotIndex == -1)
+            {
+                callback.Invoke(false);
+                return;
+            }
+
+            // 1. 새로운 플레이어 정보 설정
             if (_players.Count == 0)
             {
                 _host = player;
                 player.IsHost = true;
-                player.GameRoom = this;
-                player.RoomId = GameRoomId;
+            }
+            else
+            {
+                player.IsHost = false;
             }
 
-            _players.Add(player);
-            //BroadcastEnterGame(player);
+            // 슬롯 할당 및 팀 설정
+            _slots[slotIndex].IsOccupied = true;
+            _slots[slotIndex].Player = player;
+            player.Team = _slots[slotIndex].Team;
+            player.GameRoom = this;
+            player.RoomId = GameRoomId;
+            player.SlotNumber = slotIndex;
 
+            // 2. 플레이어 리스트에 추가
+            _players.Add(player);
+
+            // 3. 기존 플레이어들에게 새 플레이어 입장을 브로드캐스트
+            BroadcastEnterGame();
+
+            // 4. 성공 콜백
             callback.Invoke(true);
         }
 
         public void LeaveRoom(ClientSession session, Action<bool> callback)
         {
-            // TODO
+            Player player = _players.Find(p => p.PlayerId == session.SessionId);
+            if (player == null)
+                return;
+
+            // 슬롯에서 제거
+            for (int i = 0; i < _slots.Length; i++)
+            {
+                if (_slots[i].Player == player)
+                {
+                    _slots[i].IsOccupied = false;
+                    _slots[i].Player = null;
+                    break;
+                }
+            }
+
+            _players.Remove(player);
+
+            // 호스트 변경 처리
+            if (player.IsHost && _players.Count > 0)
+            {
+                _host = _players[0];
+                _host.IsHost = true;
+            }
+
+            // 퇴장 브로드캐스트
+            BroadcastLeaveGame(player);
+
+            // 모두 나가면 방 삭제 요청
+            if (_players.Count == 0)
+            {
+                GameLogic.Instance.RemoveRoom(GameRoomId);
+            }
         }
 
         public void LeaveGame(ClientSession session)
@@ -80,7 +197,6 @@ namespace GameServer
                 _players.Remove(player);
 
                 // TODO : 방장이 나가면 다음 사람에게 방장 위임
-
                 // TODO : 퇴장 브로드캐스트
 
                 // 모두 나가면 방 삭제 요청
@@ -91,18 +207,52 @@ namespace GameServer
             });
         }
 
-        #region 패킷 브로드캐스트
-        private void BroadcastEnterGame(Player newPlayer)
+        public void StartGame(string hostAddress, int hostPort)
+        {
+            Console.WriteLine($"StartGame called - Host: {hostAddress}:{hostPort}");
+            Console.WriteLine($"Total players: {_players.Count}");
+
+            // 호스트를 제외한 모든 플레이어에게 브로드 캐스팅
+            int broadcastCount = 0;
+            foreach (Player p in _players)
+            {
+                if (p.IsHost == false)
+                {
+                    S_BroadcastStartGame startPacket = new S_BroadcastStartGame()
+                    {
+                        HostAddress = hostAddress,
+                        Port = hostPort
+                    };
+
+                    Console.WriteLine($"Sending start packet to Player {p.PlayerId} (Session: {p.Session?.SessionId.ToString() ?? "0"})");
+
+                    try
+                    {
+                        p.Session?.Send(startPacket);
+                        broadcastCount++;
+                        Console.WriteLine($"Successfully sent packet to Player {p.PlayerId}");
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"Failed to send packet to Player {p.PlayerId}: {ex.Message}");
+                    }
+                }
+                else
+                {
+                    Console.WriteLine($"Skipping host player {p.PlayerId}");
+                }
+            }
+
+            Console.WriteLine($"StartGame completed - Broadcast to {broadcastCount} players");
+        }
+        #endregion
+
+        #region Broadcasting
+        private void BroadcastEnterGame()
         {
             S_BroadcastJoinRoom enterPacket = new S_BroadcastJoinRoom()
             {
-                NewPlayer = new PlayerInfo()
-                {
-                    PlayerId = newPlayer.PlayerId,
-                    PlayerName = newPlayer.PlayerName,
-                    IsHost = newPlayer.IsHost,
-                    Team = newPlayer.Team
-                }
+                Room = ToRoomDetail()
             };
 
             foreach (Player p in _players)
@@ -111,9 +261,13 @@ namespace GameServer
             }
         }
 
+        public void BroadcastLeaveGame(Player player)
+        {
+            // TODO
+        }
+
         public void BroadcastChat(Player sender, string message)
         {
-            // 로그: 브로드캐스트 시작
             Console.WriteLine($"[BroadcastChat] Starting broadcast from Player {sender.PlayerId} ({sender.PlayerName})");
             Console.WriteLine($"[BroadcastChat] Message to broadcast: {message}");
 
@@ -124,7 +278,6 @@ namespace GameServer
                 Message = message
             };
 
-            // 로그: 현재 방 인원 수
             Console.WriteLine($"[BroadcastChat] Broadcasting to {_players.Count} players");
 
             foreach (Player p in _players)
@@ -140,14 +293,11 @@ namespace GameServer
                 }
             }
 
-            // 로그: 브로드캐스트 완료
             Console.WriteLine($"[BroadcastChat] Broadcast complete");
         }
-
         #endregion
 
         #region Room Info
-        // Room List용 정보
         public RoomListItemInfo ToRoomListItem()
         {
             return new RoomListItemInfo
@@ -162,7 +312,6 @@ namespace GameServer
             };
         }
 
-        // Room Detail 정보
         public RoomDetailInfo ToRoomDetail()
         {
             RoomDetailInfo detail = new RoomDetailInfo
@@ -176,16 +325,28 @@ namespace GameServer
                 HostPlayerId = HostPlayerId
             };
 
-            // 현재 참가중인 모든 플레이어 정보
             detail.Players.AddRange(_players.Select(p => new PlayerInfo
             {
                 PlayerId = p.PlayerId,
                 PlayerName = p.PlayerName,
                 IsHost = p.IsHost,
-                Team = p.Team
+                Team = p.Team,
+                SlotNumber = p.SlotNumber
             }));
 
             return detail;
+        }
+
+        public List<PlayerInfo> GetPlayerInfos()
+        {
+            return _players.Select(p => new PlayerInfo
+            {
+                PlayerId = p.PlayerId,
+                PlayerName = p.PlayerName,
+                IsHost = p.IsHost,
+                Team = p.Team,
+                SlotNumber = p.SlotNumber
+            }).ToList();
         }
         #endregion
     }

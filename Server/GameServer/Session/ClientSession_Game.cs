@@ -30,6 +30,7 @@ namespace GameServer
 
             S_AuthRes resPacket = new S_AuthRes();
             resPacket.Success = true;
+            resPacket.PlayerId = Player.PlayerId;
 
             Send(resPacket);
         }
@@ -72,53 +73,99 @@ namespace GameServer
             Send(resPacket);
         }
 
+        public void HandleCreateRoomReq(C_CreateRoomReq reqPacket)
+        {
+            Console.WriteLine($"[HandleCreateRoomReq] 방 생성 요청 받음 - 제목: {reqPacket.Title}, 모드: {reqPacket.Mode}, 최대인원: {reqPacket.MaxPlayers}");
+
+            GameRoom room = new GameRoom();
+            room.Init();
+            room.RoomName = reqPacket.Title;
+            room.GameMode = reqPacket.Mode;
+            room.MaxPlayers = reqPacket.MaxPlayers;
+            room.MapName = reqPacket.MapName;
+            room.State = ERoomState.StateWaiting;
+
+            Console.WriteLine($"[HandleCreateRoomReq] 방 객체 생성 완료 - 이름: {room.RoomName}, 상태: {room.State}");
+
+            GameLogic.Instance.Push(() =>
+            {
+                Console.WriteLine("[HandleCreateRoomReq] GameLogic Push 시작");
+                GameLogic.Instance.AddRoom(room, (createdRoom) =>
+                {
+                    Console.WriteLine($"[HandleCreateRoomReq] 방 추가 완료 - 방 ID: {createdRoom.GameRoomId}");
+
+                    createdRoom.Push(() =>
+                    {
+                        Console.WriteLine($"[HandleCreateRoomReq] 방 입장 처리 시작 - 방 ID: {createdRoom.GameRoomId}");
+                        createdRoom.EnterRoom(this, (success) =>
+                        {
+                            Console.WriteLine($"[HandleCreateRoomReq] 방 입장 결과 - 성공여부: {success}");
+
+                            // 플레이어 정보 상세 로깅
+                            var playerInfos = createdRoom.GetPlayerInfos();
+                            Console.WriteLine("\n[Player Details]");
+                            foreach (var player in playerInfos)
+                            {
+                                Console.WriteLine($"플레이어 ID: {player.PlayerId}" +
+                                    $"\n\t이름: {player.PlayerName}" +
+                                    $"\n\t호스트 여부: {player.IsHost}" +
+                                    $"\n\t팀: {player.Team}" +
+                                    $"\n\t슬롯 번호: {player.SlotNumber}" +
+                                    "\n----------------------------------------");
+                            }
+
+                            S_CreateRoomRes resPacket = new S_CreateRoomRes()
+                            {
+                                Success = success,
+                                Room = new RoomDetailInfo()
+                                {
+                                    RoomId = createdRoom.GameRoomId,
+                                    RoomName = createdRoom.RoomName,
+                                    RoomType = createdRoom.GameMode,
+                                    MaxPlayers = createdRoom.MaxPlayers,
+                                    State = createdRoom.State,
+                                    MapName = createdRoom.MapName,
+                                    HostPlayerId = createdRoom.Host?.PlayerId ?? 0,
+                                    Players = { playerInfos }
+                                }
+                            };
+
+                            Console.WriteLine($"[HandleCreateRoomReq] 응답 패킷 전송 - 방 ID: {resPacket.Room.RoomId}, " +
+                                $"호스트 ID: {resPacket.Room.HostPlayerId}, " +
+                                $"플레이어 수: {resPacket.Room.Players.Count}");
+
+                            this.Send(resPacket);
+                        });
+                    });
+                });
+            });
+        }
+
         public void HandleJoinRoomReq(C_JoinRoomReq reqPacket)
         {
             Console.WriteLine($"[HandleJoinRoomReq] Received request for RoomId: {reqPacket.RoomId}");
-
-            GameLogic.Instance.TryEnterRoom(this, reqPacket.RoomId, (result) =>
+            GameLogic.Instance.TryEnterRoom(this, reqPacket.RoomId, (result, room) =>
             {
                 Console.WriteLine($"[HandleJoinRoomReq] TryEnterRoom result: {result}");
-
                 S_JoinRoomRes resPacket = new S_JoinRoomRes();
                 resPacket.Success = result;
-
-                if (result)
+                if (result && room != null)
                 {
-                    GameRoom room = GameLogic.Instance.FindRoom(reqPacket.RoomId);
-                    Console.WriteLine($"[HandleJoinRoomReq] Found room: {(room != null ? "Yes" : "No")}");
-
-                    if (room != null)
-                    {
-                        resPacket.Room = room.ToRoomDetail();
-                        Console.WriteLine($"[HandleJoinRoomReq] Room Details:" +
-                            $"\n\tRoom ID: {resPacket.Room.RoomId}" +
-                            $"\n\tRoom Name: {resPacket.Room.RoomName}" +
-                            $"\n\tGame Mode: {resPacket.Room.RoomType}" +
-                            $"\n\tMax Players: {resPacket.Room.MaxPlayers}" +
-                            $"\n\tRoom State: {resPacket.Room.State}" +
-                            $"\n\tMap Name: {resPacket.Room.MapName}" +
-                            $"\n\tHost Player ID: {resPacket.Room.HostPlayerId}" +
-                            $"\n\tPlayers Count: {resPacket.Room.Players.Count}");
-
-                        // Players 정보도 출력
-                        foreach (var player in resPacket.Room.Players)
-                        {
-                            Console.WriteLine($"\tPlayer Info:" +
-                                $"\n\t\tPlayer ID: {player.PlayerId}" +
-                                $"\n\t\tPlayer Name: {player.PlayerName}" +
-                                $"\n\t\tIs Host: {player.IsHost}" +
-                                $"\n\t\tTeam: {player.Team}");
-                        }
-                    }
-                    else
-                    {
-                        resPacket.Success = false;
-                        Console.WriteLine("[HandleJoinRoomReq] Room was found but is null - Setting Success to false");
-                    }
+                    resPacket.Room = room.ToRoomDetail();
                 }
-
                 Console.WriteLine($"[HandleJoinRoomReq] Sending response packet - Success: {resPacket.Success}");
+
+                var playerInfos = room.GetPlayerInfos();
+                Console.WriteLine("\n[Player Details]");
+                foreach (var player in playerInfos)
+                {
+                    Console.WriteLine($"플레이어 ID: {player.PlayerId}" +
+                        $"\n\t이름: {player.PlayerName}" +
+                        $"\n\t호스트 여부: {player.IsHost}" +
+                        $"\n\t팀: {player.Team}" +
+                        $"\n\t슬롯 번호: {player.SlotNumber}" +
+                        "\n----------------------------------------");
+                }
                 Send(resPacket);
             });
         }
@@ -144,6 +191,32 @@ namespace GameServer
             {
                 Console.WriteLine($"[HandleRoomChat] Pushing broadcast task to room {currentGameRoom.GameRoomId}");
                 currentGameRoom.BroadcastChat(Player, reqPacket.Message);
+            });
+        }
+
+        public void HandleStartRoomReq(C_StartGameReq reqPacket)
+        {
+            GameRoom currentGameRoom = Player.GameRoom;
+
+            string hostAddress = reqPacket.HostAddress;
+            int hostPort = reqPacket.Port;
+
+            // 로그: 게임 시작 요청
+            Console.WriteLine($"[HandleStartRoomReq] Received game start request from Player {Player.PlayerId} ({Player.PlayerName})");
+
+            if (currentGameRoom == null)
+            {
+                Console.WriteLine($"[HandleStartRoomReq] Error: Player {Player.PlayerId} is not in any room");
+                return;
+            }
+
+            // 로그: 게임룸 정보
+            Console.WriteLine($"[HandleStartRoomReq] GameRoom ID: {currentGameRoom.GameRoomId}");
+
+            currentGameRoom.Push(() =>
+            {
+                Console.WriteLine($"[HandleStartRoomReq] Pushing game start task to room {currentGameRoom.GameRoomId}");
+                currentGameRoom.StartGame(hostAddress, hostPort);
             });
         }
     }

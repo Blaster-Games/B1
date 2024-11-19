@@ -2,6 +2,7 @@
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
 #include "Room/RoomDetail.h"
+#include "CreateRoom.h"
 #include "Lobby.generated.h"
 
 UCLASS()

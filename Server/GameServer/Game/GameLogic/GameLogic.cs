@@ -10,20 +10,26 @@ namespace GameServer
 {
     public class GameLogic : JobSerializer
     {
+        #region Singleton
         private static readonly Lazy<GameLogic> _instance = new Lazy<GameLogic>(() => new GameLogic());
         public static GameLogic Instance { get { return _instance.Value; } }
+        #endregion
 
-        // 게임룸 관련
-        static readonly Dictionary<int, GameRoom> _rooms = new Dictionary<int, GameRoom>();
-        static int _roomIdGenerator = 1;
-        static int _threadCount;
-        static public ConcurrentQueue<GameRoom> _updateQueue = new ConcurrentQueue<GameRoom>();
+        #region Fields
+        // Room 관련
+        private static Dictionary<int, GameRoom> _rooms = new Dictionary<int, GameRoom>();
+        private static int _roomIdGenerator = 1;
+        private static int _threadCount;
+        public static ConcurrentQueue<GameRoom> _updateQueue = new ConcurrentQueue<GameRoom>();
 
-        // 로비 관련
-        static LobbyRoom _lobbyRoom;
+        // Lobby 관련 
+        private static LobbyRoom _lobbyRoom;
 
-        static readonly object _roomLock = new object();
+        // Locks
+        private static readonly object _roomLock = new object();
+        #endregion
 
+        #region Constructors
         static GameLogic()
         {
             Console.WriteLine("Static 생성자 실행");
@@ -37,14 +43,10 @@ namespace GameServer
             Console.WriteLine("일반 생성자 실행 시작");
             _lobbyRoom = new LobbyRoom();
             _lobbyRoom.Init();
-
-            Console.WriteLine($"더미룸 생성 전 Dictionary Count: {_rooms.Count}");
-            CreateDummyRooms();
-            Console.WriteLine($"더미룸 생성 후 Dictionary Count: {_rooms.Count}");
         }
+        #endregion
 
-        #region 룸 관리
-
+        #region Room Management
         public List<RoomListItemInfo> GetRoomListItems()
         {
             Console.WriteLine($"방 목록 요청 - 현재 총 방 개수: {_rooms.Count}");
@@ -60,7 +62,6 @@ namespace GameServer
             }).ToList();
             Console.WriteLine($"변환된 방 목록 개수: {roomList.Count}");
 
-            // 각 방의 정보도 출력
             foreach (var room in roomList)
             {
                 Console.WriteLine($"방 정보 - ID: {room.RoomId}, 이름: {room.RoomName}, 상태: {room.State}");
@@ -69,18 +70,15 @@ namespace GameServer
             return roomList;
         }
 
-        public GameRoom AddRoom(GameRoom room)
+        public GameRoom AddRoom(GameRoom room, Action<GameRoom> callback)
         {
-            Console.WriteLine($"룸 생성! 이름: {room.RoomName}, 현재 총 방 개수: {_rooms.Count}");
-            lock (_roomLock)
-            {
-                room.GameRoomId = _roomIdGenerator;
-                _rooms.Add(_roomIdGenerator, room);
-                _roomIdGenerator++;
-                _updateQueue.Enqueue(room);
-                Console.WriteLine($"룸 추가 완료! ID: {room.GameRoomId}, 추가 후 총 방 개수: {_rooms.Count}");
-                return room;
-            }
+            room.GameRoomId = _roomIdGenerator;
+            _rooms.Add(_roomIdGenerator, room);
+            _roomIdGenerator++;
+            _updateQueue.Enqueue(room);
+
+            callback?.Invoke(room);
+            return room;
         }
 
         public void RemoveRoom(int roomId)
@@ -95,7 +93,6 @@ namespace GameServer
             }
         }
 
-        // 락 걸고 써야한다
         public GameRoom FindRoom(int roomId)
         {
             if (_rooms.TryGetValue(roomId, out GameRoom room))
@@ -105,28 +102,25 @@ namespace GameServer
             return null;
         }
 
-        public void TryEnterRoom(ClientSession session, int roomId, Action<bool> callback)
+        public void TryEnterRoom(ClientSession session, int roomId, Action<bool, GameRoom> callback)
         {
-            GameRoom room;
-            lock (_roomLock)
+            Push(() =>
             {
-                room = FindRoom(roomId);
+                GameRoom room = FindRoom(roomId);
                 if (room == null)
                 {
-                    callback.Invoke(false);
+                    callback.Invoke(false, null);
                     return;
                 }
-            }
-
-            room.Push(() =>
-            {
-                room.EnterRoom(session, callback);
+                room.Push(() =>
+                {
+                    room.EnterRoom(session, (success) => callback.Invoke(success, room));
+                });
             });
         }
-
         #endregion
 
-        #region 로비 관리
+        #region Lobby Management
         public void EnterLobby(ClientSession session)
         {
             Push(() =>
@@ -152,8 +146,8 @@ namespace GameServer
         }
         #endregion
 
-        #region Thread 관리
-        static public void FlushMainThreadJobs()
+        #region Thread Management
+        public static void FlushMainThreadJobs()
         {
             Thread.CurrentThread.Name = "MainThread";
             while (true)
@@ -163,7 +157,7 @@ namespace GameServer
             }
         }
 
-        static public void LaunchGameThreads(int threadCount)
+        public static void LaunchGameThreads(int threadCount)
         {
             _threadCount = threadCount;
             for (int i = 0; i < threadCount; i++)
@@ -174,12 +168,11 @@ namespace GameServer
             }
         }
 
-        static public void GameThreadJob(object arg)
+        public static void GameThreadJob(object arg)
         {
             int threadId = (int)arg;
             while (true)
             {
-                // 게임 룸만 실시간 업데이트
                 if (_updateQueue.TryDequeue(out GameRoom gameRoom) == false)
                 {
                     continue;
@@ -193,22 +186,5 @@ namespace GameServer
             }
         }
         #endregion
-
-        private void CreateDummyRooms()
-        {
-            for (int i = 1; i <= 3; i++)
-            {
-                GameRoom room = new GameRoom();
-                room.Init();
-                room.RoomName = $"Test Room {i}";
-                room.GameMode = EGameMode.ModeTeamdeathmatch;
-                room.MaxPlayers = 8;
-                room.MapName = $"Map_{i}";
-                room.State = ERoomState.StateWaiting;
-
-                // 모든 속성 설정 후 AddRoom
-                AddRoom(room);
-            }
-        }
     }
 }

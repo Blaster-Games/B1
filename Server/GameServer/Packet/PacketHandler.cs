@@ -20,7 +20,9 @@ namespace GameServer
 
         public static void C_CreateRoomReqHandler(PacketSession session, IMessage packet)
         {
-            throw new NotImplementedException();
+            C_CreateRoomReq reqPacket = (C_CreateRoomReq)packet;
+            ClientSession clientSession = (ClientSession)session;
+            clientSession.HandleCreateRoomReq(reqPacket);
         }
 
         public static void C_EndGameReqHandler(PacketSession session, IMessage packet)
@@ -78,7 +80,9 @@ namespace GameServer
 
         public static void C_StartGameReqHandler(PacketSession session, IMessage packet)
         {
-            throw new NotImplementedException();
+            C_StartGameReq reqPacket = (C_StartGameReq)packet;
+            ClientSession clientSession = (ClientSession)session;
+            clientSession.HandleStartRoomReq(reqPacket);
         }
 
         public static void C_PongHandler(PacketSession session, IMessage packet)

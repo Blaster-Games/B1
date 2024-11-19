@@ -109,7 +109,7 @@ void UBlasterWebSubsystem::SendMatchStats(const ABlasterGameState* GameState)
     // 인증 토큰 추가
     if (UBlasterGameInstance* BlasterGameInstance = Cast<UBlasterGameInstance>(GetGameInstance()))
     {
-        const FString AuthHeader = FString(BEARER_PREFIX) + BlasterGameInstance->AccessToken;
+        const FString AuthHeader = FString(BEARER_PREFIX) + BlasterGameInstance->GetAccessToken();
         Request->SetHeader(AUTH_HEADER, AuthHeader);
     }
 
@@ -126,21 +126,42 @@ void UBlasterWebSubsystem::OnLoginResponse(FHttpRequestPtr Request, FHttpRespons
     {
         TSharedPtr<FJsonObject> JsonObject;
         TSharedRef<TJsonReader<>> Reader = TJsonReaderFactory<>::Create(Response->GetContentAsString());
-
         if (FJsonSerializer::Deserialize(Reader, JsonObject))
         {
-            // 응답 데이터 저장
+            // 에러 메시지가 있는지 먼저 확인
+            FString errorMessage;
+            for (const auto& Field : JsonObject->Values)
+            {
+                if (Field.Key.Contains("Exception"))
+                {
+                    // 에러 메시지를 찾았으면 로그인 실패 처리
+                    errorMessage = Field.Value->AsString();
+                    HandleLoginFailed(errorMessage);
+                    return;
+                }
+            }
+
+            // 필수 필드들이 있는지 확인
+            if (!JsonObject->HasField(FIELD_NICKNAME) ||
+                !JsonObject->HasField(FIELD_ID) ||
+                !JsonObject->HasField(FIELD_ACCESS_TOKEN) ||
+                !JsonObject->HasField(FIELD_REFRESH_TOKEN))
+            {
+                HandleLoginFailed(TEXT("Invalid login response data"));
+                return;
+            }
+
+            // 정상적인 로그인 성공 처리
             if (UGameInstance* GameInstance = GetGameInstance())
             {
                 if (UBlasterGameInstance* BlasterGameInstance = Cast<UBlasterGameInstance>(GameInstance))
                 {
-                    BlasterGameInstance->Nickname = JsonObject->GetStringField(FIELD_NICKNAME);
-                    BlasterGameInstance->UserId = JsonObject->GetIntegerField(FIELD_ID);
-                    BlasterGameInstance->AccessToken = JsonObject->GetStringField(FIELD_ACCESS_TOKEN);
-                    BlasterGameInstance->RefreshToken = JsonObject->GetStringField(FIELD_REFRESH_TOKEN);
+                    BlasterGameInstance->SetNickname(JsonObject->GetStringField(FIELD_NICKNAME));
+                    BlasterGameInstance->SetUserId(JsonObject->GetIntegerField(FIELD_ID));
+                    BlasterGameInstance->SetAccessToken(JsonObject->GetStringField(FIELD_ACCESS_TOKEN));
+                    BlasterGameInstance->SetRefreshToken(JsonObject->GetStringField(FIELD_REFRESH_TOKEN));
                 }
             }
-
             HandleLoginSuccess();
         }
         else

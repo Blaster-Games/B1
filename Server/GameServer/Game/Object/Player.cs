@@ -17,10 +17,12 @@ namespace GameServer
         public ETeamType Team { get; set; }
         public int RoomId { get; set; }
         public GameRoom GameRoom { get; set; }
+        public int SlotNumber { get; set; }
 
         public Player(ClientSession session)
         {
             Session = session;
+            PlayerId = session.SessionId;
         }
     }
 }

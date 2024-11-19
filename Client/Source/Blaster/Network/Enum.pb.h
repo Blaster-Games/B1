@@ -100,15 +100,14 @@ inline bool ETeamType_Parse(
     ETeamType_descriptor(), name, value);
 }
 enum ERoomState : int {
-  STATE_NONE = 0,
-  STATE_WAITING = 1,
-  STATE_PLAYING = 2,
-  STATE_TERMINATED = 3,
+  STATE_WAITING = 0,
+  STATE_PLAYING = 1,
+  STATE_TERMINATED = 2,
   ERoomState_INT_MIN_SENTINEL_DO_NOT_USE_ = std::numeric_limits<int32_t>::min(),
   ERoomState_INT_MAX_SENTINEL_DO_NOT_USE_ = std::numeric_limits<int32_t>::max()
 };
 bool ERoomState_IsValid(int value);
-constexpr ERoomState ERoomState_MIN = STATE_NONE;
+constexpr ERoomState ERoomState_MIN = STATE_WAITING;
 constexpr ERoomState ERoomState_MAX = STATE_TERMINATED;
 constexpr int ERoomState_ARRAYSIZE = ERoomState_MAX + 1;
 

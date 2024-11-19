@@ -615,6 +615,7 @@ class S_AuthRes final :
 
   enum : int {
     kSuccessFieldNumber = 1,
+    kPlayerIdFieldNumber = 2,
   };
   // bool success = 1;
   void clear_success();
@@ -623,6 +624,15 @@ class S_AuthRes final :
   private:
   bool _internal_success() const;
   void _internal_set_success(bool value);
+  public:
+
+  // int32 playerId = 2;
+  void clear_playerid();
+  int32_t playerid() const;
+  void set_playerid(int32_t value);
+  private:
+  int32_t _internal_playerid() const;
+  void _internal_set_playerid(int32_t value);
   public:
 
   // @@protoc_insertion_point(class_scope:Protocol.S_AuthRes)
@@ -634,6 +644,7 @@ class S_AuthRes final :
   typedef void DestructorSkippable_;
   struct Impl_ {
     bool success_;
+    int32_t playerid_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
   union { Impl_ _impl_; };
@@ -2597,25 +2608,25 @@ class S_BroadcastJoinRoom final :
   // accessors -------------------------------------------------------
 
   enum : int {
-    kNewPlayerFieldNumber = 1,
+    kRoomFieldNumber = 1,
   };
-  // .Protocol.PlayerInfo newPlayer = 1;
-  bool has_newplayer() const;
+  // .Protocol.RoomDetailInfo room = 1;
+  bool has_room() const;
   private:
-  bool _internal_has_newplayer() const;
+  bool _internal_has_room() const;
   public:
-  void clear_newplayer();
-  const ::Protocol::PlayerInfo& newplayer() const;
-  PROTOBUF_NODISCARD ::Protocol::PlayerInfo* release_newplayer();
-  ::Protocol::PlayerInfo* mutable_newplayer();
-  void set_allocated_newplayer(::Protocol::PlayerInfo* newplayer);
+  void clear_room();
+  const ::Protocol::RoomDetailInfo& room() const;
+  PROTOBUF_NODISCARD ::Protocol::RoomDetailInfo* release_room();
+  ::Protocol::RoomDetailInfo* mutable_room();
+  void set_allocated_room(::Protocol::RoomDetailInfo* room);
   private:
-  const ::Protocol::PlayerInfo& _internal_newplayer() const;
-  ::Protocol::PlayerInfo* _internal_mutable_newplayer();
+  const ::Protocol::RoomDetailInfo& _internal_room() const;
+  ::Protocol::RoomDetailInfo* _internal_mutable_room();
   public:
-  void unsafe_arena_set_allocated_newplayer(
-      ::Protocol::PlayerInfo* newplayer);
-  ::Protocol::PlayerInfo* unsafe_arena_release_newplayer();
+  void unsafe_arena_set_allocated_room(
+      ::Protocol::RoomDetailInfo* room);
+  ::Protocol::RoomDetailInfo* unsafe_arena_release_room();
 
   // @@protoc_insertion_point(class_scope:Protocol.S_BroadcastJoinRoom)
  private:
@@ -2625,7 +2636,7 @@ class S_BroadcastJoinRoom final :
   typedef void InternalArenaConstructable_;
   typedef void DestructorSkippable_;
   struct Impl_ {
-    ::Protocol::PlayerInfo* newplayer_;
+    ::Protocol::RoomDetailInfo* room_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
   union { Impl_ _impl_; };
@@ -3983,27 +3994,8 @@ class S_StartGameRes final :
   // accessors -------------------------------------------------------
 
   enum : int {
-    kPlayersFieldNumber = 2,
     kSuccessFieldNumber = 1,
   };
-  // repeated .Protocol.PlayerInfo players = 2;
-  int players_size() const;
-  private:
-  int _internal_players_size() const;
-  public:
-  void clear_players();
-  ::Protocol::PlayerInfo* mutable_players(int index);
-  ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Protocol::PlayerInfo >*
-      mutable_players();
-  private:
-  const ::Protocol::PlayerInfo& _internal_players(int index) const;
-  ::Protocol::PlayerInfo* _internal_add_players();
-  public:
-  const ::Protocol::PlayerInfo& players(int index) const;
-  ::Protocol::PlayerInfo* add_players();
-  const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Protocol::PlayerInfo >&
-      players() const;
-
   // bool success = 1;
   void clear_success();
   bool success() const;
@@ -4021,7 +4013,6 @@ class S_StartGameRes final :
   typedef void InternalArenaConstructable_;
   typedef void DestructorSkippable_;
   struct Impl_ {
-    ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Protocol::PlayerInfo > players_;
     bool success_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
@@ -4153,7 +4144,6 @@ class S_BroadcastStartGame final :
   enum : int {
     kHostAddressFieldNumber = 1,
     kPortFieldNumber = 2,
-    kSessionIdFieldNumber = 3,
   };
   // string hostAddress = 1;
   void clear_hostaddress();
@@ -4178,15 +4168,6 @@ class S_BroadcastStartGame final :
   void _internal_set_port(int32_t value);
   public:
 
-  // int32 sessionId = 3;
-  void clear_sessionid();
-  int32_t sessionid() const;
-  void set_sessionid(int32_t value);
-  private:
-  int32_t _internal_sessionid() const;
-  void _internal_set_sessionid(int32_t value);
-  public:
-
   // @@protoc_insertion_point(class_scope:Protocol.S_BroadcastStartGame)
  private:
   class _Internal;
@@ -4197,7 +4178,6 @@ class S_BroadcastStartGame final :
   struct Impl_ {
     ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr hostaddress_;
     int32_t port_;
-    int32_t sessionid_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
   union { Impl_ _impl_; };
@@ -5692,6 +5672,26 @@ inline void S_AuthRes::set_success(bool value) {
   // @@protoc_insertion_point(field_set:Protocol.S_AuthRes.success)
 }
 
+// int32 playerId = 2;
+inline void S_AuthRes::clear_playerid() {
+  _impl_.playerid_ = 0;
+}
+inline int32_t S_AuthRes::_internal_playerid() const {
+  return _impl_.playerid_;
+}
+inline int32_t S_AuthRes::playerid() const {
+  // @@protoc_insertion_point(field_get:Protocol.S_AuthRes.playerId)
+  return _internal_playerid();
+}
+inline void S_AuthRes::_internal_set_playerid(int32_t value) {
+  
+  _impl_.playerid_ = value;
+}
+inline void S_AuthRes::set_playerid(int32_t value) {
+  _internal_set_playerid(value);
+  // @@protoc_insertion_point(field_set:Protocol.S_AuthRes.playerId)
+}
+
 // -------------------------------------------------------------------
 
 // C_EnterLobbyReq
@@ -6446,39 +6446,39 @@ inline void S_JoinRoomRes::set_allocated_room(::Protocol::RoomDetailInfo* room) 
 
 // S_BroadcastJoinRoom
 
-// .Protocol.PlayerInfo newPlayer = 1;
-inline bool S_BroadcastJoinRoom::_internal_has_newplayer() const {
-  return this != internal_default_instance() && _impl_.newplayer_ != nullptr;
+// .Protocol.RoomDetailInfo room = 1;
+inline bool S_BroadcastJoinRoom::_internal_has_room() const {
+  return this != internal_default_instance() && _impl_.room_ != nullptr;
 }
-inline bool S_BroadcastJoinRoom::has_newplayer() const {
-  return _internal_has_newplayer();
+inline bool S_BroadcastJoinRoom::has_room() const {
+  return _internal_has_room();
 }
-inline const ::Protocol::PlayerInfo& S_BroadcastJoinRoom::_internal_newplayer() const {
-  const ::Protocol::PlayerInfo* p = _impl_.newplayer_;
-  return p != nullptr ? *p : reinterpret_cast<const ::Protocol::PlayerInfo&>(
-      ::Protocol::_PlayerInfo_default_instance_);
+inline const ::Protocol::RoomDetailInfo& S_BroadcastJoinRoom::_internal_room() const {
+  const ::Protocol::RoomDetailInfo* p = _impl_.room_;
+  return p != nullptr ? *p : reinterpret_cast<const ::Protocol::RoomDetailInfo&>(
+      ::Protocol::_RoomDetailInfo_default_instance_);
 }
-inline const ::Protocol::PlayerInfo& S_BroadcastJoinRoom::newplayer() const {
-  // @@protoc_insertion_point(field_get:Protocol.S_BroadcastJoinRoom.newPlayer)
-  return _internal_newplayer();
+inline const ::Protocol::RoomDetailInfo& S_BroadcastJoinRoom::room() const {
+  // @@protoc_insertion_point(field_get:Protocol.S_BroadcastJoinRoom.room)
+  return _internal_room();
 }
-inline void S_BroadcastJoinRoom::unsafe_arena_set_allocated_newplayer(
-    ::Protocol::PlayerInfo* newplayer) {
+inline void S_BroadcastJoinRoom::unsafe_arena_set_allocated_room(
+    ::Protocol::RoomDetailInfo* room) {
   if (GetArenaForAllocation() == nullptr) {
-    delete reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.newplayer_);
+    delete reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.room_);
   }
-  _impl_.newplayer_ = newplayer;
-  if (newplayer) {
+  _impl_.room_ = room;
+  if (room) {
     
   } else {
     
   }
-  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:Protocol.S_BroadcastJoinRoom.newPlayer)
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:Protocol.S_BroadcastJoinRoom.room)
 }
-inline ::Protocol::PlayerInfo* S_BroadcastJoinRoom::release_newplayer() {
+inline ::Protocol::RoomDetailInfo* S_BroadcastJoinRoom::release_room() {
   
-  ::Protocol::PlayerInfo* temp = _impl_.newplayer_;
-  _impl_.newplayer_ = nullptr;
+  ::Protocol::RoomDetailInfo* temp = _impl_.room_;
+  _impl_.room_ = nullptr;
 #ifdef PROTOBUF_FORCE_COPY_IN_RELEASE
   auto* old =  reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(temp);
   temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
@@ -6490,45 +6490,45 @@ inline ::Protocol::PlayerInfo* S_BroadcastJoinRoom::release_newplayer() {
 #endif  // !PROTOBUF_FORCE_COPY_IN_RELEASE
   return temp;
 }
-inline ::Protocol::PlayerInfo* S_BroadcastJoinRoom::unsafe_arena_release_newplayer() {
-  // @@protoc_insertion_point(field_release:Protocol.S_BroadcastJoinRoom.newPlayer)
+inline ::Protocol::RoomDetailInfo* S_BroadcastJoinRoom::unsafe_arena_release_room() {
+  // @@protoc_insertion_point(field_release:Protocol.S_BroadcastJoinRoom.room)
   
-  ::Protocol::PlayerInfo* temp = _impl_.newplayer_;
-  _impl_.newplayer_ = nullptr;
+  ::Protocol::RoomDetailInfo* temp = _impl_.room_;
+  _impl_.room_ = nullptr;
   return temp;
 }
-inline ::Protocol::PlayerInfo* S_BroadcastJoinRoom::_internal_mutable_newplayer() {
+inline ::Protocol::RoomDetailInfo* S_BroadcastJoinRoom::_internal_mutable_room() {
   
-  if (_impl_.newplayer_ == nullptr) {
-    auto* p = CreateMaybeMessage<::Protocol::PlayerInfo>(GetArenaForAllocation());
-    _impl_.newplayer_ = p;
+  if (_impl_.room_ == nullptr) {
+    auto* p = CreateMaybeMessage<::Protocol::RoomDetailInfo>(GetArenaForAllocation());
+    _impl_.room_ = p;
   }
-  return _impl_.newplayer_;
+  return _impl_.room_;
 }
-inline ::Protocol::PlayerInfo* S_BroadcastJoinRoom::mutable_newplayer() {
-  ::Protocol::PlayerInfo* _msg = _internal_mutable_newplayer();
-  // @@protoc_insertion_point(field_mutable:Protocol.S_BroadcastJoinRoom.newPlayer)
+inline ::Protocol::RoomDetailInfo* S_BroadcastJoinRoom::mutable_room() {
+  ::Protocol::RoomDetailInfo* _msg = _internal_mutable_room();
+  // @@protoc_insertion_point(field_mutable:Protocol.S_BroadcastJoinRoom.room)
   return _msg;
 }
-inline void S_BroadcastJoinRoom::set_allocated_newplayer(::Protocol::PlayerInfo* newplayer) {
+inline void S_BroadcastJoinRoom::set_allocated_room(::Protocol::RoomDetailInfo* room) {
   ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
   if (message_arena == nullptr) {
-    delete reinterpret_cast< ::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.newplayer_);
+    delete reinterpret_cast< ::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.room_);
   }
-  if (newplayer) {
+  if (room) {
     ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena =
         ::PROTOBUF_NAMESPACE_ID::Arena::InternalGetOwningArena(
-                reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(newplayer));
+                reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(room));
     if (message_arena != submessage_arena) {
-      newplayer = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
-          message_arena, newplayer, submessage_arena);
+      room = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
+          message_arena, room, submessage_arena);
     }
     
   } else {
     
   }
-  _impl_.newplayer_ = newplayer;
-  // @@protoc_insertion_point(field_set_allocated:Protocol.S_BroadcastJoinRoom.newPlayer)
+  _impl_.room_ = room;
+  // @@protoc_insertion_point(field_set_allocated:Protocol.S_BroadcastJoinRoom.room)
 }
 
 // -------------------------------------------------------------------
@@ -6947,43 +6947,6 @@ inline void S_StartGameRes::set_success(bool value) {
   // @@protoc_insertion_point(field_set:Protocol.S_StartGameRes.success)
 }
 
-// repeated .Protocol.PlayerInfo players = 2;
-inline int S_StartGameRes::_internal_players_size() const {
-  return _impl_.players_.size();
-}
-inline int S_StartGameRes::players_size() const {
-  return _internal_players_size();
-}
-inline ::Protocol::PlayerInfo* S_StartGameRes::mutable_players(int index) {
-  // @@protoc_insertion_point(field_mutable:Protocol.S_StartGameRes.players)
-  return _impl_.players_.Mutable(index);
-}
-inline ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Protocol::PlayerInfo >*
-S_StartGameRes::mutable_players() {
-  // @@protoc_insertion_point(field_mutable_list:Protocol.S_StartGameRes.players)
-  return &_impl_.players_;
-}
-inline const ::Protocol::PlayerInfo& S_StartGameRes::_internal_players(int index) const {
-  return _impl_.players_.Get(index);
-}
-inline const ::Protocol::PlayerInfo& S_StartGameRes::players(int index) const {
-  // @@protoc_insertion_point(field_get:Protocol.S_StartGameRes.players)
-  return _internal_players(index);
-}
-inline ::Protocol::PlayerInfo* S_StartGameRes::_internal_add_players() {
-  return _impl_.players_.Add();
-}
-inline ::Protocol::PlayerInfo* S_StartGameRes::add_players() {
-  ::Protocol::PlayerInfo* _add = _internal_add_players();
-  // @@protoc_insertion_point(field_add:Protocol.S_StartGameRes.players)
-  return _add;
-}
-inline const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::Protocol::PlayerInfo >&
-S_StartGameRes::players() const {
-  // @@protoc_insertion_point(field_list:Protocol.S_StartGameRes.players)
-  return _impl_.players_;
-}
-
 // -------------------------------------------------------------------
 
 // S_BroadcastStartGame
@@ -7056,26 +7019,6 @@ inline void S_BroadcastStartGame::_internal_set_port(int32_t value) {
 inline void S_BroadcastStartGame::set_port(int32_t value) {
   _internal_set_port(value);
   // @@protoc_insertion_point(field_set:Protocol.S_BroadcastStartGame.port)
-}
-
-// int32 sessionId = 3;
-inline void S_BroadcastStartGame::clear_sessionid() {
-  _impl_.sessionid_ = 0;
-}
-inline int32_t S_BroadcastStartGame::_internal_sessionid() const {
-  return _impl_.sessionid_;
-}
-inline int32_t S_BroadcastStartGame::sessionid() const {
-  // @@protoc_insertion_point(field_get:Protocol.S_BroadcastStartGame.sessionId)
-  return _internal_sessionid();
-}
-inline void S_BroadcastStartGame::_internal_set_sessionid(int32_t value) {
-  
-  _impl_.sessionid_ = value;
-}
-inline void S_BroadcastStartGame::set_sessionid(int32_t value) {
-  _internal_set_sessionid(value);
-  // @@protoc_insertion_point(field_set:Protocol.S_BroadcastStartGame.sessionId)
 }
 
 // -------------------------------------------------------------------

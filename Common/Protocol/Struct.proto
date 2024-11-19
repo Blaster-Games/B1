@@ -10,6 +10,7 @@ message PlayerInfo {
     string playerName = 2;     // 플레이어 이름
     bool isHost = 3;           // 방장 여부
     ETeamType team = 4;         // 팀전에서 사용
+    int32 slotNumber = 5;      // 슬롯 번호
 }
 
 // 로비에서 방 목록 표시용 (간단한 정보)

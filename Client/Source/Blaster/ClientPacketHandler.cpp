@@ -77,6 +77,11 @@ bool Handle_S_SelectRoomRes(PacketSessionRef& session, Protocol::S_SelectRoomRes
 
 bool Handle_S_CreateRoomRes(PacketSessionRef& session, Protocol::S_CreateRoomRes& pkt)
 {
+    if (auto NetworkSystem = GetNetworkSystem(session))
+    {
+        NetworkSystem->HandleCreateRoomRes(pkt);
+        return true;
+    }
     return false;
 }
 
@@ -92,6 +97,11 @@ bool Handle_S_JoinRoomRes(PacketSessionRef& session, Protocol::S_JoinRoomRes& pk
 
 bool Handle_S_BroadcastJoinRoom(PacketSessionRef& session, Protocol::S_BroadcastJoinRoom& pkt)
 {
+    if (auto NetworkSystem = GetNetworkSystem(session))
+    {
+        NetworkSystem->HandleBroadcastJoinRoom(pkt);
+        return true;
+    }
     return false;
 }
 
@@ -123,6 +133,11 @@ bool Handle_S_StartGameRes(PacketSessionRef& session, Protocol::S_StartGameRes& 
 
 bool Handle_S_BroadcastStartGame(PacketSessionRef& session, Protocol::S_BroadcastStartGame& pkt)
 {
+	if (auto NetworkSystem = GetNetworkSystem(session))
+	{
+		NetworkSystem->HandleBroadcastStartGame(pkt);
+		return true;
+	}
     return false;
 }
 

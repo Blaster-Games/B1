@@ -69,24 +69,24 @@ USTRUCT(BlueprintType)
 struct FPlayerInfo
 {
 	GENERATED_BODY()
-
 	UPROPERTY()
 	int32 PlayerId;
-
 	UPROPERTY()
 	FString PlayerName;
-
 	UPROPERTY()
 	bool IsHost;
-
 	UPROPERTY()
 	ETeamType Team;
+	UPROPERTY()
+	int32 SlotNumber;
 
-	// 기본 생성자
+	// 수정된 초기화 리스트 - 선언 순서와 동일하게
 	FPlayerInfo()
 		: PlayerId(0)
+		, PlayerName(TEXT("Player"))
 		, IsHost(false)
 		, Team(ETeamType::TEAM_NONE)
+		, SlotNumber(0)
 	{
 	}
 };
