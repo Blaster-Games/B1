@@ -3,6 +3,7 @@
 #include "Engine/GameInstance.h"
 #include "Blaster.h"
 #include "HUD/Lobby/RoomTypes.h"
+#include "Blaster/Save/BlasterSaveSettings.h"
 #include "BlasterGameInstance.generated.h"
 
 UCLASS()
@@ -114,8 +115,6 @@ private:
 	FString Nickname;
 	int32 UserId;
 	int32 PlayerId;
-    UPROPERTY()
-    class UBlasterNetworkSubsystem* NetworkSystem;
 
-    FSensitivitySettings SensitivitySettings;
+	FSensitivitySettings SensitivitySettings;
 };
