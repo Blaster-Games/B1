@@ -76,7 +76,18 @@ void URoomChatPanel::OnChatMessageCommitted(const FText& Text, ETextCommit::Type
             // 입력창 비우기
             RoomChatInputBox->SetText(FText::GetEmpty());
 
-			RoomChatInputBox->SetKeyboardFocus();
+            // 입력창에 다시 포커스 설정
+            if (UGameInstance* GameInstance = GetGameInstance())
+            {
+                if (APlayerController* PC = GameInstance->GetFirstLocalPlayerController())
+                {
+                    // 다음 프레임에 포커스 설정 (더 안정적)
+                    GetWorld()->GetTimerManager().SetTimerForNextTick([this]()
+                        {
+                            RoomChatInputBox->SetKeyboardFocus();
+                        });
+                }
+            }
         }
     }
 }
