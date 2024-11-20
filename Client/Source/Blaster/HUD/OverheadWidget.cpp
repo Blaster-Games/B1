@@ -4,6 +4,7 @@
 #include "Components/TextBlock.h"
 #include "GameFramework/PlayerState.h"
 #include "Kismet/GameplayStatics.h"
+#include "PlayerState/BlasterPlayerState.h"
 
 void UOverheadWidget::SetDisplayText(FString TextToDisplay)
 {
@@ -17,22 +18,36 @@ void UOverheadWidget::ShowPlayerNetRole(APawn* InPawn)
 {
 	if (!InPawn)
 	{
+		UE_LOG(LogTemp, Warning, TEXT("InPawn is null"));
 		SetDisplayText(TEXT("Unknown"));
 		return;
 	}
-	
-	// 이름 정도니깐 그냥 이렇게 해도 될듯.
+
+	// 디버그를 위한 로그 추가
+	UE_LOG(LogTemp, Log, TEXT("ShowPlayerNetRole called for Pawn: %s"), *InPawn->GetName());
+
 	FTimerHandle TimerHandle;
 	GetWorld()->GetTimerManager().SetTimer(
 		TimerHandle,
 		[this, InPawn]()
 		{
-			if (APlayerState* PlayerState = InPawn->GetPlayerState<APlayerState>())
+			if (!InPawn)
 			{
-				SetDisplayText(PlayerState->GetPlayerName());
+				UE_LOG(LogTemp, Warning, TEXT("InPawn became null"));
+				SetDisplayText(TEXT("Unknown"));
+				return;
+			}
+
+			ABlasterPlayerState* PlayerState = InPawn->GetPlayerState<ABlasterPlayerState>();
+			if (PlayerState)
+			{
+				FString Nickname = PlayerState->GetNickname();
+				UE_LOG(LogTemp, Log, TEXT("Found PlayerState with nickname: %s"), *Nickname);
+				SetDisplayText(Nickname);
 			}
 			else
 			{
+				UE_LOG(LogTemp, Warning, TEXT("PlayerState is null for Pawn: %s"), *InPawn->GetName());
 				SetDisplayText(TEXT("Unknown"));
 			}
 		},

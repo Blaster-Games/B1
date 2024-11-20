@@ -20,6 +20,8 @@ void ABlasterPlayerState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& 
 	DOREPLIFETIME(ABlasterPlayerState, ThrowableCounts);
 	DOREPLIFETIME(ABlasterPlayerState, WeaponSlots);
 
+	// Nickname 관련 추가
+	DOREPLIFETIME(ABlasterPlayerState, Nickname);
 }
 
 void ABlasterPlayerState::BeginPlay()
@@ -109,6 +111,18 @@ void ABlasterPlayerState::SetMoney(int32 NewMoney)
 	if (Controller)
 	{
 		Controller->SetHUDMoney(NewMoney);
+	}
+}
+
+void ABlasterPlayerState::OnRep_Nickname()
+{
+}
+
+void ABlasterPlayerState::SetNickname(const FString& NewNickname)
+{
+	if (HasAuthority())
+	{
+		Nickname = NewNickname;
 	}
 }
 

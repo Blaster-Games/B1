@@ -161,6 +161,20 @@ public:
 	void SetMoney(int32 NewMoney);
 	FORCEINLINE const TArray<EBuffType>& GetActiveBuffs() const { return ActiveBuffs; }
 	FORCEINLINE int32 GetDefeats() const { return Defeats; }
+
+
+
+// Nickname 관련
+private:
+		UPROPERTY(ReplicatedUsing = OnRep_Nickname)
+		FString Nickname;
+
+		UFUNCTION()
+		void OnRep_Nickname();
+
+public:
+	FORCEINLINE const FString& GetNickname() const { return Nickname; }
+	void SetNickname(const FString& NewNickname);
 };
 
 // 만약에 위의 정보들을 여기서 관리하지 않고 캐릭터로 관리한다면?

@@ -79,7 +79,7 @@ namespace GameServer
             MaxPlayers = 8;
             GameMode = EGameMode.ModeTeamdeathmatch;
             RoomName = "";
-            MapName = "";
+            MapName = "Highrise";
 
             _slots = new SlotInfo[8];
             for (int i = 0; i < 8; i++)

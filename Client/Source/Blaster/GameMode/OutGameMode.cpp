@@ -5,6 +5,7 @@
 #include "../HUD/Lobby/RoomTypes.h"
 #include "PlayerController/OutGamePlayerController.h"
 #include "Kismet/GameplayStatics.h"
+#include "PlayerState/BlasterPlayerState.h"
 
 AOutGameMode::AOutGameMode()
 {
@@ -15,8 +16,24 @@ void AOutGameMode::PostLogin(APlayerController* NewPlayer)
 {
     Super::PostLogin(NewPlayer);
 
-    UE_LOG(LogTemp, Log, TEXT("PostLogin called - Player: %s, NetMode: %d"),
-        *GetNameSafe(NewPlayer), static_cast<int32>(GetNetMode()));
+    if (ABlasterPlayerState* PS = NewPlayer->GetPlayerState<ABlasterPlayerState>())
+    {
+        if (UBlasterGameInstance* GI = Cast<UBlasterGameInstance>(GetGameInstance()))
+        {
+            PS->SetNickname(GI->GetNickname());
+            UE_LOG(LogTemp, Log, TEXT("Setting Nickname for player. PlayerState: %s, Nickname: %s"),
+                *PS->GetName(), *GI->GetNickname());
+        }
+        else
+        {
+            UE_LOG(LogTemp, Warning, TEXT("Failed to get BlasterGameInstance"));
+        }
+    }
+    else
+    {
+        UE_LOG(LogTemp, Warning, TEXT("Failed to get BlasterPlayerState for player: %s"),
+            *NewPlayer->GetName());
+    }
 
     if (GetNetMode() == NM_ListenServer)
     {
@@ -67,7 +84,7 @@ void AOutGameMode::CheckAndStartGame()
                 GameMapPath = FString::Printf(TEXT("/Game/Maps/%s?listen?game=/Game/Blueprints/GameModes/BP_BlasterGameMode"), *RoomInfo.MapName);
             }
 
-            bUseSeamlessTravel = false;
+            bUseSeamlessTravel = true;
             GetWorld()->ServerTravel(GameMapPath);
         }
     }

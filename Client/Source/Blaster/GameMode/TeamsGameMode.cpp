@@ -6,6 +6,7 @@
 #include "Blaster/PlayerState/BlasterPlayerState.h"
 #include "Blaster/PlayerController/BlasterPlayerController.h"
 #include "Kismet/GameplayStatics.h"
+#include "GameInstance/BlasterGameInstance.h"
 
 
 ATeamsGameMode::ATeamsGameMode()
@@ -13,7 +14,7 @@ ATeamsGameMode::ATeamsGameMode()
 	bTeamsMatch = true;
 }
 
-// 도중 난입
+// 도중 난입 (PlayerInfo를 통해 팀 선택하는 부분으로 변경해줘야함. 근데 도중난입 안만들거니깐 안넣음)
 void ATeamsGameMode::PostLogin(APlayerController* NewPlayer)
 {
 	Super::PostLogin(NewPlayer);
@@ -81,7 +82,44 @@ void ATeamsGameMode::HandleMatchHasStarted()
 
 	ABlasterGameState* BGameState = Cast<ABlasterGameState>(UGameplayStatics::GetGameState(this));
 
-	if (BGameState)
+	// 여기부터 팀분배로직 변경됨
+	UBlasterGameInstance* GameInstance = Cast<UBlasterGameInstance>(GetGameInstance());
+
+	if (BGameState && GameInstance)
+	{
+		// 현재 방의 정보를 가져옴
+		const FRoomDetailInfo& CurrentRoom = GameInstance->GetCurrentRoomInfo();
+
+		for (auto PState : BGameState->PlayerArray)
+		{
+			ABlasterPlayerState* BPState = Cast<ABlasterPlayerState>(PState.Get());
+			if (BPState)
+			{
+				// 플레이어의 ID나 이름으로 매칭하여 FPlayerInfo를 찾음
+				const FPlayerInfo* PlayerInfo = CurrentRoom.Players.FindByPredicate([&](const FPlayerInfo& Info) {
+					return Info.PlayerName == BPState->GetPlayerName();
+					});
+
+				if (PlayerInfo)
+				{
+					// FPlayerInfo의 TeamType에 따라 팀 할당
+					if (PlayerInfo->Team == ETeamType::TEAM_RED)
+					{
+						BGameState->RedTeam.AddUnique(BPState);
+						BPState->SetTeam(ETeam::ET_RedTeam);
+					}
+					else if (PlayerInfo->Team == ETeamType::TEAM_BLUE)
+					{
+						BGameState->BlueTeam.AddUnique(BPState);
+						BPState->SetTeam(ETeam::ET_BlueTeam);
+					}
+
+				}
+			}
+		}
+	}
+
+	/*if (BGameState)
 	{
 		for (auto PState : BGameState->PlayerArray)
 		{
@@ -100,7 +138,7 @@ void ATeamsGameMode::HandleMatchHasStarted()
 				}
 			}
 		}
-	}
+	}*/
 }
 
 // me
