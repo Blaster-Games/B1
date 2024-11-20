@@ -99,10 +99,10 @@ public:
 
 private:
 	UPROPERTY(Config)
-	FString DefaultServerIP = TEXT("127.0.0.1");
+	FString DefaultServerIP = TEXT("147.185.221.23");
 
 	UPROPERTY(Config)
-	int16 DefaultServerPort = 7777;
+	int32 DefaultServerPort = 63753;
 
 	UPROPERTY()
 	class UBlasterNetworkSubsystem* NetworkSystem;
