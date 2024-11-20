@@ -32,6 +32,9 @@ namespace GameServer
             resPacket.Success = true;
             resPacket.PlayerId = Player.PlayerId;
 
+            Console.WriteLine("접속유저 플레이어 ID : " + resPacket.PlayerId);
+            Console.WriteLine("접속유저 세션 ID : " + this.SessionId);
+
             Send(resPacket);
         }
 
@@ -219,5 +222,61 @@ namespace GameServer
                 currentGameRoom.StartGame(hostAddress, hostPort);
             });
         }
+
+        public void HandleLeaveRoomReq(C_LeaveRoomReq reqPacket)
+        {
+            Console.WriteLine($"[HandleLeaveRoomReq] Player {Player.PlayerId} ({Player.PlayerName}) requested to leave room");
+
+            if (Player.GameRoom == null)
+            {
+                Console.WriteLine($"[HandleLeaveRoomReq] Error: Player {Player.PlayerId} is not in any room");
+                S_LeaveRoomRes resPacket = new S_LeaveRoomRes { Success = false };
+                Send(resPacket);
+                return;
+            }
+
+            GameRoom room = Player.GameRoom;
+            Console.WriteLine($"[HandleLeaveRoomReq] Processing leave request - Room ID: {room.GameRoomId}, Current Players: {room.CurrentPlayerCount}");
+
+            room.Push(() =>
+            {
+                Console.WriteLine($"[HandleLeaveRoomReq] Executing leave room task for Player {Player.PlayerId}");
+                room.LeaveRoom(this, (success) =>
+                {
+                    Console.WriteLine($"[HandleLeaveRoomReq] Leave room result - Success: {success}");
+                    S_LeaveRoomRes resPacket = new S_LeaveRoomRes { Success = success };
+                    Send(resPacket);
+                    Console.WriteLine($"[HandleLeaveRoomReq] Response packet sent to Player {Player.PlayerId}");
+                });
+            });
+        }
+
+        // GameRoom.cs의 BroadcastLeaveGame 구현
+        public void BroadcastLeaveGame(Player player)
+        {
+            Console.WriteLine($"[BroadcastLeaveGame] Broadcasting player leave - Player {player.PlayerId}");
+
+            S_BroadcastLeaveRoom leavePacket = new S_BroadcastLeaveRoom
+            {
+                Room = player.GameRoom.ToRoomDetail()
+            };
+
+            foreach (Player p in player.GameRoom.Players)
+            {
+                if (p.Session != null)
+                {
+                    Console.WriteLine($"[BroadcastLeaveGame] Sending to player {p.PlayerId}");
+                    p.Session.Send(leavePacket);
+                }
+            }
+
+            // 방을 나간 플레이어의 정보 초기화
+            player.GameRoom = null;
+            player.RoomId = 0;
+            player.IsHost = false;
+            player.SlotNumber = -1;
+            player.Team = ETeamType.TeamNone;
+        }
+
     }
 }

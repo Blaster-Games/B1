@@ -107,11 +107,21 @@ bool Handle_S_BroadcastJoinRoom(PacketSessionRef& session, Protocol::S_Broadcast
 
 bool Handle_S_LeaveRoomRes(PacketSessionRef& session, Protocol::S_LeaveRoomRes& pkt)
 {
+	if (auto NetworkSystem = GetNetworkSystem(session))
+	{
+		NetworkSystem->HandleLeaveRoomRes(pkt);
+		return true;
+	}
     return false;
 }
 
 bool Handle_S_BroadcastLeaveRoom(PacketSessionRef& session, Protocol::S_BroadcastLeaveRoom& pkt)
 {
+	if (auto NetworkSystem = GetNetworkSystem(session))
+	{
+		NetworkSystem->HandleBroadcastLeaveRoom(pkt);
+		return true;
+	}
     return false;
 }
 

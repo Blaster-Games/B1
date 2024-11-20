@@ -11,18 +11,17 @@ namespace GameServer
     public class Player
     {
         public ClientSession Session { get; set; }
-        public int PlayerId { get; set; }
+        public int PlayerId => Session.SessionId;
         public string PlayerName { get; set; }
-        public bool IsHost { get; set; }
-        public ETeamType Team { get; set; }
+        public bool IsHost { get; set; } = false;
+        public ETeamType Team { get; set; } = ETeamType.TeamNone;
         public int RoomId { get; set; }
         public GameRoom GameRoom { get; set; }
-        public int SlotNumber { get; set; }
+        public int SlotNumber { get; set; } = -1;
 
         public Player(ClientSession session)
         {
             Session = session;
-            PlayerId = session.SessionId;
         }
     }
 }

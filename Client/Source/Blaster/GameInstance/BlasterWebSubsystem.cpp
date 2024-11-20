@@ -57,6 +57,9 @@ void UBlasterWebSubsystem::SendMatchStats(const ABlasterGameState* GameState)
     // JSON 객체 생성
     TSharedPtr<FJsonObject> JsonObject = MakeShared<FJsonObject>();
 
+    // 맵 정보와 게임 모드 추가
+    JsonObject->SetStringField("mapName", "Highrise");
+    JsonObject->SetStringField("gameMode", "Teams");
 
     // 구매 통계
     const FGamePurchaseStats& Stats = GameState->GetGamePurchaseStats();

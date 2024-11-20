@@ -14,6 +14,8 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnRoomChatMessageDelegate, int32
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnConfirmCreateRoomResponseDelegate, bool, Success, const FRoomDetailInfo&, RoomInfo);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnBroadcastJoinRoom, const FRoomDetailInfo&, RoomInfo);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnBroadcastStartGameDelegate, const FString&, HostAddress, int32, Port);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnLeaveRoomResponseDelegate, bool, Success);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnBroadcastLeaveRoomDelegate, const FRoomDetailInfo&, RoomInfo);
 
 UCLASS()
 class BLASTER_API UBlasterNetworkSubsystem : public UGameInstanceSubsystem
@@ -50,6 +52,12 @@ public:
 	UPROPERTY(BlueprintAssignable, Category = "Network|Game")
 	FOnBroadcastStartGameDelegate OnBroadcastStartGame;
 
+	UPROPERTY(BlueprintAssignable, Category = "Network|Room")
+	FOnLeaveRoomResponseDelegate OnLeaveRoomResponse;
+
+	UPROPERTY(BlueprintAssignable, Category = "Network|Room")
+    FOnBroadcastLeaveRoomDelegate OnBroadcastLeaveRoom;
+
 
 public:
     void SendAuthReq();
@@ -75,6 +83,11 @@ public:
 	void SendStartGameReq(const FString& HostAddress, int32 Port);
 	void HandleStartGameRes(Protocol::S_StartGameRes& packet);
 	void HandleBroadcastStartGame(Protocol::S_BroadcastStartGame& packet);
+
+	void SendLeaveRoomReq();
+	void HandleLeaveRoomRes(Protocol::S_LeaveRoomRes& packet);
+
+	void HandleBroadcastLeaveRoom(Protocol::S_BroadcastLeaveRoom& packet);
 
     void HandlePing();
     void SendPong();

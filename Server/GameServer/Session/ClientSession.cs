@@ -19,7 +19,7 @@ namespace GameServer
         long _pingpongTick = 0;
 
         public ClientSession() 
-        { 
+        {
             Player = new Player(this);
         }
 
@@ -95,7 +95,6 @@ namespace GameServer
         {
             Console.WriteLine($"Transferred bytes: {numOfBytes}");
         }
-
         #endregion
     }
 }

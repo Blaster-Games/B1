@@ -3,11 +3,12 @@
 #include "Blueprint/UserWidget.h"
 #include "RoomPlayers.h"
 #include "Components/Button.h"
-#include "../RoomTypes.h"
+#include "HUD/Lobby/RoomTypes.h"
 #include "Components/TextBlock.h"
 #include "RoomDetail.generated.h"
 
 class UBlasterNetworkSubsystem;
+class ULobby;
 
 UCLASS()
 class BLASTER_API URoomDetail : public UUserWidget
@@ -72,7 +73,14 @@ private:
 	UFUNCTION()
 	void OnLeaveGameButtonClicked();
 
+    UFUNCTION()
+    void ReturnToLobby(bool success);
+
 private:
     void UpdateUI();
+
     FString GetRoomTypeString(EGameMode RoomType) const;
+
+	UPROPERTY(EditDefaultsOnly, Category = "UI")
+	TSubclassOf<ULobby> LobbyWidgetClass;
 };

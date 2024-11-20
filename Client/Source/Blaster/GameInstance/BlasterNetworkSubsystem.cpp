@@ -199,6 +199,11 @@ void UBlasterNetworkSubsystem::HandleAuthRes(Protocol::S_AuthRes& packet)
     if (packet.success())
     {
         UE_LOG(LogTemp, Log, TEXT("[NetworkSubsystem] Auth successful"));
+        if (UBlasterGameInstance* GameInst = Cast<UBlasterGameInstance>(GetGameInstance()))
+        {
+            GameInst->SetPlayerId(packet.playerid());
+            UE_LOG(LogTemp, Log, TEXT("[HandleAuthRes] Current PlayerId is : %d"), GameInst->GetPlayerId());
+        }
         OnAuthSuccess.Broadcast();
     }
     else
@@ -500,6 +505,48 @@ void UBlasterNetworkSubsystem::HandleBroadcastStartGame(Protocol::S_BroadcastSta
 	int32 HostPort = packet.port();
 
 	OnBroadcastStartGame.Broadcast(HostAddress, HostPort);
+}
+
+void UBlasterNetworkSubsystem::SendLeaveRoomReq()
+{
+	UE_LOG(LogTemp, Log, TEXT("[NetworkSubsystem] Sending LeaveRoomReq"));
+	Protocol::C_LeaveRoomReq LeaveRoomPacket;
+	SendBufferRef SendBuffer = ClientPacketHandler::MakeSendBuffer(LeaveRoomPacket);
+	SendPacket(SendBuffer);
+}
+
+void UBlasterNetworkSubsystem::HandleLeaveRoomRes(Protocol::S_LeaveRoomRes& packet)
+{
+    UE_LOG(LogTemp, Log, TEXT("[NetworkSubsystem] Handling LeaveRoomRes - Success: %s"), packet.success() ? TEXT("True") : TEXT("False"));
+    OnLeaveRoomResponse.Broadcast(packet.success());
+    UE_LOG(LogTemp, Log, TEXT("[NetworkSubsystem] LeaveRoomRes broadcast completed"));
+}
+
+void UBlasterNetworkSubsystem::HandleBroadcastLeaveRoom(Protocol::S_BroadcastLeaveRoom& packet)
+{
+    // Protocol::RoomDetailInfo를 FRoomDetailInfo로 변환
+    FRoomDetailInfo roomInfo;
+    roomInfo.RoomId = packet.room().roomid();
+    roomInfo.RoomName = FString(packet.room().roomname().c_str());
+    roomInfo.RoomType = static_cast<EGameMode>(packet.room().roomtype());
+    roomInfo.MaxPlayers = packet.room().maxplayers();
+    roomInfo.State = static_cast<ERoomState>(packet.room().state());
+    roomInfo.MapName = FString(UTF8_TO_TCHAR("Highrise"));
+    roomInfo.HostPlayerId = packet.room().hostplayerid();
+
+    // 플레이어 정보 변환
+    for (const auto& protoPlayer : packet.room().players())
+    {
+        FPlayerInfo playerInfo;
+        playerInfo.PlayerId = protoPlayer.playerid();
+        playerInfo.PlayerName = FString(protoPlayer.playername().c_str());
+        playerInfo.IsHost = protoPlayer.ishost();
+        playerInfo.Team = static_cast<ETeamType>(protoPlayer.team());
+        playerInfo.SlotNumber = protoPlayer.slotnumber();
+        roomInfo.Players.Add(playerInfo);
+    }
+
+    OnBroadcastLeaveRoom.Broadcast(roomInfo);
 }
 
 void UBlasterNetworkSubsystem::HandlePing()

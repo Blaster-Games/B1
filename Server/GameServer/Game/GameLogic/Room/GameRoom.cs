@@ -152,15 +152,24 @@ namespace GameServer
 
         public void LeaveRoom(ClientSession session, Action<bool> callback)
         {
+            Console.WriteLine($"[LeaveRoom] Processing leave request for Player {session.SessionId}");
+
             Player player = _players.Find(p => p.PlayerId == session.SessionId);
             if (player == null)
+            {
+                Console.WriteLine($"[LeaveRoom] Player {session.SessionId} not found in room");
+                callback?.Invoke(false);
                 return;
+            }
+
+            Console.WriteLine($"[LeaveRoom] Found player - Name: {player.PlayerName}, IsHost: {player.IsHost}");
 
             // 슬롯에서 제거
             for (int i = 0; i < _slots.Length; i++)
             {
                 if (_slots[i].Player == player)
                 {
+                    Console.WriteLine($"[LeaveRoom] Removing player from slot {i}");
                     _slots[i].IsOccupied = false;
                     _slots[i].Player = null;
                     break;
@@ -168,43 +177,31 @@ namespace GameServer
             }
 
             _players.Remove(player);
+            Console.WriteLine($"[LeaveRoom] Removed player from player list. Remaining players: {_players.Count}");
 
             // 호스트 변경 처리
             if (player.IsHost && _players.Count > 0)
             {
+                Console.WriteLine($"[LeaveRoom] Host left the room. Assigning new host...");
                 _host = _players[0];
                 _host.IsHost = true;
+                Console.WriteLine($"[LeaveRoom] New host assigned - Name: {_host.PlayerName}, ID: {_host.PlayerId}");
             }
 
             // 퇴장 브로드캐스트
-            BroadcastLeaveGame(player);
+            Console.WriteLine($"[LeaveRoom] Broadcasting leave message to remaining players");
+            BroadcastLeaveGame();
 
             // 모두 나가면 방 삭제 요청
             if (_players.Count == 0)
             {
+                Console.WriteLine($"[LeaveRoom] Room is empty. Requesting room removal - RoomId: {GameRoomId}");
                 GameLogic.Instance.RemoveRoom(GameRoomId);
             }
-        }
 
-        public void LeaveGame(ClientSession session)
-        {
-            Push(() =>
-            {
-                Player player = _players.Find(p => p.PlayerId == session.SessionId);
-                if (player == null)
-                    return;
+            Console.WriteLine($"[LeaveRoom] Leave process completed for Player {player.PlayerId}");
 
-                _players.Remove(player);
-
-                // TODO : 방장이 나가면 다음 사람에게 방장 위임
-                // TODO : 퇴장 브로드캐스트
-
-                // 모두 나가면 방 삭제 요청
-                if (_players.Count == 0)
-                {
-                    GameLogic.Instance.RemoveRoom(GameRoomId);
-                }
-            });
+            callback?.Invoke(true);
         }
 
         public void StartGame(string hostAddress, int hostPort)
@@ -261,9 +258,22 @@ namespace GameServer
             }
         }
 
-        public void BroadcastLeaveGame(Player player)
+        public void BroadcastLeaveGame()
         {
-            // TODO
+            Console.WriteLine($"[BroadcastLeaveGame] Starting broadcast - Current player count: {_players.Count}");
+
+            S_BroadcastLeaveRoom leavePacket = new S_BroadcastLeaveRoom()
+            {
+                Room = ToRoomDetail(),
+            };
+
+            foreach (Player p in _players)
+            {
+                Console.WriteLine($"[BroadcastLeaveGame] Sending packet to Player {p.PlayerId} ({p.PlayerName})");
+                p.Session?.Send(leavePacket);
+            }
+
+            Console.WriteLine("[BroadcastLeaveGame] Broadcast completed");
         }
 
         public void BroadcastChat(Player sender, string message)

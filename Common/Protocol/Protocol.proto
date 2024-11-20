@@ -93,8 +93,7 @@ message S_LeaveRoomRes {
 }
 
 message S_BroadcastLeaveRoom {
-    int32 playerId = 1;
-    bool isHost = 2;   // 방장이 나갔는지 여부
+    RoomDetailInfo room = 1;
 }
 
 // 룸 채팅

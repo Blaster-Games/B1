@@ -46,7 +46,9 @@ namespace GameServer
 
         public static void C_LeaveRoomReqHandler(PacketSession session, IMessage packet)
         {
-            throw new NotImplementedException();
+            C_LeaveRoomReq reqPacket = (C_LeaveRoomReq)packet;
+            ClientSession clientSession = (ClientSession)session;
+            clientSession.HandleLeaveRoomReq(reqPacket);
         }
 
         public static void C_LobbyChatHandler(PacketSession session, IMessage packet)

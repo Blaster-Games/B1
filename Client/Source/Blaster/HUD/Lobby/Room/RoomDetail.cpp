@@ -1,7 +1,7 @@
 #include "RoomDetail.h"
 #include "GameInstance/BlasterNetworkSubsystem.h"
 #include "GameInstance/BlasterGameInstance.h"
-
+#include "HUD/Lobby/Lobby.h"
 
 void URoomDetail::NativeConstruct()
 {
@@ -41,7 +41,7 @@ void URoomDetail::NativeConstruct()
     }
     if (LeaveGameButton)
     {
-        // TODO: LeaveGameButton 클릭 이벤트 바인딩
+        LeaveGameButton->OnClicked.AddDynamic(this, &URoomDetail::OnLeaveGameButtonClicked);
     }
 
     // 네트워크 이벤트 바인딩
@@ -49,6 +49,8 @@ void URoomDetail::NativeConstruct()
     {
         NS->OnBroadcastJoinRoom.AddDynamic(this, &URoomDetail::UpdateRoomInfo);
 		NS->OnBroadcastStartGame.AddDynamic(this, &URoomDetail::TravelToHostServer);
+		NS->OnLeaveRoomResponse.AddDynamic(this, &URoomDetail::ReturnToLobby);
+        NS->OnBroadcastLeaveRoom.AddDynamic(this, &URoomDetail::UpdateRoomInfo);
     }
 }
 void URoomDetail::NativeDestruct()
@@ -204,4 +206,40 @@ void URoomDetail::OnStartGameButtonClicked()
 void URoomDetail::OnLeaveGameButtonClicked()
 {
     // 게임 나가기 버튼 클릭 시 실행할 코드 구현
+	GetNetworkSubsystem()->SendLeaveRoomReq();
+}
+
+void URoomDetail::ReturnToLobby(bool success)
+{
+    UE_LOG(LogTemp, Log, TEXT("[ReturnToLobby] Starting with success: %s"), success ? TEXT("True") : TEXT("False"));
+
+    if (success)
+    {
+        UE_LOG(LogTemp, Log, TEXT("[ReturnToLobby] Removing current widget"));
+        RemoveFromParent();
+
+        if (LobbyWidgetClass)
+        {
+            UE_LOG(LogTemp, Log, TEXT("[ReturnToLobby] Creating Lobby widget"));
+            ULobby* LobbyWidget = CreateWidget<ULobby>(GetWorld(), LobbyWidgetClass);
+            if (LobbyWidget)
+            {
+                UE_LOG(LogTemp, Log, TEXT("[ReturnToLobby] Adding Lobby widget to viewport"));
+                LobbyWidget->AddToViewport();
+                UE_LOG(LogTemp, Log, TEXT("[ReturnToLobby] Lobby widget added successfully"));
+            }
+            else
+            {
+                UE_LOG(LogTemp, Error, TEXT("[ReturnToLobby] Failed to create Lobby widget"));
+            }
+        }
+        else
+        {
+            UE_LOG(LogTemp, Error, TEXT("[ReturnToLobby] LobbyWidgetClass is null"));
+        }
+    }
+    else
+    {
+        UE_LOG(LogTemp, Error, TEXT("[ReturnToLobby] Failed to leave room"));
+    }
 }
