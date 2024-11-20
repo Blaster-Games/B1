@@ -24,6 +24,35 @@ void UBlasterNetworkSubsystem::Deinitialize()
     Super::Deinitialize();
 }
 
+void UBlasterNetworkSubsystem::ConnectToGameServer()
+{
+    Socket = ISocketSubsystem::Get(PLATFORM_SOCKETSUBSYSTEM)->CreateSocket(TEXT("Stream"), TEXT("Client Socket"));
+    FIPv4Address Ip;
+    FIPv4Address::Parse(IpAddress, Ip);
+    TSharedRef<FInternetAddr> InternetAddr = ISocketSubsystem::Get(PLATFORM_SOCKETSUBSYSTEM)->CreateInternetAddr();
+    InternetAddr->SetIp(Ip.Value);
+
+    // 포트 설정을 더 명확하게
+    uint16 SafePort = static_cast<uint16>(Port);  // 명시적으로 uint16으로 변환
+    InternetAddr->SetPort(SafePort);
+
+    UE_LOG(LogTemp, Warning, TEXT("Attempting connection to %s:%u"), *IpAddress, SafePort);  // %u로 변경
+
+    bool Connected = Socket->Connect(*InternetAddr);
+    if (Connected)
+    {
+        GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Connection Success")));
+        GameServerSession = MakeShared<PacketSession>(Socket);
+        GameServerSession->Run();
+    }
+    else
+    {
+        ESocketErrors LastError = ISocketSubsystem::Get(PLATFORM_SOCKETSUBSYSTEM)->GetLastErrorCode();
+        UE_LOG(LogTemp, Error, TEXT("Connection Failed with error: %d"), (int32)LastError);
+        GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Connection Failed")));
+    }
+}
+
 void UBlasterNetworkSubsystem::LoadNetworkSettings()
 {
     if (UBlasterGameInstance* GameInstance = Cast<UBlasterGameInstance>(GetGameInstance()))
@@ -33,69 +62,69 @@ void UBlasterNetworkSubsystem::LoadNetworkSettings()
     }
 }
 
-void UBlasterNetworkSubsystem::ConnectToGameServer()
-{
-    if (!IsInGameThread())
-    {
-        AsyncTask(ENamedThreads::GameThread, [this]()
-            {
-                ConnectToGameServer();
-            });
-        return;
-    }
-
-    // 이미 연결되어 있다면 연결 해제
-    if (Socket)
-    {
-        DisconnectFromGameServer();
-    }
-
-    // 소켓 생성 전 서브시스템 체크
-    ISocketSubsystem* SocketSubsystem = ISocketSubsystem::Get(PLATFORM_SOCKETSUBSYSTEM);
-    if (!SocketSubsystem)
-    {
-        return;
-    }
-
-    Socket = SocketSubsystem->CreateSocket(TEXT("Stream"), TEXT("Client Socket"));
-    if (!Socket)
-    {
-        return;
-    }
-
-    // 소켓 옵션 설정
-    Socket->SetNonBlocking(true);
-    Socket->SetReuseAddr(true);
-
-    // 타임아웃 설정
-    int32 ActualSize;  // 여기에 변수 선언
-    Socket->SetSendBufferSize(64 * 1024, ActualSize);
-    Socket->SetReceiveBufferSize(64 * 1024, ActualSize);
-
-    // 접속 시도 전 로그
-    UE_LOG(LogTemp, Log, TEXT("Attempting to connect to %s:%d"), *IpAddress, Port);
-
-    FIPv4Address Ip;
-    FIPv4Address::Parse(IpAddress, Ip);
-    TSharedRef<FInternetAddr> InternetAddr = SocketSubsystem->CreateInternetAddr();
-    InternetAddr->SetIp(Ip.Value);
-    InternetAddr->SetPort(Port);
-
-    // 연결 시도
-    bool Connected = Socket->Connect(*InternetAddr);
-
-    if (Connected)
-    {
-        UE_LOG(LogTemp, Log, TEXT("Connection Success"));
-        GameServerSession = MakeShared<PacketSession>(Socket);
-        GameServerSession->Run();
-    }
-    else
-    {
-        UE_LOG(LogTemp, Warning, TEXT("Connection Failed"));
-        DisconnectFromGameServer();
-    }
-}
+//void UBlasterNetworkSubsystem::ConnectToGameServer()
+//{
+//    if (!IsInGameThread())
+//    {
+//        AsyncTask(ENamedThreads::GameThread, [this]()
+//            {
+//                ConnectToGameServer();
+//            });
+//        return;
+//    }
+//
+//    // 이미 연결되어 있다면 연결 해제
+//    if (Socket)
+//    {
+//        DisconnectFromGameServer();
+//    }
+//
+//    // 소켓 생성 전 서브시스템 체크
+//    ISocketSubsystem* SocketSubsystem = ISocketSubsystem::Get(PLATFORM_SOCKETSUBSYSTEM);
+//    if (!SocketSubsystem)
+//    {
+//        return;
+//    }
+//
+//    Socket = SocketSubsystem->CreateSocket(TEXT("Stream"), TEXT("Client Socket"));
+//    if (!Socket)
+//    {
+//        return;
+//    }
+//
+//    // 소켓 옵션 설정
+//    Socket->SetNonBlocking(true);
+//    Socket->SetReuseAddr(true);
+//
+//    // 타임아웃 설정
+//    int32 ActualSize;  // 여기에 변수 선언
+//    Socket->SetSendBufferSize(64 * 1024, ActualSize);
+//    Socket->SetReceiveBufferSize(64 * 1024, ActualSize);
+//
+//    // 접속 시도 전 로그
+//    UE_LOG(LogTemp, Log, TEXT("Attempting to connect to %s:%d"), *IpAddress, Port);
+//
+//    FIPv4Address Ip;
+//    FIPv4Address::Parse(IpAddress, Ip);
+//    TSharedPtr<FInternetAddr> InternetAddr = SocketSubsystem->CreateInternetAddr();
+//    InternetAddr->SetIp(Ip.Value);
+//    InternetAddr->SetPort(Port);
+//
+//    // 연결 시도
+//    bool Connected = Socket->Connect(*InternetAddr);
+//
+//    if (Connected)
+//    {
+//        UE_LOG(LogTemp, Log, TEXT("Connection Success"));
+//        GameServerSession = MakeShared<PacketSession>(Socket);
+//        GameServerSession->Run();
+//    }
+//    else
+//    {
+//        UE_LOG(LogTemp, Warning, TEXT("Connection Failed"));
+//        DisconnectFromGameServer();
+//    }
+//}
 
 void UBlasterNetworkSubsystem::DisconnectFromGameServer()
 {

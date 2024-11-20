@@ -83,11 +83,8 @@ public:
     class FSocket* Socket;
     TSharedPtr<class PacketSession> GameServerSession;
 
-    // 서버 연결 정보
-    //FString IpAddress = TEXT("147.185.221.23");
-    //int32 Port = 63753;
-
-    FString IpAddress = TEXT("127.0.0.1");
+    // 게임인스턴스에서 가져온 값으로 초기화
+    FString IpAddress = TEXT("");
     int32 Port = 7777;
 
 private:
