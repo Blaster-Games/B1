@@ -214,10 +214,10 @@ void UBuffComponent::ApplyBuff(EBuffType BuffType)
 		ReplenishShield(100.f, 5.f);
 		break;
 	case EBuffType::EBT_Speed:
-		BuffSpeed(1600.f, 850.f, 180.f);
+		BuffSpeed(1000.f, 550.f, 180.f);
 		break;
 	case EBuffType::EBT_Jump:
-		BuffJump(4000.f, 180.f);
+		BuffJump(2300.f, 180.f);
 		break;
 	}
 }
