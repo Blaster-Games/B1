@@ -98,17 +98,17 @@ public:
 
 
 private:
-	UPROPERTY(Config)
-	FString DefaultServerIP = TEXT("147.185.221.23");
-
-	UPROPERTY(Config)
-	int32 DefaultServerPort = 63753;
+	//UPROPERTY(Config)
+	//FString DefaultServerIP = TEXT("147.185.221.23");
 
 	//UPROPERTY(Config)
-	//FString DefaultServerIP = TEXT("127.0.0.1");
+	//int32 DefaultServerPort = 63753;
 
-	//UPROPERTY(Config)
-	//int32 DefaultServerPort = 7777;
+	UPROPERTY(Config)
+	FString DefaultServerIP = TEXT("127.0.0.1");
+
+	UPROPERTY(Config)
+	int32 DefaultServerPort = 7777;
 
 
 	UPROPERTY()

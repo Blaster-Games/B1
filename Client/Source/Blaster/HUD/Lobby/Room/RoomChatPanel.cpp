@@ -75,6 +75,8 @@ void URoomChatPanel::OnChatMessageCommitted(const FText& Text, ETextCommit::Type
 
             // 입력창 비우기
             RoomChatInputBox->SetText(FText::GetEmpty());
+
+			RoomChatInputBox->SetKeyboardFocus();
         }
     }
 }
