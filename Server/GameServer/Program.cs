@@ -12,8 +12,8 @@ namespace GameServer
         static void Main(string[] args)
         {
             ConfigManager.LoadConfig();
-            IPAddress ipAddr = IPAddress.Parse("127.0.0.1");
-            IPEndPoint endPoint = new IPEndPoint(ipAddr, 7777);
+            IPAddress ipAddr = IPAddress.Parse(ConfigManager.Config.ip);
+            IPEndPoint endPoint = new IPEndPoint(ipAddr, ConfigManager.Config.port);
             _listener.Init(endPoint, () => { return SessionManager.Instance.Generate(); });
 
             Console.WriteLine("Listening...");
