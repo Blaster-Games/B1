@@ -204,6 +204,56 @@ namespace GameServer
             callback?.Invoke(true);
         }
 
+        public void LeaveRoom(ClientSession clientSession)
+        {
+            Console.WriteLine($"[LeaveRoom] Processing leave request for Player {clientSession.SessionId}");
+            Player player = _players.Find(p => p.PlayerId == clientSession.SessionId);
+            if (player == null)
+            {
+                Console.WriteLine($"[LeaveRoom] Player {clientSession.SessionId} not found in room");
+                return;
+            }
+
+            Console.WriteLine($"[LeaveRoom] Found player - Name: {player.PlayerName}, IsHost: {player.IsHost}");
+
+            // 슬롯에서 제거
+            for (int i = 0; i < _slots.Length; i++)
+            {
+                if (_slots[i].Player == player)
+                {
+                    Console.WriteLine($"[LeaveRoom] Removing player from slot {i}");
+                    _slots[i].IsOccupied = false;
+                    _slots[i].Player = null;
+                    break;
+                }
+            }
+
+            _players.Remove(player);
+            Console.WriteLine($"[LeaveRoom] Removed player from player list. Remaining players: {_players.Count}");
+
+            // 호스트 변경 처리
+            if (player.IsHost && _players.Count > 0)
+            {
+                Console.WriteLine($"[LeaveRoom] Host left the room. Assigning new host...");
+                _host = _players[0];
+                _host.IsHost = true;
+                Console.WriteLine($"[LeaveRoom] New host assigned - Name: {_host.PlayerName}, ID: {_host.PlayerId}");
+            }
+
+            // 퇴장 브로드캐스트
+            Console.WriteLine($"[LeaveRoom] Broadcasting leave message to remaining players");
+            BroadcastLeaveGame();
+
+            // 모두 나가면 방 삭제 요청
+            if (_players.Count == 0)
+            {
+                Console.WriteLine($"[LeaveRoom] Room is empty. Requesting room removal - RoomId: {GameRoomId}");
+                GameLogic.Instance.RemoveRoom(GameRoomId);
+            }
+
+            Console.WriteLine($"[LeaveRoom] Leave process completed for Player {player.PlayerId}");
+        }
+
         public void StartGame(string hostAddress, int hostPort)
         {
             Console.WriteLine($"StartGame called - Host: {hostAddress}:{hostPort}");

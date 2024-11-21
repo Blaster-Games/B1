@@ -41,6 +41,10 @@ void UBlasterNetworkSubsystem::ConnectToGameServer()
     bool Connected = Socket->Connect(*InternetAddr);
     if (Connected)
     {
+        if (UBlasterGameInstance* GameInstance = Cast<UBlasterGameInstance>(GetGameInstance()))
+        {
+            GameInstance->SetIsLogin(true);
+        }
         GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("Connection Success")));
         GameServerSession = MakeShared<PacketSession>(Socket);
         GameServerSession->Run();

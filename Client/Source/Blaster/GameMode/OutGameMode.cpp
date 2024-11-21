@@ -84,7 +84,7 @@ void AOutGameMode::CheckAndStartGame()
                 GameMapPath = FString::Printf(TEXT("/Game/Maps/%s?listen?game=/Game/Blueprints/GameModes/BP_BlasterGameMode"), *RoomInfo.MapName);
             }
 
-            bUseSeamlessTravel = true;
+            bUseSeamlessTravel = false;
             GetWorld()->ServerTravel(GameMapPath);
         }
     }

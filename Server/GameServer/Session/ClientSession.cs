@@ -82,6 +82,12 @@ namespace GameServer
 
         public override void OnDisconnected(EndPoint endPoint)
         {
+            if (Player.GameRoom != null)
+            {
+                Player.GameRoom.LeaveRoom(this);
+                // 실행된 경우 로그 작성
+                Console.WriteLine($"Player {Player.PlayerName} has left the room");
+            }
             Console.WriteLine($"OnDisconnected : {endPoint}");
         }
 

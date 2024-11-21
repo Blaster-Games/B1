@@ -55,6 +55,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "User")
 	int32 GetPlayerId() const { return PlayerId; }
 
+	UFUNCTION(BlueprintCallable, Category = "User")
+	bool GetIsLogin() const { return IsLogin; }
+
 	// Network Configuration Getters
 	FString GetDefaultServerIP() const { return DefaultServerIP; }
 	int16 GetDefaultServerPort() const { return DefaultServerPort; }
@@ -78,6 +81,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "User")
 	void SetPlayerId(int32 NewPlayerId) { PlayerId = NewPlayerId; }
 
+	UFUNCTION(BlueprintCallable, Category = "User")
+	void SetIsLogin(bool NewIsLogin) { IsLogin = NewIsLogin; }
+
     /**
     * Settings - 아니면 settings 관련 로직을 따로 별도의 서브시스템으로 분리를 해도 될 듯
     */
@@ -98,17 +104,17 @@ public:
 
 
 private:
-	//UPROPERTY(Config)
-	//FString DefaultServerIP = TEXT("147.185.221.23");
-
-	//UPROPERTY(Config)
-	//int32 DefaultServerPort = 63753;
+	UPROPERTY(Config)
+	FString DefaultServerIP = TEXT("147.185.221.23");
 
 	UPROPERTY(Config)
-	FString DefaultServerIP = TEXT("127.0.0.1");
+	int32 DefaultServerPort = 63753;
 
-	UPROPERTY(Config)
-	int32 DefaultServerPort = 7777;
+	//UPROPERTY(Config)
+	//FString DefaultServerIP = TEXT("127.0.0.1");
+
+	//UPROPERTY(Config)
+	//int32 DefaultServerPort = 7777;
 
 
 	UPROPERTY()
@@ -122,6 +128,7 @@ private:
 	FString Nickname;
 	int32 UserId;
 	int32 PlayerId;
+	bool IsLogin;
 
 	FSensitivitySettings SensitivitySettings;
 };
