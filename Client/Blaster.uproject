@@ -30,5 +30,8 @@
 			"Name": "RiderSourceCodeAccess",
 			"Enabled": false
 		}
+	],
+	"TargetPlatforms": [
+		"Windows"
 	]
 }
