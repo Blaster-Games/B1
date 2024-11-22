@@ -8,6 +8,7 @@ namespace GameServer
     public class Program()
     {
         private static Listener _listener = new Listener();
+        private static Connector _connector = new Connector();
 
         static void Main(string[] args)
         {

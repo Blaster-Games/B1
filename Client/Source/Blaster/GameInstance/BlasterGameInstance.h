@@ -58,6 +58,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "User")
 	bool GetIsLogin() const { return IsLogin; }
 
+	UFUNCTION(BlueprintCallable, Category = "User")
+	bool GetShouldShowRoom() const { return ShouldShowRoom; }
+
 	// Network Configuration Getters
 	FString GetDefaultServerIP() const { return DefaultServerIP; }
 	int16 GetDefaultServerPort() const { return DefaultServerPort; }
@@ -84,11 +87,12 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "User")
 	void SetIsLogin(bool NewIsLogin) { IsLogin = NewIsLogin; }
 
+	UFUNCTION()
+	void SetShowRoomFlag(bool bFlag) { ShouldShowRoom = bFlag; }
+
     /**
     * Settings - 아니면 settings 관련 로직을 따로 별도의 서브시스템으로 분리를 해도 될 듯
     */
-
-
 
     UFUNCTION(BlueprintCallable)
     const FSensitivitySettings& GetSensitivitySettings() const { return SensitivitySettings; }
@@ -104,18 +108,17 @@ public:
 
 
 private:
-	UPROPERTY(Config)
-	FString DefaultServerIP = TEXT("34.64.137.161");
-
-	UPROPERTY(Config)
-	int32 DefaultServerPort = 7777;
-
 	//UPROPERTY(Config)
-	//FString DefaultServerIP = TEXT("127.0.0.1");
+	//FString DefaultServerIP = TEXT("34.64.137.161");
 
 	//UPROPERTY(Config)
 	//int32 DefaultServerPort = 7777;
 
+	UPROPERTY(Config)
+	FString DefaultServerIP = TEXT("127.0.0.1");
+
+	UPROPERTY(Config)
+	int32 DefaultServerPort = 7777;
 
 	UPROPERTY()
 	class UBlasterNetworkSubsystem* NetworkSystem;
@@ -129,6 +132,7 @@ private:
 	int32 UserId;
 	int32 PlayerId;
 	bool IsLogin;
+	bool ShouldShowRoom = false;
 
 	FSensitivitySettings SensitivitySettings;
 };

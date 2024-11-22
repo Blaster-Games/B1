@@ -42,6 +42,9 @@ public:
 
 	bool bTeamsMatch = false;
 
+	// 재시작은 오버라이딩해서 방으로 돌려보내기
+	virtual void RestartGame() override;
+
 protected:
 	virtual void BeginPlay() override;
 	virtual void OnMatchStateSet() override;

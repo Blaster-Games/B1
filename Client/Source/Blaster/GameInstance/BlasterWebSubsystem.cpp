@@ -4,7 +4,7 @@
 #include "JsonUtilities.h"
 #include "Blaster/GameState/BlasterGameState.h"
 
-const TCHAR* const UBlasterWebSubsystem::LOGIN_ENDPOINT = TEXT("/api/member/login");
+const TCHAR* const UBlasterWebSubsystem::LOGIN_ENDPOINT = TEXT("/api/member/login/game");
 const TCHAR* const UBlasterWebSubsystem::MATCH_STATS_ENDPOINT = TEXT("/api/statistics/");
 
 const TCHAR* const UBlasterWebSubsystem::FIELD_NICKNAME = TEXT("nickname");

@@ -10,50 +10,85 @@
 AOutGameMode::AOutGameMode()
 {
     PlayerControllerClass = AOutGamePlayerController::StaticClass();
+
+	PlayerStateClass = ABlasterPlayerState::StaticClass();
+
+    UE_LOG(LogTemp, Log, TEXT("OutGameMode Constructor - PlayerStateClass: %s"),
+        PlayerStateClass ? *PlayerStateClass->GetName() : TEXT("Not Set"));
 }
 
 void AOutGameMode::PostLogin(APlayerController* NewPlayer)
 {
     Super::PostLogin(NewPlayer);
 
-    if (ABlasterPlayerState* PS = NewPlayer->GetPlayerState<ABlasterPlayerState>())
+    // 현재 네트워크 모드 확인
+    ENetMode NetMode = GetNetMode();
+    UE_LOG(LogTemp, Log, TEXT("PostLogin called. NetMode: %d, Player: %s"),
+        (int32)NetMode, *NewPlayer->GetName());
+
+    if (NetMode == NM_Standalone)
     {
-        if (UBlasterGameInstance* GI = Cast<UBlasterGameInstance>(GetGameInstance()))
+        UE_LOG(LogTemp, Log, TEXT("This is standalone mode (PIE or packaged)"));
+        // 독립 실행/PIE 시작시
+        return;  // 여기서 리턴하면 닉네임 설정 등의 멀티플레이어 로직은 실행 안 됨
+    }
+
+    // 리슨서버에서의 로직
+    if (NetMode == NM_ListenServer)
+    {
+        UE_LOG(LogTemp, Log, TEXT("This is listen server. PlayerCount: %d"),
+            GameState.Get()->PlayerArray.Num());
+
+        if (NewPlayer)
         {
-            PS->SetNickname(GI->GetNickname());
-            UE_LOG(LogTemp, Log, TEXT("Setting Nickname for player. PlayerState: %s, Nickname: %s"),
-                *PS->GetName(), *GI->GetNickname());
+            UE_LOG(LogTemp, Log, TEXT("NewPlayer is valid: %s"), *NewPlayer->GetName());
+
+            // PlayerState 체크
+            APlayerState* BasePS = NewPlayer->GetPlayerState<APlayerState>();
+            UE_LOG(LogTemp, Log, TEXT("Base PlayerState: %s"),
+                BasePS ? *BasePS->GetName() : TEXT("nullptr"));
+
+            ABlasterPlayerState* PS = NewPlayer->GetPlayerState<ABlasterPlayerState>();
+            UE_LOG(LogTemp, Log, TEXT("BlasterPlayerState cast result: %s"),
+                PS ? *PS->GetName() : TEXT("nullptr"));
+
+            if (PS)
+            {
+                UGameInstance* BaseGI = GetGameInstance();
+                UE_LOG(LogTemp, Log, TEXT("Base GameInstance: %s"),
+                    BaseGI ? *BaseGI->GetName() : TEXT("nullptr"));
+
+                UBlasterGameInstance* GI = Cast<UBlasterGameInstance>(GetGameInstance());
+                UE_LOG(LogTemp, Log, TEXT("BlasterGameInstance cast result: %s"),
+                    GI ? *GI->GetName() : TEXT("nullptr"));
+
+                if (GI)
+                {
+                    FString CurrentNickname = GI->GetNickname();
+                    UE_LOG(LogTemp, Log, TEXT("Retrieved Nickname from GI: %s"), *CurrentNickname);
+
+                    PS->SetNickname(CurrentNickname);
+                    UE_LOG(LogTemp, Log, TEXT("Nickname set on PS. PlayerState: %s, Nickname: %s"),
+                        *PS->GetName(), *PS->GetNickname());  // PS에서 닉네임도 확인
+                }
+                else
+                {
+                    UE_LOG(LogTemp, Warning, TEXT("Failed to cast to BlasterGameInstance"));
+                }
+            }
+            else
+            {
+                UE_LOG(LogTemp, Warning, TEXT("Failed to cast to BlasterPlayerState"));
+            }
         }
         else
         {
-            UE_LOG(LogTemp, Warning, TEXT("Failed to get BlasterGameInstance"));
-        }
-    }
-    else
-    {
-        UE_LOG(LogTemp, Warning, TEXT("Failed to get BlasterPlayerState for player: %s"),
-            *NewPlayer->GetName());
-    }
-
-    if (GetNetMode() == NM_ListenServer)
-    {
-        if (GameState.Get()->PlayerArray.Num() == 1)
-        {
-            UE_LOG(LogTemp, Log, TEXT("Host logged in to listen server"));
-            // 호스트 관련 초기화 코드
-        }
-
-        // 현재 접속한 플레이어가 누구인지 확인
-        if (AOutGamePlayerController* PC = Cast<AOutGamePlayerController>(NewPlayer))
-        {
-            UE_LOG(LogTemp, Log, TEXT("Player logged in to listen server. PlayerNum: %d"),
-                GameState.Get()->PlayerArray.Num());
+            UE_LOG(LogTemp, Error, TEXT("NewPlayer is nullptr"));
         }
 
         CheckAndStartGame();
     }
 }
-
 void AOutGameMode::CheckAndStartGame()
 {
     // 현재 접속한 플레이어 수 확인
@@ -84,7 +119,7 @@ void AOutGameMode::CheckAndStartGame()
                 GameMapPath = FString::Printf(TEXT("/Game/Maps/%s?listen?game=/Game/Blueprints/GameModes/BP_BlasterGameMode"), *RoomInfo.MapName);
             }
 
-            bUseSeamlessTravel = false;
+            bUseSeamlessTravel = true;
             GetWorld()->ServerTravel(GameMapPath);
         }
     }

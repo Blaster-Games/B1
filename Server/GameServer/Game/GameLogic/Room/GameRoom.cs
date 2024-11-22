@@ -317,15 +317,22 @@ namespace GameServer
                 Room = ToRoomDetail(),
             };
 
-            foreach (Player p in _players)
+            // 리스트를 복사하여 순회
+            var playersCopy = _players.ToList();
+
+            foreach (Player p in playersCopy)
             {
+                if (p == null)
+                {
+                    Console.WriteLine($"[BroadcastLeaveGame] Player is null - skipping");
+                    continue;
+                }
                 Console.WriteLine($"[BroadcastLeaveGame] Sending packet to Player {p.PlayerId} ({p.PlayerName})");
                 p.Session?.Send(leavePacket);
             }
 
             Console.WriteLine("[BroadcastLeaveGame] Broadcast completed");
         }
-
         public void BroadcastChat(Player sender, string message)
         {
             Console.WriteLine($"[BroadcastChat] Starting broadcast from Player {sender.PlayerId} ({sender.PlayerName})");

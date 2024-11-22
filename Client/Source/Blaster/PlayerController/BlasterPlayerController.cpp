@@ -21,6 +21,7 @@
 #include "Blaster/BlasterComponents/ShopComponent.h"
 #include "Blaster/HUD/Board/ScoreBoard.h"
 #include "Blaster/HUD/Board/TeamScoreBoard.h"
+#include "GameInstance/BlasterGameInstance.h"
 
 
 void ABlasterPlayerController::BroadcastElim(APlayerState* Attacker, APlayerState* Victim)
@@ -71,6 +72,11 @@ void ABlasterPlayerController::BeginPlay()
 
 	SetInputMode(FInputModeGameOnly());
 	SetupUIInputMode();
+
+	if (UBlasterGameInstance* GI = Cast<UBlasterGameInstance>(GetGameInstance()))
+	{
+		GI->SetShowRoomFlag(true);
+	}
 }
 
 void ABlasterPlayerController::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -942,6 +948,16 @@ void ABlasterPlayerController::HandleCooldown()
 					FString InfoTextString = bShowTeamScores ? GetTeamsInfoText(BlasterGameState) : GetInfoText(TopPlayers);
 					BlasterHUD->Announcement->InfoText->SetText(FText::FromString(InfoTextString));
 				}
+
+				// 추가 코드
+				FTimerHandle ReturnTimer;
+				GetWorldTimerManager().SetTimer(
+					ReturnTimer,
+					this,
+					&ABlasterPlayerController::ReturnToMainMenuAfterMatch,
+					CooldownTime,
+					false
+				);
 			}	
 		}
 		else
@@ -963,6 +979,22 @@ void ABlasterPlayerController::HandleCooldown()
 			);
 		}
 
+	}
+}
+
+void ABlasterPlayerController::ReturnToMainMenuAfterMatch()
+{
+	UWorld* World = GetWorld();
+	if (!World) return;
+
+	if (HasAuthority()) // 서버
+	{
+		World->GetFirstPlayerController()->ClientTravel("/Game/Maps/GameStartupMap", TRAVEL_Absolute);
+		World->ServerTravel("/Game/Maps/GameStartupMap");
+	}
+	else // 클라이언트
+	{
+		ClientTravel("/Game/Maps/GameStartupMap", TRAVEL_Absolute);
 	}
 }
 

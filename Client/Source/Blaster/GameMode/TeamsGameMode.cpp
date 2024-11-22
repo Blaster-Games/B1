@@ -75,67 +75,95 @@ float ATeamsGameMode::CalculateDamage(AController* Attacker, AController* Victim
 
 void ATeamsGameMode::HandleMatchHasStarted()
 {
-	Super::HandleMatchHasStarted();
+    Super::HandleMatchHasStarted();
 
-	ABlasterGameState* BGameState = Cast<ABlasterGameState>(UGameplayStatics::GetGameState(this));
+    UBlasterGameInstance* GameInstance = GetGameInstance<UBlasterGameInstance>();
+    ABlasterGameState* BGameState = Cast<ABlasterGameState>(UGameplayStatics::GetGameState(this));
 
-	// 여기부터 팀분배로직 변경됨
-	UBlasterGameInstance* GameInstance = Cast<UBlasterGameInstance>(GetGameInstance());
+    if (BGameState && GameInstance && HasAuthority())
+    {
+        const FRoomDetailInfo& HostRoomInfo = GameInstance->GetCurrentRoomInfo();
 
-	if (BGameState && GameInstance)
-	{
-		// 현재 방의 정보를 가져옴
-		const FRoomDetailInfo& CurrentRoom = GameInstance->GetCurrentRoomInfo();
+        // 현재 상태 로깅
+        UE_LOG(LogTemp, Log, TEXT("Starting team assignment - Room has %d players, GameState has %d players"),
+            HostRoomInfo.Players.Num(), BGameState->PlayerArray.Num());
 
-		for (auto PState : BGameState->PlayerArray)
-		{
-			ABlasterPlayerState* BPState = Cast<ABlasterPlayerState>(PState.Get());
-			if (BPState)
-			{
-				// 플레이어의 ID나 이름으로 매칭하여 FPlayerInfo를 찾음
-				const FPlayerInfo* PlayerInfo = CurrentRoom.Players.FindByPredicate([&](const FPlayerInfo& Info) {
-					return Info.PlayerName == BPState->GetPlayerName();
-					});
+        // 먼저 RoomInfo의 플레이어 정보 출력
+        UE_LOG(LogTemp, Log, TEXT("=== Room Info Players ==="));
+        for (const FPlayerInfo& RoomPlayer : HostRoomInfo.Players)
+        {
+            UE_LOG(LogTemp, Log, TEXT("Room Player - Name: %s, Team: %s"),
+                *RoomPlayer.PlayerName,
+                RoomPlayer.Team == ETeamType::TEAM_RED ? TEXT("Red") : TEXT("Blue"));
+        }
 
-				if (PlayerInfo)
-				{
-					// FPlayerInfo의 TeamType에 따라 팀 할당
-					if (PlayerInfo->Team == ETeamType::TEAM_RED)
-					{
-						BGameState->RedTeam.AddUnique(BPState);
-						BPState->SetTeam(ETeam::ET_RedTeam);
-					}
-					else if (PlayerInfo->Team == ETeamType::TEAM_BLUE)
-					{
-						BGameState->BlueTeam.AddUnique(BPState);
-						BPState->SetTeam(ETeam::ET_BlueTeam);
-					}
+        // 현재 PlayerState 정보 출력
+        UE_LOG(LogTemp, Log, TEXT("=== Current PlayerStates ==="));
+        for (auto PState : BGameState->PlayerArray)
+        {
+            if (ABlasterPlayerState* BPState = Cast<ABlasterPlayerState>(PState.Get()))
+            {
+                UE_LOG(LogTemp, Log, TEXT("PlayerState - Name: %s, Current Team: %d"),
+                    *BPState->GetPlayerName(),
+                    static_cast<int32>(BPState->GetTeam()));
+            }
+        }
 
-				}
-			}
-		}
-	}
+        // 팀 배정 시작
+        int32 ProcessedPlayers = 0;
+        for (auto PState : BGameState->PlayerArray)
+        {
+            if (ABlasterPlayerState* BPState = Cast<ABlasterPlayerState>(PState.Get()))
+            {
+                if (ProcessedPlayers < HostRoomInfo.Players.Num())
+                {
+                    const FPlayerInfo& RoomPlayer = HostRoomInfo.Players[ProcessedPlayers];
 
-	/*if (BGameState)
-	{
-		for (auto PState : BGameState->PlayerArray)
-		{
-			ABlasterPlayerState* BPState = Cast<ABlasterPlayerState>(PState.Get());
-			if (BPState && BPState->GetTeam() == ETeam::ET_NoTeam)
-			{
-				if (BGameState->BlueTeam.Num() >= BGameState->RedTeam.Num())
-				{
-					BGameState->RedTeam.AddUnique(BPState);
-					BPState->SetTeam(ETeam::ET_RedTeam);
-				}
-				else
-				{
-					BGameState->BlueTeam.AddUnique(BPState);
-					BPState->SetTeam(ETeam::ET_BlueTeam);
-				}
-			}
-		}
-	}*/
+                    // 닉네임 설정
+                    BPState->SetNickname(RoomPlayer.PlayerName);
+
+                    UE_LOG(LogTemp, Log, TEXT("Assigning player %s to team %s"),
+                        *RoomPlayer.PlayerName,
+                        RoomPlayer.Team == ETeamType::TEAM_RED ? TEXT("Red") : TEXT("Blue"));
+
+                    // 팀 설정
+                    if (RoomPlayer.Team == ETeamType::TEAM_RED)
+                    {
+                        BGameState->RedTeam.AddUnique(BPState);
+                        BPState->SetTeam(ETeam::ET_RedTeam);
+                        UE_LOG(LogTemp, Log, TEXT("Added to Red Team: %s"), *RoomPlayer.PlayerName);
+                    }
+                    else if (RoomPlayer.Team == ETeamType::TEAM_BLUE)
+                    {
+                        BGameState->BlueTeam.AddUnique(BPState);
+                        BPState->SetTeam(ETeam::ET_BlueTeam);
+                        UE_LOG(LogTemp, Log, TEXT("Added to Blue Team: %s"), *RoomPlayer.PlayerName);
+                    }
+
+                    ProcessedPlayers++;
+                }
+            }
+        }
+
+        // 최종 결과 확인
+        UE_LOG(LogTemp, Log, TEXT("=== Final Team Assignment ==="));
+        UE_LOG(LogTemp, Log, TEXT("Red Team: %d players"), BGameState->RedTeam.Num());
+        for (auto Player : BGameState->RedTeam)
+        {
+            if (ABlasterPlayerState* BPState = Cast<ABlasterPlayerState>(Player))
+            {
+                UE_LOG(LogTemp, Log, TEXT("Red Team Player: %s"), *BPState->GetNickname());
+            }
+        }
+        UE_LOG(LogTemp, Log, TEXT("Blue Team: %d players"), BGameState->BlueTeam.Num());
+        for (auto Player : BGameState->BlueTeam)
+        {
+            if (ABlasterPlayerState* BPState = Cast<ABlasterPlayerState>(Player))
+            {
+                UE_LOG(LogTemp, Log, TEXT("Blue Team Player: %s"), *BPState->GetNickname());
+            }
+        }
+    }
 }
 
 // me

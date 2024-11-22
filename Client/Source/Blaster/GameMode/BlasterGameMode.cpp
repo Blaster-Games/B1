@@ -96,6 +96,19 @@ void ABlasterGameMode::Tick(float DeltaTime)
 	}
 }
 
+void ABlasterGameMode::RestartGame()
+{
+	// 서버에서 모든 플레이어 컨트롤러에게 메인 메뉴로 돌아가라고 알림
+	for (FConstPlayerControllerIterator It = GetWorld()->GetPlayerControllerIterator(); It; ++It)
+	{
+		ABlasterPlayerController* BlasterPlayer = Cast<ABlasterPlayerController>(*It);
+		if (BlasterPlayer)
+		{
+			BlasterPlayer->ReturnToMainMenuAfterMatch();
+		}
+	}
+}
+
 
 void ABlasterGameMode::OnMatchStateSet()
 {
