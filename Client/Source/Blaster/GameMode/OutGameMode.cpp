@@ -6,6 +6,7 @@
 #include "PlayerController/OutGamePlayerController.h"
 #include "Kismet/GameplayStatics.h"
 #include "PlayerState/BlasterPlayerState.h"
+#include "HUD/Lobby/Room/RoomDetail.h"
 
 AOutGameMode::AOutGameMode()
 {
@@ -16,6 +17,12 @@ AOutGameMode::AOutGameMode()
     UE_LOG(LogTemp, Log, TEXT("OutGameMode Constructor - PlayerStateClass: %s"),
         PlayerStateClass ? *PlayerStateClass->GetName() : TEXT("Not Set"));
 }
+
+void AOutGameMode::BeginPlay()
+{
+    Super::BeginPlay();
+}
+
 
 void AOutGameMode::PostLogin(APlayerController* NewPlayer)
 {

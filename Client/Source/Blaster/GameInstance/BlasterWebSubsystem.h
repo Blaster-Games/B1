@@ -8,9 +8,13 @@
 #include "Interfaces/IHttpResponse.h"
 #include "BlasterWebSubsystem.generated.h"
 
+class ABlasterGameState;
+
 // Delegate 선언을 클래스 선언 전에 해야 함
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnLoginSuccessDelegate);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnLoginFailedDelegate, const FString&, ErrorMessage);
+DECLARE_DELEGATE_TwoParams(FOnRequestComplete, bool /*Success*/, const FString& /*Response*/);
+
 
 UCLASS()
 class BLASTER_API UBlasterWebSubsystem : public UGameInstanceSubsystem
@@ -26,7 +30,7 @@ public:
     void RequestLogin(const FString& Username, const FString& Password);
 
     // 통계 데이터 보내는 메서드
-    void SendMatchStats(const class ABlasterGameState* GameState);
+    void SendMatchStats(const ABlasterGameState* GameState, const FOnRequestComplete& OnComplete);
 
     // delegate 프로퍼티
     UPROPERTY(BlueprintAssignable, Category = "Web|Auth")

@@ -1,6 +1,4 @@
 
-
-
 #include "PlayerController/BlasterPlayerController.h"
 #include "Blaster/HUD/BlasterHUD.h"
 #include "Blaster/HUD/CharacterOverlay.h"
@@ -22,6 +20,7 @@
 #include "Blaster/HUD/Board/ScoreBoard.h"
 #include "Blaster/HUD/Board/TeamScoreBoard.h"
 #include "GameInstance/BlasterGameInstance.h"
+#include "GameInstance/BlasterWebSubsystem.h"
 
 
 void ABlasterPlayerController::BroadcastElim(APlayerState* Attacker, APlayerState* Victim)
@@ -31,20 +30,25 @@ void ABlasterPlayerController::BroadcastElim(APlayerState* Attacker, APlayerStat
 
 void ABlasterPlayerController::ClientElimAnnouncement_Implementation(APlayerState* Attacker, APlayerState* Victim)
 {
-	APlayerState* Self = GetPlayerState<APlayerState>();
+	ABlasterPlayerState* Self = GetPlayerState<ABlasterPlayerState>();
 	if (Attacker && Victim && Self)
 	{
 		BlasterHUD = BlasterHUD == nullptr ? Cast<ABlasterHUD>(GetHUD()) : BlasterHUD;
 		if (BlasterHUD)
 		{
+			ABlasterPlayerState* AttackerState = Cast<ABlasterPlayerState>(Attacker);
+			ABlasterPlayerState* VictimState = Cast<ABlasterPlayerState>(Victim);
+
+			if (!AttackerState || !VictimState) return;
+
 			if (Attacker == Self && Victim != Self)
 			{
-				BlasterHUD->AddElimAnnouncement("You", Victim->GetPlayerName());
+				BlasterHUD->AddElimAnnouncement("You", VictimState->GetNickname());
 				return;
 			}
 			if (Victim == Self && Attacker != Self)
 			{
-				BlasterHUD->AddElimAnnouncement(Attacker->GetPlayerName(), "you");
+				BlasterHUD->AddElimAnnouncement(AttackerState->GetNickname(), "you");
 				return;
 			}
 			if (Attacker == Victim && Attacker == Self)
@@ -54,13 +58,12 @@ void ABlasterPlayerController::ClientElimAnnouncement_Implementation(APlayerStat
 			}
 			if (Attacker == Victim && Attacker != Self)
 			{
-				BlasterHUD->AddElimAnnouncement(Attacker->GetPlayerName(), "themselves");
+				BlasterHUD->AddElimAnnouncement(AttackerState->GetNickname(), "themselves");
 				return;
 			}
-			BlasterHUD->AddElimAnnouncement(Attacker->GetPlayerName(), Victim->GetPlayerName());
+			BlasterHUD->AddElimAnnouncement(AttackerState->GetNickname(), VictimState->GetNickname());
 		}
 	}
-
 }
 
 void ABlasterPlayerController::BeginPlay()
@@ -772,7 +775,7 @@ void ABlasterPlayerController::UpdateScoreboard()
 			if (ABlasterPlayerState* BlasterPS = Cast<ABlasterPlayerState>(CurrentPlayer))
 			{
 				FPlayerScoreData PlayerData;
-				PlayerData.PlayerName = BlasterPS->GetPlayerName();
+				PlayerData.PlayerName = BlasterPS->GetNickname();
 				PlayerData.Kill = BlasterPS->GetScore();
 				PlayerData.Death = BlasterPS->GetDefeats();
 				ScoreDataArray.Add(PlayerData);
@@ -795,7 +798,7 @@ void ABlasterPlayerController::UpdateTeamScoreboard()
 			if (ABlasterPlayerState* BlasterPS = Cast<ABlasterPlayerState>(CurrentPlayer))
 			{
 				FTeamPlayerScoreData PlayerData;
-				PlayerData.PlayerName = BlasterPS->GetPlayerName();
+				PlayerData.PlayerName = BlasterPS->GetNickname();
 				PlayerData.Kill = BlasterPS->GetScore();
 				PlayerData.Death = BlasterPS->GetDefeats();
 				PlayerData.Coin = BlasterPS->GetMoney();
@@ -987,14 +990,53 @@ void ABlasterPlayerController::ReturnToMainMenuAfterMatch()
 	UWorld* World = GetWorld();
 	if (!World) return;
 
-	if (HasAuthority()) // 서버
+	if (HasAuthority())
 	{
-		World->GetFirstPlayerController()->ClientTravel("/Game/Maps/GameStartupMap", TRAVEL_Absolute);
-		World->ServerTravel("/Game/Maps/GameStartupMap");
+		// 매치 통계 전송 (호스트만)
+		if (ABlasterGameState* BlasterGameState = World->GetGameState<ABlasterGameState>())
+		{
+			UE_LOG(LogTemp, Log, TEXT("ReturnToMainMenuAfterMatch: Found GameState"));
+
+			if (UBlasterWebSubsystem* WebSubsystem = GetGameInstance()->GetSubsystem<UBlasterWebSubsystem>())
+			{
+				UE_LOG(LogTemp, Log, TEXT("ReturnToMainMenuAfterMatch: Found WebSubsystem, sending match stats..."));
+
+				// 콜백을 사용한 버전
+				WebSubsystem->SendMatchStats(BlasterGameState, FOnRequestComplete::CreateLambda(
+					[this](bool Success, const FString& Response) {
+						if (Success)
+						{
+							UE_LOG(LogTemp, Log, TEXT("Match stats sent successfully. Response: %s"), *Response);
+						}
+						else
+						{
+							UE_LOG(LogTemp, Error, TEXT("Failed to send match stats. Response: %s"), *Response);
+						}
+					}));
+			}
+			else
+			{
+				UE_LOG(LogTemp, Error, TEXT("ReturnToMainMenuAfterMatch: WebSubsystem not found!"));
+			}
+		}
+		else
+		{
+			UE_LOG(LogTemp, Error, TEXT("ReturnToMainMenuAfterMatch: GameState not found!"));
+		}
+
+		// 맵 전환 로직
+		FString GameModePath = TEXT("/Game/Blueprints/GameModes/BP_OutGameMode.BP_OutGameMode_C");
+		FString MapURL = FString::Printf(TEXT("/Game/Maps/GameStartupMap?game=%s"), *GameModePath);
+		UE_LOG(LogTemp, Warning, TEXT("Traveling to map with URL: %s"), *MapURL);
+
+		World->GetFirstPlayerController()->ClientTravel(MapURL, TRAVEL_Absolute);
+		World->ServerTravel(MapURL);
 	}
-	else // 클라이언트
+	else
 	{
-		ClientTravel("/Game/Maps/GameStartupMap", TRAVEL_Absolute);
+		FString GameModePath = TEXT("/Game/Blueprints/GameModes/BP_OutGameMode.BP_OutGameMode_C");
+		FString MapURL = FString::Printf(TEXT("/Game/Maps/GameStartupMap?game=%s"), *GameModePath);
+		ClientTravel(MapURL, TRAVEL_Absolute);
 	}
 }
 

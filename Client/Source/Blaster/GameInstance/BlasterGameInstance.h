@@ -108,17 +108,17 @@ public:
 
 
 private:
-	//UPROPERTY(Config)
-	//FString DefaultServerIP = TEXT("34.64.137.161");
-
-	//UPROPERTY(Config)
-	//int32 DefaultServerPort = 7777;
-
 	UPROPERTY(Config)
-	FString DefaultServerIP = TEXT("127.0.0.1");
+	FString DefaultServerIP = TEXT("34.64.137.161");
 
 	UPROPERTY(Config)
 	int32 DefaultServerPort = 7777;
+
+	//UPROPERTY(Config)
+	//FString DefaultServerIP = TEXT("127.0.0.1");
+
+	//UPROPERTY(Config)
+	//int32 DefaultServerPort = 7777;
 
 	UPROPERTY()
 	class UBlasterNetworkSubsystem* NetworkSystem;

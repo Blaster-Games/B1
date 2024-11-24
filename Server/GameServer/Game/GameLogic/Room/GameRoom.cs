@@ -270,6 +270,9 @@ namespace GameServer
                         HostAddress = hostAddress,
                         Port = hostPort
                     };
+                    Console.WriteLine($"HostAddress: {startPacket.HostAddress}, Port: {startPacket.Port}");
+
+                    Console.WriteLine($"Sending start packet to Player {p.PlayerId} (Session: {p.Session?.SessionId.ToString() ?? "0"})");
 
                     Console.WriteLine($"Sending start packet to Player {p.PlayerId} (Session: {p.Session?.SessionId.ToString() ?? "0"})");
 
@@ -291,6 +294,20 @@ namespace GameServer
             }
 
             Console.WriteLine($"StartGame completed - Broadcast to {broadcastCount} players");
+
+            var playersToRemove = _players.ToList();
+
+            // 각 플레이어에 대해 LeaveRoom 호출
+            foreach (var player in playersToRemove)
+            {
+                Console.WriteLine($"Removing player {player.PlayerId} from room after game start");
+                if (player.Session != null)
+                {
+                    LeaveRoom(player.Session);
+                }
+            }
+
+            Console.WriteLine("All players removed from room after game start");
         }
         #endregion
 

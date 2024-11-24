@@ -7,7 +7,7 @@ void URoomItem::NativeConstruct()
 
     if (RoomItemButton)
     {
-        RoomItemButton->OnClicked.AddDynamic(this, &URoomItem::OnRoomItemButtonClicked);
+        RoomItemButton->OnClicked.AddDynamic(this, &URoomItem::OnRoomClicked);
     }
 }
 
@@ -31,6 +31,11 @@ void URoomItem::OnRoomItemButtonClicked()
         UE_LOG(LogTemp, Log, TEXT("Single Click Detected - Waiting for potential double click"));
         LastClickTime = CurrentTime;
     }
+}
+
+void URoomItem::OnRoomClicked()
+{
+    OnRoomItemClicked.Broadcast(RoomId);
 }
 
 void URoomItem::SetRoomInfo(

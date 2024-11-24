@@ -34,6 +34,9 @@ private:
     UFUNCTION()
     void OnRoomItemButtonClicked();
 
+    UFUNCTION()
+	void OnRoomClicked();
+
     // 룸 ID 저장
     int32 RoomId;
 

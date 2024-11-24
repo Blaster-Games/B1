@@ -13,6 +13,8 @@ public:
 
 	virtual void PostLogin(APlayerController* NewPlayer) override;
 
+	virtual void BeginPlay() override;
+
 private:
 	// CurrentRoomInfo를 GameInstance에서 가져와서 체크하는 함수
 	void CheckAndStartGame();
