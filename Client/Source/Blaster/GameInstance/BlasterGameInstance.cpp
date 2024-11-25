@@ -64,7 +64,7 @@ void UBlasterGameInstance::HostGame()
         {
             if (LocalIP.IsValid())
             {
-                HostAddress = LocalIP->ToString(false);
+                HostAddress = "49.142.160.137";
             }
         }
     }

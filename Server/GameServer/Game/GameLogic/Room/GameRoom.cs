@@ -272,10 +272,6 @@ namespace GameServer
                     };
                     Console.WriteLine($"HostAddress: {startPacket.HostAddress}, Port: {startPacket.Port}");
 
-                    Console.WriteLine($"Sending start packet to Player {p.PlayerId} (Session: {p.Session?.SessionId.ToString() ?? "0"})");
-
-                    Console.WriteLine($"Sending start packet to Player {p.PlayerId} (Session: {p.Session?.SessionId.ToString() ?? "0"})");
-
                     try
                     {
                         p.Session?.Send(startPacket);
