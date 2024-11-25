@@ -12,6 +12,7 @@
 #include "Blaster/BlasterComponents/CombatComponent.h"
 #include "GameFramework/GameState.h" 
 #include "Blaster/Weapon/WeaponTypes.h"
+#include "Blaster/GameInstance/BlasterGameInstance.h"
 
 
 namespace MatchState
@@ -96,6 +97,21 @@ void ABlasterGameMode::Tick(float DeltaTime)
 	}
 }
 
+void ABlasterGameMode::PostLogin(APlayerController* NewPlayer)
+{
+	Super::PostLogin(NewPlayer);
+
+	if (UBlasterGameInstance* GameInstance = Cast<UBlasterGameInstance>(GetGameInstance()))
+	{
+		if (ABlasterPlayerState* PS = NewPlayer->GetPlayerState<ABlasterPlayerState>())
+		{
+			FString PlayerNickname = GameInstance->GetNickname();
+			// 닉네임 설정
+			PS->SetNickname(PlayerNickname); 
+		}
+	}
+}
+
 void ABlasterGameMode::RestartGame()
 {
 	// 서버에서 모든 플레이어 컨트롤러에게 메인 메뉴로 돌아가라고 알림
@@ -151,12 +167,16 @@ void ABlasterGameMode::RestartPlayer(AController* NewPlayer)
 	RestartPlayerAtPlayerStart(NewPlayer, SpawnPoint);
 }
 
-// 이것도 현재 접속하고 있는 애들만 리스폰을 시키도록 변경 필요.
 void ABlasterGameMode::ResetAllPlayers()
 {
-	for (FConstPlayerControllerIterator It = GetWorld()->GetPlayerControllerIterator(); It; ++It)
+	ABlasterGameState* BlasterGS = GetGameState<ABlasterGameState>();
+	if (!BlasterGS) return;
+
+	for (APlayerState* PlayerState : BlasterGS->PlayerArray)
 	{
-		ABlasterPlayerController* BlasterPlayer = Cast<ABlasterPlayerController>(*It);
+		if (!PlayerState) continue;
+
+		ABlasterPlayerController* BlasterPlayer = Cast<ABlasterPlayerController>(PlayerState->GetPlayerController());
 		if (!BlasterPlayer) continue;
 
 		if (AMyBlasterCharacter* PlayerCharacter = Cast<AMyBlasterCharacter>(BlasterPlayer->GetPawn()))
