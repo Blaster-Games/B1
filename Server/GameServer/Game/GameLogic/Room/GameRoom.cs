@@ -254,9 +254,8 @@ namespace GameServer
             Console.WriteLine($"[LeaveRoom] Leave process completed for Player {player.PlayerId}");
         }
 
-        public void StartGame(string hostAddress, int hostPort)
+        public void StartGame(ClientSession clientSession, int hostPort)
         {
-            Console.WriteLine($"StartGame called - Host: {hostAddress}:{hostPort}");
             Console.WriteLine($"Total players: {_players.Count}");
 
             // 호스트를 제외한 모든 플레이어에게 브로드 캐스팅
@@ -267,7 +266,7 @@ namespace GameServer
                 {
                     S_BroadcastStartGame startPacket = new S_BroadcastStartGame()
                     {
-                        HostAddress = hostAddress,
+                        HostAddress = clientSession.IpAddress,
                         Port = hostPort
                     };
                     Console.WriteLine($"HostAddress: {startPacket.HostAddress}, Port: {startPacket.Port}");
