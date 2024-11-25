@@ -119,12 +119,12 @@ void ATeamsGameMode::HandleMatchHasStarted()
                 {
                     const FPlayerInfo& RoomPlayer = HostRoomInfo.Players[ProcessedPlayers];
 
-                    // 닉네임 설정
-                    /*BPState->SetNickname(RoomPlayer.PlayerName);
+                    //닉네임 설정
+                    BPState->SetNickname(RoomPlayer.PlayerName);
 
                     UE_LOG(LogTemp, Log, TEXT("Assigning player %s to team %s"),
                         *RoomPlayer.PlayerName,
-                        RoomPlayer.Team == ETeamType::TEAM_RED ? TEXT("Red") : TEXT("Blue"));*/
+                        RoomPlayer.Team == ETeamType::TEAM_RED ? TEXT("Red") : TEXT("Blue"));
 
                     // 팀 설정
                     if (RoomPlayer.Team == ETeamType::TEAM_RED)
