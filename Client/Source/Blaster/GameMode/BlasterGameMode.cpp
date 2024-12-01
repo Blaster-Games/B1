@@ -101,15 +101,16 @@ void ABlasterGameMode::PostLogin(APlayerController* NewPlayer)
 {
 	Super::PostLogin(NewPlayer);
 
-	if (UBlasterGameInstance* GameInstance = Cast<UBlasterGameInstance>(GetGameInstance()))
-	{
-		if (ABlasterPlayerState* PS = NewPlayer->GetPlayerState<ABlasterPlayerState>())
-		{
-			FString PlayerNickname = GameInstance->GetNickname();
-			// 닉네임 설정
-			PS->SetNickname(PlayerNickname); 
-		}
-	}
+	// 전근렬이 잘못짠 코드
+	//if (UBlasterGameInstance* GameInstance = Cast<UBlasterGameInstance>(GetGameInstance()))
+	//{
+	//	if (ABlasterPlayerState* PS = NewPlayer->GetPlayerState<ABlasterPlayerState>())
+	//	{
+	//		FString PlayerNickname = GameInstance->GetNickname();
+	//		// 닉네임 설정
+	//		PS->SetNickname(PlayerNickname); 
+	//	}
+	//}
 }
 
 void ABlasterGameMode::RestartGame()

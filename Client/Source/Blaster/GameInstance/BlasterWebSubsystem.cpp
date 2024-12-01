@@ -85,8 +85,33 @@ void UBlasterWebSubsystem::SendMatchStats(const ABlasterGameState* GameState, co
     }
     JsonObject->SetArrayField("weaponPurchases", WeaponStats);
 
-    // 버프 구매 통계도 비슷하게 로깅
-    // ... (다른 통계들도 비슷하게 로깅)
+    // 버프 구매 통계
+    TArray<TSharedPtr<FJsonValue>> BuffStats;
+    for (const auto& Pair : Stats.BuffPurchases)
+    {
+        FString BuffName = StaticEnum<EBuffType>()->GetNameStringByValue((int64)Pair.Key);
+        UE_LOG(LogTemp, Log, TEXT("Buff Purchase - Type: %s, Count: %d"), *BuffName, Pair.Value);
+
+        TSharedPtr<FJsonObject> BuffObj = MakeShared<FJsonObject>();
+        BuffObj->SetStringField("buffType", BuffName);
+        BuffObj->SetNumberField("purchaseCount", Pair.Value);
+        BuffStats.Add(MakeShared<FJsonValueObject>(BuffObj));
+    }
+    JsonObject->SetArrayField("buffPurchases", BuffStats);
+
+    // 투척무기 구매 통계
+    TArray<TSharedPtr<FJsonValue>> ThrowableStats;
+    for (const auto& Pair : Stats.ThrowablePurchases)
+    {
+        FString ThrowableName = StaticEnum<EThrowType>()->GetNameStringByValue((int64)Pair.Key);
+        UE_LOG(LogTemp, Log, TEXT("Throwable Purchase - Type: %s, Count: %d"), *ThrowableName, Pair.Value);
+
+        TSharedPtr<FJsonObject> ThrowableObj = MakeShared<FJsonObject>();
+        ThrowableObj->SetStringField("throwType", ThrowableName);
+        ThrowableObj->SetNumberField("purchaseCount", Pair.Value);
+        ThrowableStats.Add(MakeShared<FJsonValueObject>(ThrowableObj));
+    }
+    JsonObject->SetArrayField("throwablePurchases", ThrowableStats);
 
     // JSON 문자열로 변환
     FString JsonString;

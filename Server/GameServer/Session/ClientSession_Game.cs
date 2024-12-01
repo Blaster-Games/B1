@@ -221,7 +221,7 @@ namespace GameServer
             currentGameRoom.Push(() =>
             {
                 Console.WriteLine($"[HandleStartRoomReq] Pushing game start task to room {currentGameRoom.GameRoomId}");
-                currentGameRoom.StartGame(hostAddress, hostPort);
+                currentGameRoom.StartGame(this, hostPort);
             });
         }
 

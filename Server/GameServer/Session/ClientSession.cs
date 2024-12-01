@@ -16,6 +16,7 @@ namespace GameServer
         public long AccountDbId { get; set; }
         public int SessionId { get; set; }
         public string AccessToken { get; set; }
+        public string IpAddress { get; set; }
 
         long _pingpongTick = 0;
 
@@ -72,7 +73,11 @@ namespace GameServer
 
         public override void OnConnected(EndPoint endPoint)
         {
-            Console.WriteLine($"OnConnected : {endPoint}");
+            if (endPoint is IPEndPoint ipEndPoint)
+            {
+                IpAddress = ipEndPoint.Address.ToString();
+                Console.WriteLine($"OnConnected : {IpAddress}");
+            }
 
             S_Connected resPacket = new S_Connected();
 
