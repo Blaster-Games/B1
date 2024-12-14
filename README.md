@@ -38,7 +38,7 @@
 
 ```
 Back-end : Spring boot 3.3.5, java 17
-Front-end : Node.js 20 LTS, Reack 18.3.1
+Front-end : Node.js 20 LTS, React 18.3.1
 Game-Server : .Net 8.0
 Game-Client : Unreal Engine 5.4 
 ```
