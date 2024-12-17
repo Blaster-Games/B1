@@ -10,6 +10,8 @@
 
 - 기술 스택
 
+- 시스템 아키텍처
+
 - 기능 소개
 
 - 게임 시연 영상
@@ -42,6 +44,10 @@ Front-end : Node.js 20 LTS, React 18.3.1
 Game-Server : .Net 8.0
 Game-Client : Unreal Engine 5.4 
 ```
+
+## 시스템 아키텍처
+
+<img title="" src="./readme-assets/아키텍처.png" alt="메인 페이지.png" width="340">
 
 ## 기능 소개
 
